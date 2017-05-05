@@ -30,10 +30,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * 功能说明:该类实现了将一组对象转换为Excel表格，并且可以从Excel表格中读取到一组List对象中
  * 该类利用了BeanUtils框架中的反射完成,使用该类的前提，在相应的实体对象上通过ExcelReources来完成相应的注解
- * 
- * <br/>
- * 
- * 修改历史:<br/>
  *
  */
 @SuppressWarnings({ "rawtypes" })
@@ -103,20 +99,15 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到流
 	 * 
-	 * @param datas
-	 *            模板中的替换的常量数据
-	 * @param template
-	 *            模板路径
-	 * @param os
-	 *            输出流
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
-	 * @param isClasspath
-	 *            模板是否在classPath路径下
+	 * @param datas 		 模板中的替换的常量数据
+	 * @param template 		 模板路径
+	 * @param os 			 输出流
+	 * @param objs 			 对象列表
+	 * @param clz 			 对象的类型
+	 * @param isClasspath 	 模板是否在classPath路径下
 	 */
-	public void exportObj2ExcelByTemplate(Map<String, String> datas, String template, OutputStream os, List objs, Class clz, boolean isClasspath) {
+	public void exportObj2ExcelByTemplate(Map<String, String> datas, String template, OutputStream os,
+										  List objs, Class clz, boolean isClasspath) {
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
 		et.replaceFinalData(datas);
 		et.wirteToStream(os);
@@ -125,14 +116,10 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到流
 	 * 
-	 * @param template
-	 *            模板路径
-	 * @param os
-	 *            输出流
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
+	 * @param template 		模板路径
+	 * @param os 			输出流
+	 * @param objs 			对象列表
+	 * @param clz 			对象的类型
 	 */
 	public void exportObj2ExcelByTemplate(String template, OutputStream os, List objs, Class clz) {
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, true);
@@ -142,20 +129,15 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中
 	 * 
-	 * @param datas
-	 *            模板中的替换的常量数据
-	 * @param template
-	 *            模板路径
-	 * @param outPath
-	 *            输出路径
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
-	 * @param isClasspath
-	 *            模板是否在classPath路径下
+	 * @param datas 		模板中的替换的常量数据
+	 * @param template 		模板路径
+	 * @param outPath 		输出路径
+	 * @param objs 			对象列表
+	 * @param clz 			对象的类型
+	 * @param isClasspath 	模板是否在classPath路径下
 	 */
-	public void exportObj2ExcelByTemplate(Map<String, String> datas, String template, String outPath, List objs, Class clz, boolean isClasspath) {
+	public void exportObj2ExcelByTemplate(Map<String, String> datas, String template, String outPath,
+										  List objs, Class clz, boolean isClasspath) {
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
 		et.replaceFinalData(datas);
 		et.writeToFile(outPath);
@@ -165,22 +147,16 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中
 	 *
-	 * @param datas
-	 *            模板中的替换的常量数据
-	 * @param template
-	 *            模板路径
-	 * @param outPath
-	 *            输出路径
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
-	 * @param isClasspath
-	 *            模板是否在classPath路径下
-	 * @param hasSernums
-	 * 			  是否带序号
+	 * @param datas 		模板中的替换的常量数据
+	 * @param template 		模板路径
+	 * @param outPath 		输出路径
+	 * @param objs 			对象列表
+	 * @param clz			对象的类型
+	 * @param isClasspath	模板是否在classPath路径下
+	 * @param hasSernums 	是否带序号
 	 */
-	public void exportObj2ExcelByTemplate(Map<String, String> datas, String template, String outPath, List objs, Class clz, boolean isClasspath, boolean hasSernums){
+	public void exportObj2ExcelByTemplate(Map<String, String> datas, String template, String outPath, List objs,
+										  Class clz, boolean isClasspath, boolean hasSernums){
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
 		et.replaceFinalData(datas);
 		if(hasSernums)
@@ -191,14 +167,10 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中
 	 * 
-	 * @param template
-	 *            模板路径
-	 * @param outPath
-	 *            输出路径
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
+	 * @param template 		模板路径
+	 * @param outPath 		输出路径
+	 * @param objs 			对象列表
+	 * @param clz 			对象的类型
 	 */
 	public void exportObj2ExcelByTemplate(String template, String outPath, List objs, Class clz) {
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, true);
@@ -208,20 +180,15 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到流,基于Properties作为常量数据
 	 * 
-	 * @param prop
-	 *            基于Properties的常量数据模型
-	 * @param template
-	 *            模板路径
-	 * @param os
-	 *            输出流
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
-	 * @param isClasspath
-	 *            模板是否在classPath路径下
+	 * @param prop 			 基于Properties的常量数据模型
+	 * @param template 		 模板路径
+	 * @param os 			 输出流
+	 * @param objs 			 对象列表
+	 * @param clz 			 对象的类型
+	 * @param isClasspath 	 模板是否在classPath路径下
 	 */
-	public void exportObj2ExcelByTemplate(Properties prop, String template, OutputStream os, List objs, Class clz, boolean isClasspath) {
+	public void exportObj2ExcelByTemplate(Properties prop, String template, OutputStream os,
+										  List objs, Class clz, boolean isClasspath) {
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
 		et.replaceFinalData(prop);
 		et.wirteToStream(os);
@@ -230,20 +197,15 @@ public class ExcelUtil {
 	/**
 	 * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中,基于Properties作为常量数据
 	 * 
-	 * @param prop
-	 *            基于Properties的常量数据模型
-	 * @param template
-	 *            模板路径
-	 * @param outPath
-	 *            输出路径
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象的类型
-	 * @param isClasspath
-	 *            模板是否在classPath路径下
+	 * @param prop 			 基于Properties的常量数据模型
+	 * @param template 		 模板路径
+	 * @param outPath 		 输出路径
+	 * @param objs 			 对象列表
+	 * @param clz 			 对象的类型
+	 * @param isClasspath 	 模板是否在classPath路径下
 	 */
-	public void exportObj2ExcelByTemplate(Properties prop, String template, String outPath, List objs, Class clz, boolean isClasspath) {
+	public void exportObj2ExcelByTemplate(Properties prop, String template, String outPath,
+										  List objs, Class clz, boolean isClasspath) {
 		ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
 		et.replaceFinalData(prop);
 		et.writeToFile(outPath);
@@ -283,14 +245,10 @@ public class ExcelUtil {
 	/**
 	 * 导出对象到Excel，不是基于模板的，直接新建一个Excel完成导出，基于路径的导出
 	 * 
-	 * @param outPath
-	 *            导出路径
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象类型
-	 * @param isXssf
-	 *            是否是2007版本
+	 * @param outPath 	导出路径
+	 * @param objs 		对象列表
+	 * @param clz 		对象类型
+	 * @param isXssf 	是否是2007版本
 	 */
 	public void exportObj2Excel(String outPath, List objs, Class clz, boolean isXssf) {
 		Workbook wb = handleObj2Excel(objs, clz, isXssf);
@@ -305,8 +263,6 @@ public class ExcelUtil {
 			}
 			fos = new FileOutputStream(outPath);
 			wb.write(fos);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -322,14 +278,10 @@ public class ExcelUtil {
 	/**
 	 * 导出对象到Excel，不是基于模板的，直接新建一个Excel完成导出，基于流
 	 * 
-	 * @param os
-	 *            输出流
-	 * @param objs
-	 *            对象列表
-	 * @param clz
-	 *            对象类型
-	 * @param isXssf
-	 *            是否是2007版本
+	 * @param os 		输出流
+	 * @param objs 		对象列表
+	 * @param clz 		对象类型
+	 * @param isXssf 	是否是2007版本
 	 */
 	public void exportObj2Excel(OutputStream os, List objs, Class clz, boolean isXssf) {
 		try {
@@ -343,24 +295,17 @@ public class ExcelUtil {
 	/**
 	 * 从类路径读取相应的Excel文件到对象列表
 	 * 
-	 * @param path
-	 *            类路径下的path
-	 * @param clz
-	 *            对象类型
-	 * @param readLine
-	 *            开始行，注意是标题所在行
-	 * @param tailLine
-	 *            底部有多少行，在读入对象时，会减去这些行
-	 * @return
+	 * @param path 		类路径下的path
+	 * @param clz 		对象类型
+	 * @param readLine 	开始行，注意是标题所在行
+	 * @param tailLine 	底部有多少行，在读入对象时，会减去这些行
 	 */
 	public <T>List<T> readExcel2ObjsByClasspath(String path, Class<T> clz, int readLine, int tailLine) {
 		Workbook wb;
 		try {
 			wb = WorkbookFactory.create(new FileInputStream(path));
 			return handlerExcel2Objs(wb, clz, readLine, tailLine);
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (InvalidFormatException | IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -369,24 +314,17 @@ public class ExcelUtil {
 	/**
 	 * 从文件路径读取相应的Excel文件到对象列表
 	 * 
-	 * @param path
-	 *            文件路径下的path
-	 * @param clz
-	 *            对象类型
-	 * @param readLine
-	 *            开始行，注意是标题所在行
-	 * @param tailLine
-	 *            底部有多少行，在读入对象时，会减去这些行
-	 * @return
+	 * @param path 			文件路径下的path
+	 * @param clz 			对象类型
+	 * @param readLine 		开始行，注意是标题所在行
+	 * @param tailLine 		底部有多少行，在读入对象时，会减去这些行
 	 */
 	public <T>List<T> readExcel2ObjsByPath(String path, Class<T> clz, int readLine, int tailLine) {
 		Workbook wb;
 		try {
 			wb = WorkbookFactory.create(new File(path));
 			return handlerExcel2Objs(wb, clz, readLine, tailLine);
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (InvalidFormatException | IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -397,9 +335,7 @@ public class ExcelUtil {
 		try {
 			wb = WorkbookFactory.create(is);
 			return handlerExcel2Objs(wb, clz, readLine, tailLine);
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (InvalidFormatException | IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -408,10 +344,8 @@ public class ExcelUtil {
 	/**
 	 * 从类路径读取相应的Excel文件到对象列表，标题行为0，没有尾行
 	 * 
-	 * @param path
-	 *            路径
-	 * @param clz
-	 *            类型
+	 * @param path 		路径
+	 * @param clz 		类型
 	 * @return 对象列表
 	 */
 	public <T>List<T> readExcel2ObjsByClasspath(String path, Class<T> clz) {
@@ -421,10 +355,8 @@ public class ExcelUtil {
 	/**
 	 * 从文件路径读取相应的Excel文件到对象列表，标题行为0，没有尾行
 	 * 
-	 * @param path
-	 *            路径
-	 * @param clz
-	 *            类型
+	 * @param path  路径
+	 * @param clz 	 类型
 	 * @return 对象列表
 	 */
 	public <T>List<T> readExcel2ObjsByPath(String path, Class<T> clz) {
@@ -434,10 +366,8 @@ public class ExcelUtil {
 	/**
 	 * 从文件路径读取相应的Excel文件到对象列表，标题行为0，没有尾行
 	 * 
-	 * @param is
-	 *            输入流
-	 * @param clz
-	 *            类型
+	 * @param is 	输入流
+	 * @param clz  类型
 	 * @return 对象列表
 	 */
 	public <T>List<T> readExcel2ObjsByInputStream(InputStream is, Class<T> clz) {
@@ -495,11 +425,7 @@ public class ExcelUtil {
 				}
 				objs.add(obj);
 			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 		return objs;
@@ -528,7 +454,8 @@ public class ExcelUtil {
 			String title = c.getStringCellValue();
 			for (ExcelHeader eh : headers) {
 				if (eh.getTitle().equals(title.trim())) {
-					maps.put(c.getColumnIndex(), "set" + eh.getFiled().substring(0, 1).toUpperCase() + eh.getFiled().substring(1));
+					maps.put(c.getColumnIndex(), "set" + eh.getFiled().substring(0, 1).toUpperCase() +
+							eh.getFiled().substring(1));
 					break;
 				}
 			}

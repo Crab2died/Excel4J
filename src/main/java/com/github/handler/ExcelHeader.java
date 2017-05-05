@@ -3,10 +3,6 @@ package com.github.handler;
 /**
  *
  * 功能说明: 用来存储Excel标题的对象，通过该对象可以获取标题和方法的对应关系
- * 
- * <br/>
- * 
- * 修改历史:<br/>
  *
  */
 public class ExcelHeader implements Comparable<ExcelHeader> {
@@ -48,7 +44,7 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
 	}
 
 	public int compareTo(ExcelHeader o) {
-		return order > o.order ? 1 : (order < o.order ? -1 : 0);
+		return order - o.order;
 	}
 
 	public ExcelHeader(String title, int order, String filed) {
