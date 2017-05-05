@@ -1,4 +1,4 @@
-package com.github;
+package com.github.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

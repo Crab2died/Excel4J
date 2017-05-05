@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import com.github.annotation.ExcelField;
+import com.github.handler.ExcelHeader;
+import com.github.handler.ExcelTemplate;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -35,6 +38,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 @SuppressWarnings({ "rawtypes" })
 public class ExcelUtil {
+
 	private static ExcelUtil eu = new ExcelUtil();
 
 	private ExcelUtil() {
@@ -90,11 +94,7 @@ public class ExcelUtil {
 					et.createCell(BeanUtils.getProperty(obj, eh.getFiled()));
 				}
 			}
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			e.printStackTrace();
 		}
 		return et;
@@ -274,11 +274,7 @@ public class ExcelUtil {
 					r.createCell(j).setCellValue(BeanUtils.getProperty(obj, headers.get(j).getFiled()));
 				}
 			}
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			e.printStackTrace();
 		}
 		return wb;
@@ -358,7 +354,7 @@ public class ExcelUtil {
 	 * @return
 	 */
 	public <T>List<T> readExcel2ObjsByClasspath(String path, Class<T> clz, int readLine, int tailLine) {
-		Workbook wb = null;
+		Workbook wb;
 		try {
 			wb = WorkbookFactory.create(new FileInputStream(path));
 			return handlerExcel2Objs(wb, clz, readLine, tailLine);
@@ -511,16 +507,6 @@ public class ExcelUtil {
 
 	private List<ExcelHeader> getHeaderList(Class clz) {
 		List<ExcelHeader> headers = new ArrayList<>();
-//		Method[] ms = clz.getMethods();
-//		for (Method m : ms) {
-//			String mn = m.getName();
-//			if (mn.startsWith("get")) {
-//				if (m.isAnnotationPresent(ExcelField.class)) {
-//					ExcelField er = m.getAnnotation(ExcelField.class);
-//					headers.add(new ExcelHeader(er.title(), er.order(), mn));
-//				}
-//			}
-//		}
 		List<Field> fields = new ArrayList<>();
 		for ( Class clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()){
 			fields.addAll(Arrays.asList(clazz.getDeclaredFields()));

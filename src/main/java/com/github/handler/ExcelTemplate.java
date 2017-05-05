@@ -1,4 +1,4 @@
-package com.github;
+package com.github.handler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -106,7 +106,7 @@ public class ExcelTemplate {
 	 * 从classpath路径下读取相应的模板文件
 	 * 
 	 * @param path	模板路径
-	 * @return
+	 * @return ExcelTemplate
 	 */
 	public ExcelTemplate readTemplateByClasspath(String path) {
 		try {

@@ -1,7 +1,7 @@
 package moudles;
 
 
-import com.github.ExcelField;
+import com.github.annotation.ExcelField;
 
 public class Student {
 

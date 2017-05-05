@@ -23,6 +23,6 @@ public class Moudle2Excel {
         Map<String, String> datas = new HashMap<>();
         datas.put("title", "战争学院花名册");
         datas.put("info", "学校统一花名册");
-        ExcelUtil.getInstance().exportObj2ExcelByTemplate(datas, tempPath, "D:\\2.xlsx", list, Student.class, false, true);
+        ExcelUtil.getInstance().exportObj2ExcelByTemplate(datas, tempPath, "D:\\Q.xlsx", list, Student.class, false, true);
     }
 }
