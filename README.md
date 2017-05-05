@@ -59,4 +59,6 @@
    ```
    ### 3-3. 导出效果图
 ![导出效果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/java/resource/image/excel_export.png)
-   
+
+---
+# 计划：加上泛型，免去Object与模型对象的强转
