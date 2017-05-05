@@ -41,6 +41,10 @@ public class Student {
         this.classes = classes;
     }
 
+    public Student(){
+
+    }
+
     public Student(String id, String name, String classes) {
         this.id = id;
         this.name = name;
