@@ -7,10 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -359,7 +357,7 @@ public class ExcelUtil {
 	 *            底部有多少行，在读入对象时，会减去这些行
 	 * @return
 	 */
-	public List<Object> readExcel2ObjsByClasspath(String path, Class clz, int readLine, int tailLine) {
+	public <T>List<T> readExcel2ObjsByClasspath(String path, Class<T> clz, int readLine, int tailLine) {
 		Workbook wb = null;
 		try {
 			wb = WorkbookFactory.create(new FileInputStream(path));
@@ -385,7 +383,7 @@ public class ExcelUtil {
 	 *            底部有多少行，在读入对象时，会减去这些行
 	 * @return
 	 */
-	public List<Object> readExcel2ObjsByPath(String path, Class clz, int readLine, int tailLine) {
+	public <T>List<T> readExcel2ObjsByPath(String path, Class<T> clz, int readLine, int tailLine) {
 		Workbook wb;
 		try {
 			wb = WorkbookFactory.create(new File(path));
@@ -398,7 +396,7 @@ public class ExcelUtil {
 		return null;
 	}
 	
-	public List<Object> readExcel2ObjsByInputSteam(InputStream is, Class clz, int readLine, int tailLine) {
+	public <T>List<T> readExcel2ObjsByInputSteam(InputStream is, Class<T> clz, int readLine, int tailLine) {
 		Workbook wb;
 		try {
 			wb = WorkbookFactory.create(is);
@@ -420,7 +418,7 @@ public class ExcelUtil {
 	 *            类型
 	 * @return 对象列表
 	 */
-	public List<Object> readExcel2ObjsByClasspath(String path, Class clz) {
+	public <T>List<T> readExcel2ObjsByClasspath(String path, Class<T> clz) {
 		return this.readExcel2ObjsByClasspath(path, clz, 0, 0);
 	}
 
@@ -433,7 +431,7 @@ public class ExcelUtil {
 	 *            类型
 	 * @return 对象列表
 	 */
-	public List<Object> readExcel2ObjsByPath(String path, Class clz) {
+	public <T>List<T> readExcel2ObjsByPath(String path, Class<T> clz) {
 		return this.readExcel2ObjsByPath(path, clz, 0, 0);
 	}
 	
@@ -446,12 +444,12 @@ public class ExcelUtil {
 	 *            类型
 	 * @return 对象列表
 	 */
-	public List<Object> readExcel2ObjsByInputStream(InputStream is, Class clz) {
+	public <T>List<T> readExcel2ObjsByInputStream(InputStream is, Class<T> clz) {
 		return this.readExcel2ObjsByInputSteam(is, clz, 0, 0);
 	}
 
 	private String getCellValue(Cell c) {
-		String o = null;
+		String o;
 		switch (c.getCellType()) {
 		case Cell.CELL_TYPE_BLANK:
 			o = "";
@@ -475,9 +473,9 @@ public class ExcelUtil {
 		return o;
 	}
 
-	private List<Object> handlerExcel2Objs(Workbook wb, Class clz, int readLine, int tailLine) {
+	private <T>List<T> handlerExcel2Objs(Workbook wb, Class<T> clz, int readLine, int tailLine) {
 		Sheet sheet = wb.getSheetAt(0);
-		List<Object> objs = null;
+		List<T> objs = null;
 		try {
 			Row row = sheet.getRow(readLine);
 			objs = new ArrayList<>();
@@ -486,7 +484,7 @@ public class ExcelUtil {
 				throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
 			for (int i = readLine + 1; i <= sheet.getLastRowNum() - tailLine; i++) {
 				row = sheet.getRow(i);
-				Object obj = clz.newInstance();
+				T obj = clz.newInstance();
 				for (Cell c : row) {
 					int ci = c.getColumnIndex();
 					String mn = maps.get(ci).substring(3);
