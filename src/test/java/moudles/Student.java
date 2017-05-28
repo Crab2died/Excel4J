@@ -41,7 +41,7 @@ public class Student {
         this.classes = classes;
     }
 
-    public Student(){
+    public Student() {
 
     }
 
