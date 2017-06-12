@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Moudle2Excel {
+public class Module2Excel {
 
     @Test
     public void object2Excel() {

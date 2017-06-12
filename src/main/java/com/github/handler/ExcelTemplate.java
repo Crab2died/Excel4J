@@ -10,26 +10,26 @@ import java.util.*;
  * 功能说明: 该类实现了基于模板的导出 如果要导出序号，需要在excel中定义一个标识为sernums
  * 如果要替换信息，需要传入一个Map，这个map中存储着要替换信息的值，在excel中通过#来开头 要从哪一行那一列开始替换需要定义一个标识为datas
  * 如果要设定相应的样式，可以在该行使用styles完成设定，此时所有此行都使用该样式
- * 如果使用defaultStyls作为表示，表示默认样式，如果没有defaultStyles使用datas行作为默认样式
+ * 如果使用defaultStyles作为表示，表示默认样式，如果没有defaultStyles使用datas行作为默认样式
  */
 public class ExcelTemplate {
 
     /**
      * 数据行标识
      */
-    public final static String DATA_LINE = "datas";
+    private final static String DATA_LINE = "datas";
     /**
      * 默认样式标识
      */
-    public final static String DEFAULT_STYLE = "defaultStyles";
+    private final static String DEFAULT_STYLE = "defaultStyles";
     /**
      * 行样式标识
      */
-    public final static String STYLE = "styles";
+    private final static String STYLE = "styles";
     /**
      * 插入序号样式标识
      */
-    public final static String SER_NUM = "sernums";
+    private final static String SER_NUM = "sernums";
 
     private static ExcelTemplate et = new ExcelTemplate();
 
@@ -136,7 +136,7 @@ public class ExcelTemplate {
      *
      * @param os 输出流
      */
-    public void wirteToStream(OutputStream os) {
+    public void writeToStream(OutputStream os) {
         try {
             wb.write(os);
         } catch (IOException e) {

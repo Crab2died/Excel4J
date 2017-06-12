@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class Excel2Moudle {
+public class Excel2Module {
 
     @Test
     public void excel2Object() {

@@ -54,7 +54,8 @@ public class ExcelUtil {
      * @param isClasspath 是否根目录
      * @return ExcelTemplate
      */
-    public ExcelTemplate handlerObj2Excel(String template, List objs, Class clz, boolean isClasspath, boolean isWirteHeader) {
+    public ExcelTemplate handlerObj2Excel(String template, List objs, Class clz, boolean isClasspath, boolean
+            isWirteHeader) {
         ExcelTemplate et = ExcelTemplate.getInstance();
         try {
             if (isClasspath) {
@@ -98,7 +99,7 @@ public class ExcelUtil {
                                           List objs, Class clz, boolean isClasspath) {
         ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
         et.replaceFinalData(datas);
-        et.wirteToStream(os);
+        et.writeToStream(os);
     }
 
     /**
@@ -111,7 +112,7 @@ public class ExcelUtil {
      */
     public void exportObj2ExcelByTemplate(String template, OutputStream os, List objs, Class clz) {
         ExcelTemplate et = handlerObj2Excel(template, objs, clz, true);
-        et.wirteToStream(os);
+        et.writeToStream(os);
     }
 
     /**
@@ -179,7 +180,7 @@ public class ExcelUtil {
                                           List objs, Class clz, boolean isClasspath) {
         ExcelTemplate et = handlerObj2Excel(template, objs, clz, isClasspath);
         et.replaceFinalData(prop);
-        et.wirteToStream(os);
+        et.writeToStream(os);
     }
 
     /**
