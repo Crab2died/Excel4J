@@ -22,17 +22,18 @@
   ### 2-2. 转换函数
   ```
     @Test
-    public void excel2Object(){
-        String path = "D:\\IdeaSpace\\Excel4J\\src\\test\\java\\resource\\student.xlsx";
-        List<Object> students = ExcelUtil.getInstance().readExcel2ObjsByClasspath(path, Student.class);
-        for (Object obj : students){
-            Student stu = (Student) obj;
+    public void excel2Object() {
+        String path = "D:\\JProject\\Excel4J\\src\\test\\java\\resource\\student.xlsx";
+
+        System.out.println("读取全部：");
+        List<Student> students = ExcelUtil.getInstance().readExcel2ObjsByClasspath(path, Student.class);
+        for (Student stu : students) {
             System.out.println(stu.getName() + " -- " + stu.getClasses());
         }
 
-        students  = ExcelUtil.getInstance().readExcel2ObjsByClasspath(path, Student.class, 0, 2);
-        for (Object obj : students){
-            Student stu = (Student) obj;
+        System.out.println("读取指定行数：");
+        students = ExcelUtil.getInstance().readExcel2ObjsByClasspath(path, Student.class, 0, 2);
+        for (Student stu : students) {
             System.out.println(stu.getName() + " -- " + stu.getClasses());
         }
     }
