@@ -8,6 +8,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelField {
+
     /**
      * 属性的标题名称
      */
