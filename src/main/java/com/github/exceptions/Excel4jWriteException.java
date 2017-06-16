@@ -2,7 +2,9 @@ package com.github.exceptions;
 
 public class Excel4jWriteException extends Exception {
 
-    public Excel4jWriteException() {
+	private static final long serialVersionUID = -2186571940395162883L;
+
+	public Excel4jWriteException() {
     }
 
     public Excel4jWriteException(String message) {

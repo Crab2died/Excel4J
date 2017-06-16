@@ -19,7 +19,7 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
     /**
      * 属性类型
      */
-    private Class filedClazz;
+    private Class<?> filedClazz;
 
     public String getTitle() {
         return title;
@@ -45,11 +45,11 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
         this.filed = filed;
     }
 
-    public Class getFiledClazz() {
+    public Class<?> getFiledClazz() {
         return filedClazz;
     }
 
-    public void setFiledClazz(Class filedClazz) {
+    public void setFiledClazz(Class<?> filedClazz) {
         this.filedClazz = filedClazz;
     }
 
@@ -57,7 +57,7 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
         return order - o.order;
     }
 
-    public ExcelHeader(String title, int order, String filed, Class filedClazz) {
+    public ExcelHeader(String title, int order, String filed, Class<?> filedClazz) {
         super();
         this.title = title;
         this.order = order;

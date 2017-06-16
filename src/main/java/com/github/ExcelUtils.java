@@ -191,57 +191,57 @@ public class ExcelUtils {
     /*      *) os               =>      导出文件流                                                                 */
 
     public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
-                                    Class clazz, boolean isWriteHeader, String targetPath) throws Exception {
+                                    Class<?> clazz, boolean isWriteHeader, String targetPath) throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2File(targetPath);
     }
 
     public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
-                                    Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
+                                    Class<?> clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2Stream(os);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
                                     boolean isWriteHeader, String targetPath) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, targetPath);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
                                     boolean isWriteHeader, OutputStream os) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, os);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
                                     String targetPath) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, targetPath);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
                                     OutputStream os) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, os);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, String targetPath)
+    public void exportObjects2Excel(String templatePath, List<?> data, Class<?> clazz, String targetPath)
             throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, null, clazz, false, targetPath);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, OutputStream os)
+    public void exportObjects2Excel(String templatePath, List<?> data, Class<?> clazz, OutputStream os)
             throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, null, clazz, false, os);
     }
 
     private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, List<?> data,
-                                                     Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
+                                                     Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader)
             throws Exception {
 
         ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
@@ -279,37 +279,37 @@ public class ExcelUtils {
     /*      *) isWriteHeader    =>      是否写入表头                                                              */
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List> data,
-                                   Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
+    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data,
+                                   Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2File(targetPath);
     }
 
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List> data, Map<String, String>
-            extendMap, Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
+    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
+            extendMap, Class<?> clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2Stream(os);
     }
 
-    public void exportObject2Excel(String templatePath, Map<String, List> data, Map<String, String> extendMap,
-                                   Class clazz, String targetPath) throws Exception {
+    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
+                                   Class<?> clazz, String targetPath) throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
                 .write2File(targetPath);
     }
 
-    public void exportObject2Excel(String templatePath, Map<String, List> data, Map<String, String> extendMap,
-                                   Class clazz, OutputStream os) throws Exception {
+    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
+                                   Class<?> clazz, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
                 .write2Stream(os);
     }
 
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List> data,
-                                                     Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
+    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List<?>> data,
+                                                     Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader)
             throws Exception {
 
         ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
@@ -322,7 +322,7 @@ public class ExcelUtils {
                 templates.createCell(header.getTitle(), null);
             }
         }
-        for (Map.Entry<String, List> entry : data.entrySet()) {
+        for (Map.Entry<String, List<?>> entry : data.entrySet()) {
             for (Object object : entry.getValue()) {
                 templates.createNewRow();
                 templates.insertSerial(entry.getKey());
@@ -347,33 +347,33 @@ public class ExcelUtils {
     /*      *) isXSSF           =>      是否Excel2007以上                                                         */
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
-    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
+    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
                                     String targetPath) throws Exception {
 
         FileOutputStream fos = new FileOutputStream(targetPath);
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(fos);
     }
 
-    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
+    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
                                     OutputStream os) throws Exception {
 
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(os);
     }
 
-    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String targetPath)
+    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
 
         FileOutputStream fos = new FileOutputStream(targetPath);
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(fos);
     }
 
-    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, OutputStream os)
+    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, OutputStream os)
             throws Exception {
 
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(os);
     }
 
-    private Workbook exportExcelNoModuleHandler(List<?> data, Class clazz, boolean isWriteHeader, String sheetName,
+    private Workbook exportExcelNoModuleHandler(List<?> data, Class<?> clazz, boolean isWriteHeader, String sheetName,
                                                 boolean isXSSF) throws Exception {
 
         Workbook workbook;

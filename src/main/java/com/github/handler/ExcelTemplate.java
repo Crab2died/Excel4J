@@ -361,6 +361,14 @@ public class ExcelTemplate {
         }
     }
 
+	public CellStyle getCurrentStyle() {
+		return currentStyle;
+	}
+
+	public void setCurrentStyle(CellStyle currentStyle) {
+		this.currentStyle = currentStyle;
+	}
+
     /*************************************写出数据结束***********************************/
 
 }
