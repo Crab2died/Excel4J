@@ -14,11 +14,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-/**
- * <p></p></br>
- * author : wbhe2</br>
- * date  : 2017/6/15  14:20</br>
- */
+
 public class Utils {
 
     /**
