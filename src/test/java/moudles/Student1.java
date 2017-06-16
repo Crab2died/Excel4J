@@ -3,7 +3,7 @@ package moudles;
 
 import com.github.annotation.ExcelField;
 
-public class Student {
+public class Student1 {
 
     // 学号
     @ExcelField(title = "学号", order = 1)
@@ -41,13 +41,22 @@ public class Student {
         this.classes = classes;
     }
 
-    public Student() {
+    public Student1() {
 
     }
 
-    public Student(String id, String name, String classes) {
+    public Student1(String id, String name, String classes) {
         this.id = id;
         this.name = name;
         this.classes = classes;
+    }
+
+    @Override
+    public String toString() {
+        return "Student1{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", classes='" + classes + '\'' +
+                '}';
     }
 }

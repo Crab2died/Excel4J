@@ -1,458 +1,503 @@
 package com.github;
 
-import com.github.annotation.ExcelField;
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
+import com.github.utils.Utils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-/**
- * 功能说明:该类实现了将一组对象转换为Excel表格，并且可以从Excel表格中读取到一组List对象中
- * 该类利用了BeanUtils框架中的反射完成,使用该类的前提，在相应的实体对象上通过ExcelReources来完成相应的注解
- */
-@SuppressWarnings({"rawtypes"})
 public class ExcelUtils {
 
-    private static ExcelUtils eu = new ExcelUtils();
+    static private ExcelUtils excelUtils = new ExcelUtils();
 
     private ExcelUtils() {
     }
 
     public static ExcelUtils getInstance() {
-        return eu;
+        return excelUtils;
     }
 
-    /**
-     * 处理对象转换为Excel
-     *
-     * @param template    模板路径
-     * @param obj         模型对象集合
-     * @param clz         模型
-     * @param isClasspath 是否根目录
-     * @return ExcelTemplate
-     */
-    public ExcelTemplate handlerObj2Excel(String template, List obj, Class clz, boolean isClasspath) {
-        return this.handlerObj2Excel(template, obj, clz, isClasspath, false);
+    /*----------------------------------------读取Excel操作基于注解映射---------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                            */
+    /*      1) 读取表头信息,与给出的Class类注解匹配                                                                  */
+    /*      2) 读取表头下面的数据内容, 按行读取, 并映射至java对象                                                      */
+    /*  二. 参数说明                                                                                               */
+    /*      *) excelPath        =>      目标Excel路径                                                              */
+    /*      *) InputStream      =>      目标Excel文件流                                                            */
+    /*      *) clazz            =>      java映射对象                                                               */
+    /*      *) offsetLine       =>      开始读取行坐标(默认0)                                                       */
+    /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
+    /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex) throws Exception {
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
     }
 
-    /**
-     * 处理对象转换为Excel
-     *
-     * @param template    模板路径
-     * @param list        模型对象集合
-     * @param clz         模型
-     * @param isClasspath 是否根目录
-     * @return ExcelTemplate
-     */
-    public ExcelTemplate handlerObj2Excel(String template, List list, Class clz, boolean isClasspath, boolean
-            isWirteHeader) {
-        ExcelTemplate et = ExcelTemplate.instance();
-        try {
-            if (isClasspath) {
-                et.readTemplateByClasspath(template);
-            } else {
-                et.readTemplateByPath(template);
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex) throws Exception {
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0);
+    }
+
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0);
+    }
+
+    private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
+                                                 int sheetIndex) throws Exception {
+        Sheet sheet = workbook.getSheetAt(sheetIndex);
+        Row row = sheet.getRow(offsetLine);
+        List<T> list = new ArrayList<>();
+        Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
+        if (maps == null || maps.size() <= 0)
+            throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
+        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
+                .getLastRowNum();
+        for (int i = offsetLine + 1; i <= maxLine; i++) {
+            row = sheet.getRow(i);
+            T obj = clazz.newInstance();
+            for (Cell cell : row) {
+                int ci = cell.getColumnIndex();
+                ExcelHeader header = maps.get(ci);
+                if (null == header)
+                    continue;
+                String filed = header.getFiled();
+                String val = Utils.getCellValue(cell);
+                Object value = Utils.str2TargetClass(val, header.getFiledClazz());
+                BeanUtils.copyProperty(obj, filed, value);
             }
-            List<ExcelHeader> headers = getHeaderList(clz);
-            Collections.sort(headers);
-            // 输出标题
-            if (isWirteHeader) {
-                et.createNewRow();
-                for (ExcelHeader eh : headers) {
-                    et.createCell(eh.getTitle());
-                }
-            }
-            // 输出值
-            for (Object obj : list) {
-                et.createNewRow();
-                for (ExcelHeader eh : headers) {
-                    et.createCell(BeanUtils.getProperty(obj, eh.getFiled()));
-                }
-            }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return et;
-    }
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到流
-     *
-     * @param data        模板中的替换的常量数据
-     * @param template    模板路径
-     * @param os          输出流
-     * @param obj         对象列表
-     * @param clz         对象的类型
-     * @param isClasspath 模板是否在classPath路径下
-     */
-    public void exportObj2ExcelByTemplate(Map<String, String> data, String template, OutputStream os,
-                                          List obj, Class clz, boolean isClasspath) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, isClasspath);
-        et.replaceFinalData(data);
-        et.writeToStream(os);
-    }
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到流
-     *
-     * @param template 模板路径
-     * @param os       输出流
-     * @param obj      对象列表
-     * @param clz      对象的类型
-     */
-    public void exportObj2ExcelByTemplate(String template, OutputStream os, List obj, Class clz) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, true);
-        et.writeToStream(os);
-    }
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中
-     *
-     * @param data        模板中的替换的常量数据
-     * @param template    模板路径
-     * @param outPath     输出路径
-     * @param obj         对象列表
-     * @param clz         对象的类型
-     * @param isClasspath 模板是否在classPath路径下
-     */
-    public void exportObj2ExcelByTemplate(Map<String, String> data, String template, String outPath,
-                                          List obj, Class clz, boolean isClasspath) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, isClasspath);
-        et.replaceFinalData(data);
-        et.writeToFile(outPath);
-    }
-
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中
-     *
-     * @param data        模板中的替换的常量数据
-     * @param template    模板路径
-     * @param outPath     输出路径
-     * @param obj         对象列表
-     * @param clz         对象的类型
-     * @param isClasspath 模板是否在classPath路径下
-     * @param hasSernums  是否带序号
-     */
-    public void exportObj2ExcelByTemplate(Map<String, String> data, String template, String outPath, List obj,
-                                          Class clz, boolean isClasspath, boolean hasSernums) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, isClasspath);
-        et.replaceFinalData(data);
-        if (hasSernums)
-            et.insertSer();
-        et.writeToFile(outPath);
-    }
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中
-     *
-     * @param template 模板路径
-     * @param outPath  输出路径
-     * @param obj      对象列表
-     * @param clz      对象的类型
-     */
-    public void exportObj2ExcelByTemplate(String template, String outPath, List obj, Class clz) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, true);
-        et.writeToFile(outPath);
-    }
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到流,基于Properties作为常量数据
-     *
-     * @param prop        基于Properties的常量数据模型
-     * @param template    模板路径
-     * @param os          输出流
-     * @param obj         对象列表
-     * @param clz         对象的类型
-     * @param isClasspath 模板是否在classPath路径下
-     */
-    public void exportObj2ExcelByTemplate(Properties prop, String template, OutputStream os,
-                                          List obj, Class clz, boolean isClasspath) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, isClasspath);
-        et.replaceFinalData(prop);
-        et.writeToStream(os);
-    }
-
-    /**
-     * 将对象转换为Excel并且导出，该方法是基于模板的导出，导出到一个具体的路径中,基于Properties作为常量数据
-     *
-     * @param prop        基于Properties的常量数据模型
-     * @param template    模板路径
-     * @param outPath     输出路径
-     * @param obj         对象列表
-     * @param clz         对象的类型
-     * @param isClasspath 模板是否在classPath路径下
-     */
-    public void exportObj2ExcelByTemplate(Properties prop, String template, String outPath,
-                                          List obj, Class clz, boolean isClasspath) {
-        ExcelTemplate et = handlerObj2Excel(template, obj, clz, isClasspath);
-        et.replaceFinalData(prop);
-        et.writeToFile(outPath);
-    }
-
-    private Workbook handleObj2Excel(List obj, Class clz, boolean isXssf) {
-        Workbook wb = null;
-        try {
-            if (isXssf) {
-                wb = new XSSFWorkbook();
-            } else {
-                wb = new HSSFWorkbook();
-            }
-            Sheet sheet = wb.createSheet();
-            Row r = sheet.createRow(0);
-            List<ExcelHeader> headers = getHeaderList(clz);
-            Collections.sort(headers);
-            // 写标题
-            for (int i = 0; i < headers.size(); i++) {
-                r.createCell(i).setCellValue(headers.get(i).getTitle());
-            }
-            // 写数据
-            Object _data;
-            for (int i = 0; i < obj.size(); i++) {
-                r = sheet.createRow(i + 1);
-                _data = obj.get(i);
-                for (int j = 0; j < headers.size(); j++) {
-                    r.createCell(j).setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
-                }
-            }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return wb;
-    }
-
-    /**
-     * 导出对象到Excel，不是基于模板的，直接新建一个Excel完成导出，基于路径的导出
-     *
-     * @param outPath 导出路径
-     * @param obj     对象列表
-     * @param clz     对象类型
-     * @param isXssf  是否是2007版本
-     */
-    public void exportObj2Excel(String outPath, List obj, Class clz, boolean isXssf) {
-        Workbook wb = handleObj2Excel(obj, clz, isXssf);
-        FileOutputStream fos = null;
-        try {
-            File f = new File(outPath);
-            if (f.getParentFile().isDirectory() && !f.getParentFile().exists()) {
-                f.mkdirs();
-            }
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            fos = new FileOutputStream(outPath);
-            wb.write(fos);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 导出对象到Excel，不是基于模板的，直接新建一个Excel完成导出，基于流
-     *
-     * @param os     输出流
-     * @param obj    对象列表
-     * @param clz    对象类型
-     * @param isXssf 是否是2007版本
-     */
-    public void exportObj2Excel(OutputStream os, List obj, Class clz, boolean isXssf) {
-        try {
-            Workbook wb = handleObj2Excel(obj, clz, isXssf);
-            wb.write(os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 从类路径读取相应的Excel文件到对象列表
-     *
-     * @param path     类路径下的path
-     * @param clz      对象类型
-     * @param readLine 开始行，注意是标题所在行
-     * @param tailLine 底部有多少行，在读入对象时，会减去这些行
-     */
-    public <T> List<T> readExcel2ObjByClasspath(String path, Class<T> clz, int readLine, int tailLine) {
-        Workbook wb;
-        try {
-            wb = WorkbookFactory.create(new FileInputStream(path));
-            return handlerExcel2Obj(wb, clz, readLine, tailLine);
-        } catch (InvalidFormatException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 从文件路径读取相应的Excel文件到对象列表
-     *
-     * @param path     文件路径下的path
-     * @param clz      对象类型
-     * @param readLine 开始行，注意是标题所在行
-     * @param tailLine 底部有多少行，在读入对象时，会减去这些行
-     */
-    public <T> List<T> readExcel2ObjByPath(String path, Class<T> clz, int readLine, int tailLine) {
-        Workbook wb;
-        try {
-            wb = WorkbookFactory.create(new File(path));
-            return handlerExcel2Obj(wb, clz, readLine, tailLine);
-        } catch (InvalidFormatException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public <T> List<T> readExcel2ObjByInputSteam(InputStream is, Class<T> clz, int readLine, int tailLine) {
-        Workbook wb;
-        try {
-            wb = WorkbookFactory.create(is);
-            return handlerExcel2Obj(wb, clz, readLine, tailLine);
-        } catch (InvalidFormatException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 从类路径读取相应的Excel文件到对象列表，标题行为0，没有尾行
-     *
-     * @param path 路径
-     * @param clz  类型
-     * @return 对象列表
-     */
-    public <T> List<T> readExcel2ObjByClasspath(String path, Class<T> clz) {
-        return this.readExcel2ObjByClasspath(path, clz, 0, 0);
-    }
-
-    /**
-     * 从文件路径读取相应的Excel文件到对象列表，标题行为0，没有尾行
-     *
-     * @param path 路径
-     * @param clz  类型
-     * @return 对象列表
-     */
-    public <T> List<T> readExcel2ObjByPath(String path, Class<T> clz) {
-        return this.readExcel2ObjByPath(path, clz, 0, 0);
-    }
-
-    /**
-     * 从文件路径读取相应的Excel文件到对象列表，标题行为0，没有尾行
-     *
-     * @param is  输入流
-     * @param clz 类型
-     * @return 对象列表
-     */
-    public <T> List<T> readExcel2ObjByInputStream(InputStream is, Class<T> clz) {
-        return this.readExcel2ObjByInputSteam(is, clz, 0, 0);
-    }
-
-    private String getCellValue(Cell c) {
-        String o;
-        switch (c.getCellType()) {
-            case Cell.CELL_TYPE_BLANK:
-                o = "";
-                break;
-            case Cell.CELL_TYPE_BOOLEAN:
-                o = String.valueOf(c.getBooleanCellValue());
-                break;
-            case Cell.CELL_TYPE_FORMULA:
-                o = String.valueOf(c.getCellFormula());
-                break;
-            case Cell.CELL_TYPE_NUMERIC:
-                o = String.valueOf(c.getNumericCellValue());
-                break;
-            case Cell.CELL_TYPE_STRING:
-                o = c.getStringCellValue();
-                break;
-            default:
-                o = null;
-                break;
-        }
-        return o;
-    }
-
-    private <T> List<T> handlerExcel2Obj(Workbook wb, Class<T> clz, int readLine, int tailLine) {
-        Sheet sheet = wb.getSheetAt(0);
-        List<T> list = null;
-        try {
-            Row row = sheet.getRow(readLine);
-            list = new ArrayList<>();
-            Map<Integer, String> maps = getHeaderMap(row, clz);
-            if (maps == null || maps.size() <= 0)
-                throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
-            for (int i = readLine + 1; i <= sheet.getLastRowNum() - tailLine; i++) {
-                row = sheet.getRow(i);
-                T obj = clz.newInstance();
-                for (Cell c : row) {
-                    int ci = c.getColumnIndex();
-                    String mn = maps.get(ci).substring(3);
-                    mn = mn.substring(0, 1).toLowerCase() + mn.substring(1);
-                    String val = this.getCellValue(c);
-                    // 对科学计数法进行处理
-                    boolean flg = Pattern.matches("^-?\\d+(\\.\\d+)?(E-?\\d+)?$", val);
-                    if (flg) {
-                        BigDecimal bd = new BigDecimal(val);
-                        val = bd.toPlainString();
-                    }
-                    BeanUtils.copyProperty(obj, mn, val);
-                }
-                list.add(obj);
-            }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            list.add(obj);
         }
         return list;
     }
 
-    /**
-     * <p>根据JAVA对象注解获取Excel表头信息</p></br>
-     */
-    private List<ExcelHeader> getHeaderList(Class clz) {
-        List<ExcelHeader> headers = new ArrayList<>();
-        List<Field> fields = new ArrayList<>();
-        for (Class clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
-            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-        }
-        for (Field field : fields) {
-            // 是否使用ExcelField注解
-            if (field.isAnnotationPresent(ExcelField.class)) {
-                ExcelField er = field.getAnnotation(ExcelField.class);
-                headers.add(new ExcelHeader(er.title(), er.order(), field.getName()));
-            }
-        }
-        return headers;
+    /*----------------------------------------读取Excel操作无映射--------------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                            */
+    /*      *) 按行读取Excel文件,存储形式为  Cell->String => Row->List<Cell> => Excel->List<Row>                    */
+    /*  二. 参数说明                                                                                               */
+    /*      *) excelPath        =>      目标Excel路径                                                              */
+    /*      *) InputStream      =>      目标Excel文件流                                                            */
+    /*      *) offsetLine       =>      开始读取行坐标(默认0)                                                       */
+    /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
+    /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
+
+    public List<List<String>> readExcel2List(String excelPath, int offsetLine, int limitLine, int sheetIndex)
+            throws Exception {
+
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
     }
 
-    private Map<Integer, String> getHeaderMap(Row titleRow, Class clz) {
-        List<ExcelHeader> headers = getHeaderList(clz);
-        Map<Integer, String> maps = new HashMap<>();
-        for (Cell c : titleRow) {
-            String title = c.getStringCellValue();
-            for (ExcelHeader eh : headers) {
-                if (eh.getTitle().equals(title.trim())) {
-                    maps.put(c.getColumnIndex(), "set" + eh.getFiled().substring(0, 1).toUpperCase() +
-                            eh.getFiled().substring(1));
-                    break;
+    public List<List<String>> readExcel2List(InputStream is, int offsetLine, int limitLine, int sheetIndex)
+            throws Exception {
+
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
+    }
+
+    public List<List<String>> readExcel2List(String excelPath, int offsetLine)
+            throws Exception {
+
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
+    }
+
+    public List<List<String>> readExcel2List(InputStream is, int offsetLine)
+            throws Exception {
+
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
+    }
+
+    public List<List<String>> readExcel2List(String excelPath)
+            throws Exception {
+
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
+    }
+
+    public List<List<String>> readExcel2List(InputStream is)
+            throws Exception {
+
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
+    }
+
+    private List<List<String>> readExcel2ObjectsHandler(Workbook workbook, int offsetLine, int limitLine, int
+            sheetIndex)
+            throws Exception {
+
+        List<List<String>> list = new ArrayList<>();
+        Sheet sheet = workbook.getSheetAt(sheetIndex);
+        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
+                .getLastRowNum();
+        for (int i = offsetLine; i <= maxLine; i++) {
+            List<String> rows = new ArrayList<>();
+            Row row = sheet.getRow(i);
+            for (Cell cell : row) {
+                String val = Utils.getCellValue(cell);
+                rows.add(val);
+            }
+            list.add(rows);
+        }
+        return list;
+    }
+
+
+    /*--------------------------------------------基于模板、注解导出excel-------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                            */
+    /*      1) 初始化模板                                                                                          */
+    /*      2) 根据Java对象映射表头                                                                                 */
+    /*      3) 写入数据内容                                                                                        */
+    /*  二. 参数说明                                                                                               */
+    /*      *) templatePath     =>      模板路径                                                                   */
+    /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
+    /*      *) data             =>      导出内容List集合                                                            */
+    /*      *) extendMap        =>      扩展内容Map(具体就是key匹配替换模板#key内容)                                  */
+    /*      *) clazz            =>      映射对象Class                                                              */
+    /*      *) isWriteHeader    =>      是否写入表头                                                               */
+    /*      *) targetPath       =>      导出文件路径                                                               */
+    /*      *) os               =>      导出文件流                                                                 */
+
+    public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
+                                    Class clazz, boolean isWriteHeader, String targetPath) throws Exception {
+
+        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
+                .write2File(targetPath);
+    }
+
+    public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
+                                    Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
+
+        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
+                .write2Stream(os);
+    }
+
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+                                    boolean isWriteHeader, String targetPath) throws Exception {
+
+        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, targetPath);
+    }
+
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+                                    boolean isWriteHeader, OutputStream os) throws Exception {
+
+        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, os);
+    }
+
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+                                    String targetPath) throws Exception {
+
+        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, targetPath);
+    }
+
+    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
+                                    OutputStream os) throws Exception {
+
+        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, os);
+    }
+
+    public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, String targetPath)
+            throws Exception {
+
+        exportObjects2Excel(templatePath, 0, data, null, clazz, false, targetPath);
+    }
+
+    public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, OutputStream os)
+            throws Exception {
+
+        exportObjects2Excel(templatePath, 0, data, null, clazz, false, os);
+    }
+
+    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, List<?> data,
+                                                     Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
+            throws Exception {
+
+        ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
+        templates.extendData(extendMap);
+        List<ExcelHeader> headers = Utils.getHeaderList(clazz);
+        if (isWriteHeader) {
+            // 写标题
+            templates.createNewRow();
+            for (ExcelHeader header : headers) {
+                templates.createCell(header.getTitle(), null);
+            }
+        }
+
+        for (Object object : data) {
+            templates.createNewRow();
+            templates.insertSerial(null);
+            for (ExcelHeader header : headers) {
+                templates.createCell(BeanUtils.getProperty(object, header.getFiled()), null);
+            }
+        }
+        return templates;
+    }
+
+    /*---------------------------------------基于模板、注解导出Map数据----------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                            */
+    /*      1) 初始化模板                                                                                          */
+    /*      2) 根据Java对象映射表头                                                                                */
+    /*      3) 写入数据内容                                                                                        */
+    /*  二. 参数说明                                                                                               */
+    /*      *) templatePath     =>      模板路径                                                                  */
+    /*      *) sheetIndex       =>      Sheet索引(默认0)                                                          */
+    /*      *) data             =>      导出内容Map集合                                                            */
+    /*      *) extendMap        =>      扩展内容Map(具体就是key匹配替换模板#key内容)                                 */
+    /*      *) clazz            =>      映射对象Class                                                             */
+    /*      *) isWriteHeader    =>      是否写入表头                                                              */
+    /*      *) targetPath       =>      导出文件路径                                                              */
+    /*      *) os               =>      导出文件流                                                                */
+    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List> data,
+                                   Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
+            throws Exception {
+
+        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
+                .write2File(targetPath);
+    }
+
+    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List> data, Map<String, String>
+            extendMap, Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
+
+        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
+                .write2Stream(os);
+    }
+
+    public void exportObject2Excel(String templatePath, Map<String, List> data, Map<String, String> extendMap,
+                                   Class clazz, String targetPath) throws Exception {
+
+        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
+                .write2File(targetPath);
+    }
+
+    public void exportObject2Excel(String templatePath, Map<String, List> data, Map<String, String> extendMap,
+                                   Class clazz, OutputStream os) throws Exception {
+
+        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
+                .write2Stream(os);
+    }
+
+    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List> data,
+                                                     Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
+            throws Exception {
+
+        ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
+        templates.extendData(extendMap);
+        List<ExcelHeader> headers = Utils.getHeaderList(clazz);
+        if (isWriteHeader) {
+            // 写标题
+            templates.createNewRow();
+            for (ExcelHeader header : headers) {
+                templates.createCell(header.getTitle(), null);
+            }
+        }
+        for (Map.Entry<String, List> entry : data.entrySet()) {
+            for (Object object : entry.getValue()) {
+                templates.createNewRow();
+                templates.insertSerial(entry.getKey());
+                for (ExcelHeader header : headers) {
+                    templates.createCell(BeanUtils.getProperty(object, header.getFiled()), entry.getKey());
                 }
             }
         }
-        return maps;
+
+        return templates;
+    }
+
+    /*----------------------------------------无模板基于注解导出---------------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                            */
+    /*      1) 根据Java对象映射表头                                                                                */
+    /*      2) 写入数据内容                                                                                       */
+    /*  二. 参数说明                                                                                              */
+    /*      *) data             =>      导出内容List集合                                                          */
+    /*      *) isWriteHeader    =>      是否写入表头                                                              */
+    /*      *) sheetName        =>      Sheet索引名(默认0)                                                        */
+    /*      *) clazz            =>      映射对象Class                                                             */
+    /*      *) isXSSF           =>      是否Excel2007以上                                                         */
+    /*      *) targetPath       =>      导出文件路径                                                              */
+    /*      *) os               =>      导出文件流                                                                */
+    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
+                                    String targetPath) throws Exception {
+
+        FileOutputStream fos = new FileOutputStream(targetPath);
+        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(fos);
+    }
+
+    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
+                                    OutputStream os) throws Exception {
+
+        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(os);
+    }
+
+    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String targetPath)
+            throws Exception {
+
+        FileOutputStream fos = new FileOutputStream(targetPath);
+        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(fos);
+    }
+
+    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, OutputStream os)
+            throws Exception {
+
+        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(os);
+    }
+
+    private Workbook exportExcelNoModuleHandler(List<?> data, Class clazz, boolean isWriteHeader, String sheetName,
+                                                boolean isXSSF) throws Exception {
+
+        Workbook workbook;
+        if (isXSSF) {
+            workbook = new XSSFWorkbook();
+        } else {
+            workbook = new HSSFWorkbook();
+        }
+        Sheet sheet;
+        if (null != sheetName && !"".equals(sheetName)) {
+            sheet = workbook.createSheet(sheetName);
+        } else {
+            sheet = workbook.createSheet();
+        }
+        Row row = sheet.createRow(0);
+        List<ExcelHeader> headers = Utils.getHeaderList(clazz);
+        if (isWriteHeader) {
+            // 写标题
+            for (int i = 0; i < headers.size(); i++) {
+                row.createCell(i).setCellValue(headers.get(i).getTitle());
+            }
+        }
+        // 写数据
+        Object _data;
+        for (int i = 0; i < data.size(); i++) {
+            row = sheet.createRow(i + 1);
+            _data = data.get(i);
+            for (int j = 0; j < headers.size(); j++) {
+                row.createCell(j).setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
+            }
+        }
+        return workbook;
+    }
+
+    /*-----------------------------------------无模板无注解导出----------------------------------------------------*/
+    /*----------------------------------------无模板基于注解导出---------------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                           */
+    /*      1) 写入表头内容(可选)                                                                                  */
+    /*      2) 写入数据内容                                                                                       */
+    /*  二. 参数说明                                                                                              */
+    /*      *) data             =>      导出内容List集合                                                          */
+    /*      *) header           =>      表头集合,有则写,无则不写                                                   */
+    /*      *) sheetName        =>      Sheet索引名(默认0)                                                        */
+    /*      *) isXSSF           =>      是否Excel2007以上                                                         */
+    /*      *) targetPath       =>      导出文件路径                                                              */
+    /*      *) os               =>      导出文件流                                                                */
+
+    public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF, String
+            targetPath) throws Exception {
+
+        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(new FileOutputStream(targetPath));
+    }
+
+    public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF,
+                                    OutputStream os) throws Exception {
+
+        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(os);
+    }
+
+    public void exportObjects2Excel(List<?> data, List<String> header, String targetPath) throws Exception {
+
+        exportExcelNoModuleHandler(data, header, null, true)
+                .write(new FileOutputStream(targetPath));
+    }
+
+    public void exportObjects2Excel(List<?> data, List<String> header, OutputStream os) throws Exception {
+
+        exportExcelNoModuleHandler(data, header, null, true).write(os);
+    }
+
+    public void exportObjects2Excel(List<?> data, String targetPath) throws Exception {
+
+        exportExcelNoModuleHandler(data, null, null, true)
+                .write(new FileOutputStream(targetPath));
+    }
+
+    public void exportObjects2Excel(List<?> data, OutputStream os) throws Exception {
+
+        exportExcelNoModuleHandler(data, null, null, true).write(os);
+    }
+
+    private Workbook exportExcelNoModuleHandler(List<?> data, List<String> header, String sheetName, boolean isXSSF)
+            throws Exception {
+
+        Workbook workbook;
+        if (isXSSF) {
+            workbook = new XSSFWorkbook();
+        } else {
+            workbook = new HSSFWorkbook();
+        }
+        Sheet sheet;
+        if (null != sheetName && !"".equals(sheetName)) {
+            sheet = workbook.createSheet(sheetName);
+        } else {
+            sheet = workbook.createSheet();
+        }
+
+        int rowIndex = 0;
+        if (null != header && header.size() > 0) {
+            // 写标题
+            Row row = sheet.createRow(rowIndex);
+            for (int i = 0; i < header.size(); i++) {
+                row.createCell(i, Cell.CELL_TYPE_STRING).setCellValue(header.get(i));
+            }
+            rowIndex++;
+        }
+        for (Object object : data) {
+            Row row = sheet.createRow(rowIndex);
+            if (object.getClass().isArray()) {
+                for (int j = 0; j < Array.getLength(object); j++) {
+                    row.createCell(j, Cell.CELL_TYPE_STRING).setCellValue(Array.get(object, j).toString());
+                }
+            } else if (object instanceof Collection) {
+                Collection<?> items = (Collection<?>) object;
+                int j = 0;
+                for (Object item : items) {
+                    row.createCell(j, Cell.CELL_TYPE_STRING).setCellValue(item.toString());
+                    j++;
+                }
+            } else {
+                row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(object.toString());
+            }
+            rowIndex++;
+        }
+        return workbook;
     }
 }
