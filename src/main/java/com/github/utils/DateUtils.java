@@ -20,7 +20,7 @@ public class DateUtils {
     static public final String DATE_FORMAT_MSEC = "yyyy-MM-dd HH:mm:ss.SSS";
     static public final String DATE_FORMAT_MSEC_T = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     static public final String DATE_FORMAT_MSEC_T_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
+    static public final String DATE_FORMAT_DAY_SIMPLE = "y/M/d";
 
     /**
      * 匹配yyyy-MM-dd
@@ -30,6 +30,10 @@ public class DateUtils {
      * 匹配yyyy/MM/dd
      */
     private static final String DATE_REG_2 = "^[1-9]\\d{3}/(0[1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])$";
+    /**
+     * 匹配y/M/d
+     */
+    private static final String DATE_REG_SIMPLE_2 = "^[1-9]\\d{3}/([1-9]|1[0-2])/([1-9]|[1-2][0-9]|3[0-1])$";
     /**
      * 匹配HH:mm:ss
      */
@@ -135,6 +139,9 @@ public class DateUtils {
         }
         if (RegularUtils.isMatched(strDate, DATE_REG_2)) {
             sdf = new SimpleDateFormat(DATE_FORMAT_DAY_2);
+        }
+        if (RegularUtils.isMatched(strDate, DATE_REG_SIMPLE_2)) {
+            sdf = new SimpleDateFormat(DATE_FORMAT_DAY_SIMPLE);
         }
         if (RegularUtils.isMatched(strDate, TIME_SEC_REG)) {
             sdf = new SimpleDateFormat(TIME_FORMAT_SEC);
