@@ -82,6 +82,18 @@ public class Utils {
             }
         }
     }
+    
+    /**
+     * 修正Cell的类型
+     * @return
+     */
+    static
+    public void fixCellType(Cell c, Class<?> clazz){
+    	int cellType = c.getCellType();
+    	if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
+    		c.setCellType(Cell.CELL_TYPE_STRING);
+    	}
+    }
 
     static
     public String getCellValue(Cell c) {

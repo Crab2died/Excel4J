@@ -93,6 +93,7 @@ public class ExcelUtils {
                 if (null == header)
                     continue;
                 String filed = header.getFiled();
+                Utils.fixCellType(cell, header.getFiledClazz());
                 String val = Utils.getCellValue(cell);
                 Object value = Utils.str2TargetClass(val, header.getFiledClazz());
                 BeanUtils.copyProperty(obj, filed, value);
