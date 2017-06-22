@@ -2,16 +2,14 @@ package com.github;
 
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
+import com.github.sink.IExcelSink;
+import com.github.source.IExcelSource;
 import com.github.utils.Utils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,43 +33,26 @@ public class ExcelUtils {
     /*      2) 读取表头下面的数据内容, 按行读取, 并映射至java对象                                                      */
     /*  二. 参数说明                                                                                               */
     /*      *) excelPath        =>      目标Excel路径                                                              */
-    /*      *) InputStream      =>      目标Excel文件流                                                            */
+    /*      *) excelSource      =>      用于获取Workbook, 支持继承, 参考ExcelFileSource和ExcelIostreamSource         */
     /*      *) clazz            =>      java映射对象                                                               */
     /*      *) offsetLine       =>      开始读取行坐标(默认0)                                                       */
     /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
-    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
+    public <T> List<T> readExcel2Objects(IExcelSource excelSource, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
-        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        Workbook workbook = excelSource.getWorkBook();
         return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
     }
 
-    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
-            sheetIndex) throws Exception {
-        Workbook workbook = WorkbookFactory.create(is);
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+    public <T> List<T> readExcel2Objects(IExcelSource excelSource, Class<T> clazz, int sheetIndex)
+            throws Exception {
+        return readExcel2Objects(excelSource, clazz, 0, Integer.MAX_VALUE, sheetIndex);
     }
 
-    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
+    public <T> List<T> readExcel2Objects(IExcelSource excelSource, Class<T> clazz)
             throws Exception {
-        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex);
-    }
-
-    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz)
-            throws Exception {
-        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0);
-    }
-
-
-    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex)
-            throws Exception {
-        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex);
-    }
-
-    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz)
-            throws Exception {
-        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0);
+        return readExcel2Objects(excelSource, clazz, 0, Integer.MAX_VALUE, 0);
     }
 
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
@@ -108,50 +89,29 @@ public class ExcelUtils {
     /*      *) 按行读取Excel文件,存储形式为  Cell->String => Row->List<Cell> => Excel->List<Row>                    */
     /*  二. 参数说明                                                                                               */
     /*      *) excelPath        =>      目标Excel路径                                                              */
-    /*      *) InputStream      =>      目标Excel文件流                                                            */
+    /*      *) excelSource      =>      用于获取Workbook, 支持继承, 参考ExcelFileSource和ExcelIostreamSource         */
     /*      *) offsetLine       =>      开始读取行坐标(默认0)                                                       */
     /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
-    public List<List<String>> readExcel2List(String excelPath, int offsetLine, int limitLine, int sheetIndex)
+    public List<List<String>> readExcel2List(IExcelSource excelSource, int offsetLine, int limitLine, int sheetIndex)
             throws Exception {
 
-        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        Workbook workbook = excelSource.getWorkBook();
         return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
     }
 
-    public List<List<String>> readExcel2List(InputStream is, int offsetLine, int limitLine, int sheetIndex)
+    public List<List<String>> readExcel2List(IExcelSource excelSource, int offsetLine)
             throws Exception {
 
-        Workbook workbook = WorkbookFactory.create(is);
-        return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
-    }
-
-    public List<List<String>> readExcel2List(String excelPath, int offsetLine)
-            throws Exception {
-
-        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        Workbook workbook = excelSource.getWorkBook();
         return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
     }
 
-    public List<List<String>> readExcel2List(InputStream is, int offsetLine)
+    public List<List<String>> readExcel2List(IExcelSource excelSource)
             throws Exception {
 
-        Workbook workbook = WorkbookFactory.create(is);
-        return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
-    }
-
-    public List<List<String>> readExcel2List(String excelPath)
-            throws Exception {
-
-        Workbook workbook = WorkbookFactory.create(new File(excelPath));
-        return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
-    }
-
-    public List<List<String>> readExcel2List(InputStream is)
-            throws Exception {
-
-        Workbook workbook = WorkbookFactory.create(is);
+        Workbook workbook = excelSource.getWorkBook();
         return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
     }
 
@@ -182,7 +142,7 @@ public class ExcelUtils {
     /*      2) 根据Java对象映射表头                                                                                 */
     /*      3) 写入数据内容                                                                                        */
     /*  二. 参数说明                                                                                               */
-    /*      *) templatePath     =>      模板路径                                                                   */
+    /*      *) templateExcelSource =>      模板路径                                                                   */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
     /*      *) data             =>      导出内容List集合                                                            */
     /*      *) extendMap        =>      扩展内容Map(具体就是key匹配替换模板#key内容)                                  */
@@ -191,61 +151,36 @@ public class ExcelUtils {
     /*      *) targetPath       =>      导出文件路径                                                               */
     /*      *) os               =>      导出文件流                                                                 */
 
-    public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
-                                    Class<?> clazz, boolean isWriteHeader, String targetPath) throws Exception {
+    public void exportObjects2Excel(IExcelSource templateExcelSource, int sheetIndex, List<?> data, Map<String, String> extendMap,
+                                    Class<?> clazz, boolean isWriteHeader, IExcelSink excelSink) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
-                .write2File(targetPath);
+        exportExcelByModuleHandler(templateExcelSource, sheetIndex, data, extendMap, clazz, isWriteHeader)
+                .write(excelSink);
     }
 
-    public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
-                                    Class<?> clazz, boolean isWriteHeader, OutputStream os) throws Exception {
+    public void exportObjects2Excel(IExcelSource templateExcelSource, List<?> data, Map<String, String> extendMap, Class<?> clazz,
+                                    boolean isWriteHeader, IExcelSink excelSink) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
-                .write2Stream(os);
+        exportObjects2Excel(templateExcelSource, 0, data, extendMap, clazz, isWriteHeader, excelSink);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
-                                    boolean isWriteHeader, String targetPath) throws Exception {
+    public void exportObjects2Excel(IExcelSource templateExcelSource, List<?> data, Map<String, String> extendMap, Class<?> clazz,
+    		IExcelSink excelSink) throws Exception {
 
-        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, targetPath);
+        exportObjects2Excel(templateExcelSource, 0, data, extendMap, clazz, false, excelSink);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
-                                    boolean isWriteHeader, OutputStream os) throws Exception {
-
-        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, os);
-    }
-
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
-                                    String targetPath) throws Exception {
-
-        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, targetPath);
-    }
-
-    public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class<?> clazz,
-                                    OutputStream os) throws Exception {
-
-        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, os);
-    }
-
-    public void exportObjects2Excel(String templatePath, List<?> data, Class<?> clazz, String targetPath)
+    public void exportObjects2Excel(IExcelSource templateExcelSource, List<?> data, Class<?> clazz, IExcelSink excelSink)
             throws Exception {
 
-        exportObjects2Excel(templatePath, 0, data, null, clazz, false, targetPath);
+        exportObjects2Excel(templateExcelSource, 0, data, null, clazz, false, excelSink);
     }
 
-    public void exportObjects2Excel(String templatePath, List<?> data, Class<?> clazz, OutputStream os)
-            throws Exception {
-
-        exportObjects2Excel(templatePath, 0, data, null, clazz, false, os);
-    }
-
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, List<?> data,
+    private ExcelTemplate exportExcelByModuleHandler(IExcelSource templateExcelSource, int sheetIndex, List<?> data,
                                                      Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader)
             throws Exception {
 
-        ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
+        ExcelTemplate templates = ExcelTemplate.getInstance(templateExcelSource, sheetIndex);
         templates.extendData(extendMap);
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
         if (isWriteHeader) {
@@ -272,7 +207,7 @@ public class ExcelUtils {
     /*      2) 根据Java对象映射表头                                                                                */
     /*      3) 写入数据内容                                                                                        */
     /*  二. 参数说明                                                                                               */
-    /*      *) templatePath     =>      模板路径                                                                  */
+    /*      *) templateExcelSource =>      模板路径                                                                  */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                          */
     /*      *) data             =>      导出内容Map集合                                                            */
     /*      *) extendMap        =>      扩展内容Map(具体就是key匹配替换模板#key内容)                                 */
@@ -280,40 +215,26 @@ public class ExcelUtils {
     /*      *) isWriteHeader    =>      是否写入表头                                                              */
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data,
-                                   Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader, String targetPath)
+    public void exportObject2Excel(IExcelSource templateExcelSource, int sheetIndex, Map<String, List<?>> data,
+                                   Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader, IExcelSink excelSink)
             throws Exception {
 
-        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
-                .write2File(targetPath);
+        exportExcelByModuleHandler(templateExcelSource, sheetIndex, data, extendMap, clazz, isWriteHeader)
+                .write(excelSink);
     }
 
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
-            extendMap, Class<?> clazz, boolean isWriteHeader, OutputStream os) throws Exception {
+    public void exportObject2Excel(IExcelSource templateExcelSource, Map<String, List<?>> data, Map<String, String> extendMap,
+                                   Class<?> clazz, IExcelSink excelSink) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
-                .write2Stream(os);
+        exportExcelByModuleHandler(templateExcelSource, 0, data, extendMap, clazz, false)
+                .write(excelSink);
     }
 
-    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
-                                   Class<?> clazz, String targetPath) throws Exception {
-
-        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
-                .write2File(targetPath);
-    }
-
-    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
-                                   Class<?> clazz, OutputStream os) throws Exception {
-
-        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
-                .write2Stream(os);
-    }
-
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List<?>> data,
+    private ExcelTemplate exportExcelByModuleHandler(IExcelSource templateExcelSource, int sheetIndex, Map<String, List<?>> data,
                                                      Map<String, String> extendMap, Class<?> clazz, boolean isWriteHeader)
             throws Exception {
 
-        ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
+        ExcelTemplate templates = ExcelTemplate.getInstance(templateExcelSource, sheetIndex);
         templates.extendData(extendMap);
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
         if (isWriteHeader) {
@@ -349,29 +270,15 @@ public class ExcelUtils {
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
     public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
-                                    String targetPath) throws Exception {
+    		IExcelSink excelSink) throws Exception {
 
-        FileOutputStream fos = new FileOutputStream(targetPath);
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(fos);
+        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(excelSink.getSink());
     }
 
-    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
-                                    OutputStream os) throws Exception {
-
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(os);
-    }
-
-    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, String targetPath)
+    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, IExcelSink excelSink)
             throws Exception {
 
-        FileOutputStream fos = new FileOutputStream(targetPath);
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(fos);
-    }
-
-    public void exportObjects2Excel(List<?> data, Class<?> clazz, boolean isWriteHeader, OutputStream os)
-            throws Exception {
-
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(os);
+        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(excelSink.getSink());
     }
 
     private Workbook exportExcelNoModuleHandler(List<?> data, Class<?> clazz, boolean isWriteHeader, String sheetName,
@@ -421,38 +328,21 @@ public class ExcelUtils {
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
 
-    public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF, String
-            targetPath) throws Exception {
+    public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF, IExcelSink excelSink) throws Exception {
 
-        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(new FileOutputStream(targetPath));
+        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(excelSink.getSink());
     }
 
-    public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF,
-                                    OutputStream os) throws Exception {
-
-        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(os);
-    }
-
-    public void exportObjects2Excel(List<?> data, List<String> header, String targetPath) throws Exception {
+    public void exportObjects2Excel(List<?> data, List<String> header, IExcelSink excelSink) throws Exception {
 
         exportExcelNoModuleHandler(data, header, null, true)
-                .write(new FileOutputStream(targetPath));
+                .write(excelSink.getSink());
     }
 
-    public void exportObjects2Excel(List<?> data, List<String> header, OutputStream os) throws Exception {
-
-        exportExcelNoModuleHandler(data, header, null, true).write(os);
-    }
-
-    public void exportObjects2Excel(List<?> data, String targetPath) throws Exception {
+    public void exportObjects2Excel(List<?> data, IExcelSink excelSink) throws Exception {
 
         exportExcelNoModuleHandler(data, null, null, true)
-                .write(new FileOutputStream(targetPath));
-    }
-
-    public void exportObjects2Excel(List<?> data, OutputStream os) throws Exception {
-
-        exportExcelNoModuleHandler(data, null, null, true).write(os);
+                .write(excelSink.getSink());
     }
 
     private Workbook exportExcelNoModuleHandler(List<?> data, List<String> header, String sheetName, boolean isXSSF)

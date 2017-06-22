@@ -2,7 +2,11 @@ package base;
 
 
 import com.github.ExcelUtils;
+import com.github.sink.ExcelFileSink;
+import com.github.source.ExcelFileSource;
+
 import moudles.Student1;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,8 +19,8 @@ public class Module2Excel {
 
     @Test
     public void testObject2Excel() throws Exception {
-
-        String tempPath = "D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\normal_template.xlsx";
+    	
+        String tempPath = "/Users/cloume/Excel4J/src/test/resource/normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
         list.add(new Student1("1010002", "古尔丹", "一年级三班"));
@@ -31,10 +35,9 @@ public class Module2Excel {
         data.put("title", "战争学院花名册");
         data.put("info", "学校统一花名册");
         // 基于模板导出Excel
-        ExcelUtils.getInstance().exportObjects2Excel(tempPath, 0, list, data, Student1.class, false, "D:/A.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(ExcelFileSource.create(tempPath), 0, list, data, Student1.class, false, ExcelFileSink.create("A.xlsx"));
         // 不基于模板导出Excel
-        ExcelUtils.getInstance().exportObjects2Excel(list, Student1.class, true, null, true, "D:/B.xlsx");
-
+        ExcelUtils.getInstance().exportObjects2Excel( list, Student1.class, true, null, true, ExcelFileSink.create("B.xlsx"));
     }
 
     @Test
@@ -65,8 +68,8 @@ public class Module2Excel {
 	            new Student1("1010003", "蒙多", "六年级一班")
         		));
 
-        ExcelUtils.getInstance().exportObject2Excel("D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\map_template.xlsx",
-                0, classes, data, Student1.class, false, "D:/C.xlsx");
+        ExcelUtils.getInstance().exportObject2Excel(ExcelFileSource.create("/Users/cloume/Excel4J/src/test/resource/map_template.xlsx"),
+                0, classes, data, Student1.class, false, ExcelFileSink.create("C.xlsx"));
     }
 
     @Test
@@ -82,6 +85,6 @@ public class Module2Excel {
             list2.add(_list);
             header.add(i + "---");
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D:/D.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list2, header, ExcelFileSink.create("D.xlsx"));
     }
 }
