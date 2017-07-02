@@ -2,9 +2,6 @@ package com.github.handler;
 
 import org.apache.poi.ss.usermodel.*;
 
-import com.github.sink.IExcelSink;
-import com.github.source.IExcelSource;
-
 import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -91,11 +88,11 @@ public class ExcelTemplate {
     private ExcelTemplate() {
     }
 
-    public static ExcelTemplate getInstance(IExcelSource excelSource, int sheetIndex) {
+    public static ExcelTemplate getInstance(String templatePath, int sheetIndex) {
         ExcelTemplate template = new ExcelTemplate();
         template.sheetIndex = sheetIndex;
         try {
-            template.loadTemplate(excelSource);
+            template.loadTemplate(templatePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,8 +101,8 @@ public class ExcelTemplate {
 
     /***********************************初始化模板开始***********************************/
 
-    private ExcelTemplate loadTemplate(IExcelSource excelSource) throws Exception {
-        this.workbook = excelSource.getWorkBook();
+    private ExcelTemplate loadTemplate(String templatePath) throws Exception {
+        this.workbook = WorkbookFactory.create(new File(templatePath));
         this.sheet = this.workbook.getSheetAt(this.sheetIndex);
         initModuleConfig();
         this.currentRowIndex = this.initRowIndex;
@@ -321,27 +318,44 @@ public class ExcelTemplate {
     /*************************************写出数据开始***********************************/
 
     /**
-     * 将文件写到ExcelSink中
+     * 将文件写到相应的路径下
      *
-     * @param excelSink
+     * @param filepath 输出文件路径
      */
-    public void write(IExcelSink excelSink) {
+    public void write2File(String filepath) {
+        FileOutputStream fos = null;
         try {
-            this.workbook.write(excelSink.getSink());
+            fos = new FileOutputStream(filepath);
+            this.workbook.write(fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("写入的文件不存在");
         } catch (IOException e) {
             e.printStackTrace();
-            excelSink.close();
             throw new RuntimeException("写入数据失败:" + e.getMessage());
+        } finally {
+            try {
+                if (fos != null)
+                    fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-	public CellStyle getCurrentStyle() {
-		return currentStyle;
-	}
-
-	public void setCurrentStyle(CellStyle currentStyle) {
-		this.currentStyle = currentStyle;
-	}
+    /**
+     * 将文件写到某个输出流中
+     *
+     * @param os 输出流
+     */
+    public void write2Stream(OutputStream os) {
+        try {
+            this.workbook.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("写入流失败:" + e.getMessage());
+        }
+    }
 
     /*************************************写出数据结束***********************************/
 
