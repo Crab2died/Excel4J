@@ -13,10 +13,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class ExcelUtils {
 
@@ -402,7 +400,31 @@ public class ExcelUtils {
             row = sheet.createRow(i + 1);
             _data = data.get(i);
             for (int j = 0; j < headers.size(); j++) {
-                row.createCell(j).setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
+                Class mClass = headers.get(j).getFiledClazz();
+                Cell c = row.createCell(j);
+                Field mField = clazz.getDeclaredField(headers.get(j).getFiled());
+                mField.setAccessible(true);
+                if (String.class == mClass) {
+                    c.setCellValue((String) mField.get(_data));
+                }else if ((Long.class == mClass) || (long.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double((Long)mField.get(_data)));
+                } else if ((Integer.class == mClass) || (int.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double((Integer)mField.get(_data)));
+                } else if ((Float.class == mClass) || (float.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double((Float)mField.get(_data)));
+                } else if ((Double.class == mClass) || (double.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue((Double) mField.get(_data));
+                } else if (Date.class == mClass) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    Date date = (Date) mField.get(_data);
+                    c.setCellValue(date);
+                } else {
+                    c.setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
+                }
             }
         }
         return workbook;

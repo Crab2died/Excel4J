@@ -2,6 +2,7 @@ package com.github.utils;
 
 import com.github.annotation.ExcelField;
 import com.github.handler.ExcelHeader;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -78,7 +80,7 @@ public class Utils {
             }
         }
     }
-    
+
     /**
      * 修正Cell的类型
      * @return
@@ -105,7 +107,13 @@ public class Utils {
                 o = String.valueOf(c.getCellFormula());
                 break;
             case Cell.CELL_TYPE_NUMERIC:
-                o = String.valueOf(c.getNumericCellValue());
+                if (HSSFDateUtil.isCellDateFormatted(c)) {
+                    Date date = HSSFDateUtil.getJavaDate(c.getNumericCellValue());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                    o = sdf.format(date);
+                }else {
+                    o = String.valueOf(c.getNumericCellValue());
+                }
                 break;
             case Cell.CELL_TYPE_STRING:
                 o = c.getStringCellValue();
@@ -116,8 +124,8 @@ public class Utils {
         }
         return o;
     }
-    
-    static 
+
+    static
     public Object str2TargetClass(String strField, Class<?> clazz){
         if (null == strField || "".equals(strField))
             return null;
