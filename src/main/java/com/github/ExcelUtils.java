@@ -3,7 +3,6 @@ package com.github;
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
 import com.github.utils.Utils;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class ExcelUtils {
@@ -93,7 +93,9 @@ public class ExcelUtils {
                 String filed = header.getFiled();
                 String val = Utils.getCellValue(cell);
                 Object value = Utils.str2TargetClass(val, header.getFiledClazz());
-                BeanUtils.copyProperty(obj, filed, value);
+                Field mField = clazz.getDeclaredField(filed);
+                mField.setAccessible(true);
+                mField.set(obj,value);
             }
             list.add(obj);
         }
@@ -257,7 +259,9 @@ public class ExcelUtils {
             templates.createNewRow();
             templates.insertSerial(null);
             for (ExcelHeader header : headers) {
-                templates.createCell(BeanUtils.getProperty(object, header.getFiled()), null);
+                Field mField = clazz.getDeclaredField(header.getFiled());
+                mField.setAccessible(true);
+                templates.createCell(mField.get(object), null);
             }
         }
         return templates;
@@ -325,7 +329,9 @@ public class ExcelUtils {
                 templates.createNewRow();
                 templates.insertSerial(entry.getKey());
                 for (ExcelHeader header : headers) {
-                    templates.createCell(BeanUtils.getProperty(object, header.getFiled()), entry.getKey());
+                    Field mField = clazz.getDeclaredField(header.getFiled());
+                    mField.setAccessible(true);
+                    templates.createCell(mField.get(object), entry.getKey());
                 }
             }
         }
@@ -418,12 +424,14 @@ public class ExcelUtils {
                 } else if ((Double.class == mClass) || (double.class == mClass)) {
                     c.setCellType(Cell.CELL_TYPE_NUMERIC);
                     c.setCellValue((Double) mField.get(_data));
+                } else if (BigDecimal.class == mClass){
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double(mField.get(_data).toString()));
                 } else if (Date.class == mClass) {
                     c.setCellType(Cell.CELL_TYPE_NUMERIC);
-                    Date date = (Date) mField.get(_data);
-                    c.setCellValue(date);
+                    c.setCellValue((Date) mField.get(_data));
                 } else {
-                    c.setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
+                    c.setCellValue(mField.get(_data).toString());
                 }
             }
         }

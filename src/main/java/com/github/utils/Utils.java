@@ -112,7 +112,7 @@ public class Utils {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                     o = sdf.format(date);
                 }else {
-                    o = String.valueOf(c.getNumericCellValue());
+                    o = new BigDecimal(String.valueOf(c.getNumericCellValue())).toPlainString();
                 }
                 break;
             case Cell.CELL_TYPE_STRING:
@@ -152,6 +152,9 @@ public class Utils {
         }
         if (Date.class == clazz) {
             return DateUtils.str2DateUnmatch2Null(strField);
+        }
+        if (BigDecimal.class == clazz){
+            return new BigDecimal(strField);
         }
         return strField;
     }

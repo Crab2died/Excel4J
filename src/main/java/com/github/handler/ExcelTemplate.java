@@ -3,6 +3,7 @@ package com.github.handler;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -229,60 +230,29 @@ public class ExcelTemplate {
         Cell cell = this.currentRow.createCell(currentColumnIndex);
         setCellStyle(cell, styleKey);
         if (null == value || "".equals(value)) {
-            this.currentColumnIndex++;
-            return;
-        }
 
-        if (String.class == value.getClass()) {
+        } else if (String.class == value.getClass()) {
             cell.setCellValue((String) value);
-            this.currentColumnIndex++;
-            return;
-        }
-
-        if (int.class == value.getClass()) {
+        } else if (int.class == value.getClass()) {
             cell.setCellValue((int) value);
-            this.currentColumnIndex++;
-            return;
-        }
-
-        if (Integer.class == value.getClass()) {
+        } else if (Integer.class == value.getClass()) {
             cell.setCellValue((Integer) value);
-            this.currentColumnIndex++;
-            return;
-        }
-
-        if (double.class == value.getClass()) {
+        } else if (double.class == value.getClass()) {
             cell.setCellValue((double) value);
-            this.currentColumnIndex++;
-            return;
-        }
-
-        if (Double.class == value.getClass()) {
+        } else if (Double.class == value.getClass()) {
             cell.setCellValue((Double) value);
-            this.currentColumnIndex++;
-            return;
-        }
-
-        if (Date.class == value.getClass()) {
+        } else if (Date.class == value.getClass()) {
             cell.setCellValue((Date) value);
-            this.currentColumnIndex++;
-            return;
-        }
-
-        if (boolean.class == value.getClass()) {
+        } else if (boolean.class == value.getClass()) {
             cell.setCellValue((boolean) value);
-            this.currentColumnIndex++;
-            return;
-        }
-        if (Boolean.class == value.getClass()) {
+        } else if (Boolean.class == value.getClass()) {
             cell.setCellValue((Boolean) value);
-            this.currentColumnIndex++;
-            return;
-        }
-        if (Calendar.class == value.getClass()) {
+        } else if (Calendar.class == value.getClass()) {
             cell.setCellValue((Calendar) value);
-            this.currentColumnIndex++;
-            return;
+        } else if (BigDecimal.class == value.getClass()) {
+            cell.setCellValue(new Double(((BigDecimal)value).toPlainString()));
+        } else {
+            cell.setCellValue(value.toString());
         }
         this.currentColumnIndex++;
     }
