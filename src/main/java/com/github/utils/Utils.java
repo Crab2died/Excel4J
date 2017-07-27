@@ -98,6 +98,8 @@ public class Utils {
                 break;
             case Cell.CELL_TYPE_NUMERIC:
                 o = String.valueOf(c.getNumericCellValue());
+                o = matchDoneBigDecimal(o);
+                o = RegularUtils.converNumByReg(o);
                 break;
             case Cell.CELL_TYPE_STRING:
                 o = c.getStringCellValue();
