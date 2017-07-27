@@ -14,21 +14,17 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-/**
- * <p></p></br>
- * author : wbhe2</br>
- * date  : 2017/6/15  14:20</br>
- */
+
 public class Utils {
 
     /**
      * <p>根据JAVA对象注解获取Excel表头信息</p></br>
      */
     static
-    public List<ExcelHeader> getHeaderList(Class clz) {
+    public List<ExcelHeader> getHeaderList(Class<?> clz) {
         List<ExcelHeader> headers = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
-        for (Class clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
+        for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
         for (Field field : fields) {
@@ -43,7 +39,7 @@ public class Utils {
     }
 
     static
-    public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class clz) {
+    public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz) {
         List<ExcelHeader> headers = getHeaderList(clz);
         Map<Integer, ExcelHeader> maps = new HashMap<>();
         for (Cell c : titleRow) {
@@ -82,6 +78,18 @@ public class Utils {
             }
         }
     }
+    
+    /**
+     * 修正Cell的类型
+     * @return
+     */
+    static
+    public void fixCellType(Cell c, Class<?> clazz){
+    	int cellType = c.getCellType();
+    	if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
+    		c.setCellType(Cell.CELL_TYPE_STRING);
+    	}
+    }
 
     static
     public String getCellValue(Cell c) {
@@ -112,7 +120,7 @@ public class Utils {
     }
     
     static 
-    public Object str2TargetClass(String strField, Class clazz){
+    public Object str2TargetClass(String strField, Class<?> clazz){
         if (null == strField || "".equals(strField))
             return null;
         if ((Long.class == clazz) || (long.class == clazz)) {

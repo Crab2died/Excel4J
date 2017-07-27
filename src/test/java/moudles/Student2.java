@@ -4,11 +4,7 @@ import com.github.annotation.ExcelField;
 
 import java.util.Date;
 
-/**
- * <p></p></br>
- * author : wbhe2</br>
- * date  : 2017/6/15  15:15</br>
- */
+
 public class Student2 {
 
     @ExcelField(title = "学号", order = 1)

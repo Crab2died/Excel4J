@@ -2,7 +2,9 @@ package com.github.exceptions;
 
 public class Excel4jReadException extends Exception {
 
-    public Excel4jReadException() {
+	private static final long serialVersionUID = 8735084330744657672L;
+
+	public Excel4jReadException() {
 
     }
 

@@ -8,11 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * <p></p></br>
- * author : wbhe2</br>
- * date  : 2017/6/15  17:37</br>
- */
+
 public class ExcelTemplate {
 
     /**
