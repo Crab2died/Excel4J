@@ -87,10 +87,10 @@ public class Utils {
      */
     static
     public void fixCellType(Cell c, Class<?> clazz){
-    	int cellType = c.getCellType();
-    	if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
-    		c.setCellType(Cell.CELL_TYPE_STRING);
-    	}
+        int cellType = c.getCellType();
+        if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
+            c.setCellType(Cell.CELL_TYPE_STRING);
+        }
     }
 
     static
@@ -112,7 +112,9 @@ public class Utils {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                     o = sdf.format(date);
                 }else {
-                    o = new BigDecimal(String.valueOf(c.getNumericCellValue())).toPlainString();
+                    o = String.valueOf(c.getNumericCellValue());
+                    o = matchDoneBigDecimal(o);
+                    o = RegularUtils.converNumByReg(o);
                 }
                 break;
             case Cell.CELL_TYPE_STRING:
