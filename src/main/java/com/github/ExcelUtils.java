@@ -2,6 +2,7 @@ package com.github;
 
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
+import com.github.utils.IStringConverter;
 import com.github.utils.Utils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -42,15 +43,48 @@ public class ExcelUtils {
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex, IStringConverter stringConverter) throws Exception {
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex, IStringConverter stringConverter) throws Exception {
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, stringConverter);
+    }
+    
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0, stringConverter);
+    }
+
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0, stringConverter);
+    }
+    
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(new File(excelPath));
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
     }
 
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(is);
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
     }
 
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
@@ -75,7 +109,7 @@ public class ExcelUtils {
     }
 
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
-                                                 int sheetIndex) throws Exception {
+                                                 int sheetIndex, IStringConverter converter) throws Exception {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(offsetLine);
         List<T> list = new ArrayList<>();
@@ -94,7 +128,12 @@ public class ExcelUtils {
                     continue;
                 String filed = header.getFiled();
                 String val = Utils.getCellValue(cell);
-                Object value = Utils.str2TargetClass(val, header.getFiledClazz());
+				Object value = new Object();
+				if (converter != null) {
+					value = converter.convert(filed, val) == null ? Utils.str2TargetClass(val, header.getFiledClazz()) : converter.convert(filed, val);
+				} else {
+					value = Utils.str2TargetClass(val, header.getFiledClazz());
+				}
                 BeanUtils.copyProperty(obj, filed, value);
             }
             list.add(obj);
