@@ -60,10 +60,14 @@ public class Utils {
         try {
             File f = new File(outFilePath);
             if (f.getParentFile().isDirectory() && !f.getParentFile().exists()) {
-                f.mkdirs();
+                if(!f.mkdirs()){
+                    throw new RuntimeException("创建文件夹失败 > " + outFilePath);
+                }
             }
             if (!f.exists()) {
-                f.createNewFile();
+                if(!f.createNewFile()){
+                    throw new RuntimeException("创建文件失败 > " + outFilePath);
+                }
             }
             fos = new FileOutputStream(outFilePath);
             wb.write(fos);
@@ -81,7 +85,6 @@ public class Utils {
     
     /**
      * 修正Cell的类型
-     * @return
      */
     static
     public void fixCellType(Cell c, Class<?> clazz){

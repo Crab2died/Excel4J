@@ -180,6 +180,7 @@ public class DateUtils {
      * @param strDate 时间字符串
      * @return Date  {@link Date}时间
      */
+    @Deprecated
     static
     public Date str2DateUnmatch2Null(String strDate) {
         Date date = null;

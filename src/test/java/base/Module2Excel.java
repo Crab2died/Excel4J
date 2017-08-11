@@ -45,16 +45,16 @@ public class Module2Excel {
         		new Student1("1010009", "李四", "一年级一班"),
         		new Student1("1010002", "古尔丹", "一年级三班")
         		));
-        classes.put("class_two", Arrays.asList(
-        		new Student1("1010008", "战三", "二年级一班")
-        		));
+        classes.put("class_two", Collections.singletonList(
+                new Student1("1010008", "战三", "二年级一班")
+        ));
         classes.put("class_three", Arrays.asList(
 	            new Student1("1010004", "萝卜特", "三年级二班"),
 	            new Student1("1010005", "奥拉基", "三年级二班")
 	            ));
-        classes.put("class_four", Arrays.asList(
-        		new Student1("1010006", "得嘞", "四年级二班")
-        		));
+        classes.put("class_four", Collections.singletonList(
+                new Student1("1010006", "得嘞", "四年级二班")
+        ));
         classes.put("class_six", Arrays.asList(
 	            new Student1("1010001", "盖伦", "六年级三班"),
 	            new Student1("1010003", "蒙多", "六年级一班")
