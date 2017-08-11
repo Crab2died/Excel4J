@@ -122,11 +122,11 @@ public class ExcelTemplate {
                     continue;
                 String str = c.getStringCellValue().trim();
                 // 寻找序号列
-                if (str.equals(HanderConstant.SERIAL_NUMBER)) {
+                if (str.equals(HandlerConstant.SERIAL_NUMBER)) {
                     this.serialNumberColumnIndex = c.getColumnIndex();
                 }
                 // 寻找数据列
-                if (str.equals(HanderConstant.DATA_INIT_INDEX)) {
+                if (str.equals(HandlerConstant.DATA_INIT_INDEX)) {
                     this.initColumnIndex = c.getColumnIndex();
                     this.initRowIndex = row.getRowNum();
                     this.rowHeight = row.getHeightInPoints();
@@ -142,7 +142,7 @@ public class ExcelTemplate {
      */
     private void initStyles(Cell cell, String moduleContext) {
 
-        if (HanderConstant.DEFAULT_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.DEFAULT_STYLE.equals(moduleContext)) {
             this.defaultStyle = cell.getCellStyle();
             clearCell(cell);
         }
@@ -150,15 +150,15 @@ public class ExcelTemplate {
             this.classifyStyle.put(moduleContext.substring(1), cell.getCellStyle());
             clearCell(cell);
         }
-        if (HanderConstant.APPOINT_LINE_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.APPOINT_LINE_STYLE.equals(moduleContext)) {
             this.appointLineStyle.put(cell.getRowIndex(), cell.getCellStyle());
             clearCell(cell);
         }
-        if (HanderConstant.SINGLE_LINE_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.SINGLE_LINE_STYLE.equals(moduleContext)) {
             this.singleLineStyle = cell.getCellStyle();
             clearCell(cell);
         }
-        if (HanderConstant.DOUBLE_LINE_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.DOUBLE_LINE_STYLE.equals(moduleContext)) {
             this.doubleLineStyle = cell.getCellStyle();
             clearCell(cell);
         }
