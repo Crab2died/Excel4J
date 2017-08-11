@@ -169,6 +169,19 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 3) 导出结果(截图)
 ![导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/map_export.png)
 
-## 五. 链接
+## 五. 使用
+#### 1) git clone https://github.com/Crab2died/Excel4J.git Excel4J
+#### 2) cd Excel4J
+#### 3) mvn install -DskipTests
+#### 4) maven 引用
+```
+<dependency>
+    <groupId>com.github</groupId>
+    <artifactId>Excel4J</artifactId>
+    <version>${Excel4J-version}</version>
+</dependency>
+```
+
+## 六. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
 #### 码云   -> [码云](https://git.oschina.net/Crab2Died/Excel4J)
