@@ -80,7 +80,7 @@ public class Utils {
             }
         }
     }
-
+    
     /**
      * 修正Cell的类型
      * @return
@@ -124,8 +124,8 @@ public class Utils {
         }
         return o;
     }
-
-    static
+    
+    static 
     public Object str2TargetClass(String strField, Class<?> clazz){
         if (null == strField || "".equals(strField))
             return null;

@@ -2,6 +2,7 @@ package com.github;
 
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
+import com.github.utils.IStringConverter;
 import com.github.utils.Utils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -13,8 +14,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class ExcelUtils {
 
@@ -40,15 +43,48 @@ public class ExcelUtils {
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex, IStringConverter stringConverter) throws Exception {
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex, IStringConverter stringConverter) throws Exception {
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0, stringConverter);
+    }
+
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(new File(excelPath));
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
     }
 
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(is);
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
     }
 
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
@@ -73,7 +109,7 @@ public class ExcelUtils {
     }
 
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
-                                                 int sheetIndex) throws Exception {
+                                                 int sheetIndex, IStringConverter converter) throws Exception {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(offsetLine);
         List<T> list = new ArrayList<>();
@@ -92,7 +128,12 @@ public class ExcelUtils {
                     continue;
                 String filed = header.getFiled();
                 String val = Utils.getCellValue(cell);
-                Object value = Utils.str2TargetClass(val, header.getFiledClazz());
+				Object value = new Object();
+				if (converter != null) {
+					value = converter.convert(filed, val) == null ? Utils.str2TargetClass(val, header.getFiledClazz()) : converter.convert(filed, val);
+				} else {
+					value = Utils.str2TargetClass(val, header.getFiledClazz());
+				}
                 Field mField = clazz.getDeclaredField(filed);
                 mField.setAccessible(true);
                 mField.set(obj,value);
@@ -281,7 +322,7 @@ public class ExcelUtils {
     /*      *) isWriteHeader    =>      是否写入表头                                                              */
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List> data,
+    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data,
                                    Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
 
@@ -289,28 +330,28 @@ public class ExcelUtils {
                 .write2File(targetPath);
     }
 
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List> data, Map<String, String>
+    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
             extendMap, Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2Stream(os);
     }
 
-    public void exportObject2Excel(String templatePath, Map<String, List> data, Map<String, String> extendMap,
+    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                    Class clazz, String targetPath) throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
                 .write2File(targetPath);
     }
 
-    public void exportObject2Excel(String templatePath, Map<String, List> data, Map<String, String> extendMap,
+    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                    Class clazz, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
                 .write2Stream(os);
     }
 
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List> data,
+    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List<?>> data,
                                                      Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
             throws Exception {
 
@@ -324,7 +365,7 @@ public class ExcelUtils {
                 templates.createCell(header.getTitle(), null);
             }
         }
-        for (Map.Entry<String, List> entry : data.entrySet()) {
+        for (Map.Entry<String, List<?>> entry : data.entrySet()) {
             for (Object object : entry.getValue()) {
                 templates.createNewRow();
                 templates.insertSerial(entry.getKey());
