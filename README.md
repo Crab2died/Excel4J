@@ -2,8 +2,8 @@
    
 ## 一. v2.0.0新特性
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
-2. Excel支持非注解读取Excel内容了,内容存于List<List<String>>对象内
-3. 现在支持List<List<String>>导出Excel了(可以不基于模板)
+2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
+3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
 4. Excel新增了Map数据样式映射功能(模板可以为每个key设置一个样式,具体定义为:&key, 导出Map数据的样式将与key至映射)
 
 ## 二. 基于注解
@@ -88,7 +88,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 2) 导出效果(截图)
 ![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/list_export.png)
 
-### 2. 基于模板List<Oject>导出
+### 2. 基于模板`List<Oject>`导出
 
 #### 1) 导出函数(/src/test/java/base/Module2Excel.java#testObject2Excel)
 ```
@@ -126,7 +126,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 4) 不基于模板导出结果(截图)
 ![不基于模板导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/object_export.png)
 
-### 3. 基于模板Map<String, Collection<Object.toString>>导出
+### 3. 基于模板`Map<String, Collection<Object.toString>>`导出
 
 #### 1) 导出函数(/src/test/java/base/Module2Excel.java#testMap2Excel)
 ```
@@ -173,7 +173,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 1) git clone https://github.com/Crab2died/Excel4J.git Excel4J
 #### 2) cd Excel4J
 #### 3) mvn install -DskipTests
-#### 4) maven 引用
+#### 4) maven 引用：
 ```
 <dependency>
     <groupId>com.github</groupId>
