@@ -84,7 +84,7 @@ public class ExcelUtils {
             throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
         int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
                 .getLastRowNum();
-        for (int i = offsetLine + 1; i <= maxLine; i++) {
+        for (int i = offsetLine; i <= maxLine; i++) {
             row = sheet.getRow(i);
             T obj = clazz.newInstance();
             for (Cell cell : row) {
