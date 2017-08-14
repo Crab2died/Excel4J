@@ -14,10 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class ExcelUtils {
 
@@ -128,7 +126,7 @@ public class ExcelUtils {
                     continue;
                 String filed = header.getFiled();
                 String val = Utils.getCellValue(cell);
-				Object value = new Object();
+				Object value;
 				if (converter != null) {
 					value = converter.convert(filed, val) == null ? Utils.str2TargetClass(val, header.getFiledClazz()) : converter.convert(filed, val);
 				} else {
