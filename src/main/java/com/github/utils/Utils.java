@@ -24,8 +24,8 @@ public class Utils {
      */
     static
     public List<ExcelHeader> getHeaderList(Class<?> clz) {
-        List<ExcelHeader> headers = new ArrayList<>();
-        List<Field> fields = new ArrayList<>();
+        List<ExcelHeader> headers = new ArrayList<ExcelHeader>();
+        List<Field> fields = new ArrayList<Field>();
         for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
@@ -43,7 +43,7 @@ public class Utils {
     static
     public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz) {
         List<ExcelHeader> headers = getHeaderList(clz);
-        Map<Integer, ExcelHeader> maps = new HashMap<>();
+        Map<Integer, ExcelHeader> maps = new HashMap<Integer, ExcelHeader>();
         for (Cell c : titleRow) {
             String title = c.getStringCellValue();
             for (ExcelHeader eh : headers) {
@@ -127,33 +127,37 @@ public class Utils {
     
     static 
     public Object str2TargetClass(String strField, Class<?> clazz){
-        if (null == strField || "".equals(strField))
+        if (String.class == clazz){
+            return strField;
+        }
+        else if (null == strField || "".equals(strField)) {
             return null;
-        if ((Long.class == clazz) || (long.class == clazz)) {
+        }
+        else if ((Long.class == clazz) || (long.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             strField = RegularUtils.converNumByReg(strField);
             return Long.parseLong(strField);
         }
-        if ((Integer.class == clazz) || (int.class == clazz)) {
+        else if ((Integer.class == clazz) || (int.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             strField = RegularUtils.converNumByReg(strField);
             return Integer.parseInt(strField);
         }
-        if ((Float.class == clazz) || (float.class == clazz)) {
+        else if ((Float.class == clazz) || (float.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             return Float.parseFloat(strField);
         }
-        if ((Double.class == clazz) || (double.class == clazz)) {
+        else if ((Double.class == clazz) || (double.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             return Double.parseDouble(strField);
         }
-        if ((Character.class == clazz) || (char.class == clazz)) {
+        else if ((Character.class == clazz) || (char.class == clazz)) {
             return strField.toCharArray()[0];
         }
-        if (Date.class == clazz) {
+        else if (Date.class == clazz) {
             return DateUtils.str2DateUnmatch2Null(strField);
         }
-        if (BigDecimal.class == clazz){
+        else if (BigDecimal.class == clazz){
             return new BigDecimal(strField);
         }
         return strField;

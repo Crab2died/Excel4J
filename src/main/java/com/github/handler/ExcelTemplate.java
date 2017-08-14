@@ -47,11 +47,11 @@ public class ExcelTemplate {
     /**
      * 指定行样式
      */
-    private Map<Integer, CellStyle> appointLineStyle = new HashMap<>();
+    private Map<Integer, CellStyle> appointLineStyle = new HashMap<Integer, CellStyle>();
     /**
      * 分类样式模板
      */
-    private Map<String, CellStyle> classifyStyle = new HashMap<>();
+    private Map<String, CellStyle> classifyStyle = new HashMap<String, CellStyle>();
     /**
      * 单数行样式
      */
@@ -234,17 +234,17 @@ public class ExcelTemplate {
         } else if (String.class == value.getClass()) {
             cell.setCellValue((String) value);
         } else if (int.class == value.getClass()) {
-            cell.setCellValue((int) value);
+            cell.setCellValue((Integer) value);
         } else if (Integer.class == value.getClass()) {
             cell.setCellValue((Integer) value);
         } else if (double.class == value.getClass()) {
-            cell.setCellValue((double) value);
+            cell.setCellValue((Double) value);
         } else if (Double.class == value.getClass()) {
             cell.setCellValue((Double) value);
         } else if (Date.class == value.getClass()) {
             cell.setCellValue((Date) value);
         } else if (boolean.class == value.getClass()) {
-            cell.setCellValue((boolean) value);
+            cell.setCellValue((Boolean) value);
         } else if (Boolean.class == value.getClass()) {
             cell.setCellValue((Boolean) value);
         } else if (Calendar.class == value.getClass()) {

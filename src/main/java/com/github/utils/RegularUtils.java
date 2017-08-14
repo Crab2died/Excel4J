@@ -47,7 +47,7 @@ public class RegularUtils {
     public List<String> match(String pattern, String reg, int group)
             throws IllegalGroupIndexException {
 
-        List<String> matchGroups = new ArrayList<>();
+        List<String> matchGroups = new ArrayList<String>();
         Pattern compile = Pattern.compile(reg);
         Matcher matcher = compile.matcher(pattern);
         if (group > matcher.groupCount() || group < 0)

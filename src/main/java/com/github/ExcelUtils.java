@@ -110,7 +110,7 @@ public class ExcelUtils {
                                                  int sheetIndex, IStringConverter converter) throws Exception {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(offsetLine);
-        List<T> list = new ArrayList<>();
+        List<T> list = new ArrayList<T>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
             throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
@@ -197,12 +197,12 @@ public class ExcelUtils {
             sheetIndex)
             throws Exception {
 
-        List<List<String>> list = new ArrayList<>();
+        List<List<String>> list = new ArrayList<List<String>>();
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
                 .getLastRowNum();
         for (int i = offsetLine; i <= maxLine; i++) {
-            List<String> rows = new ArrayList<>();
+            List<String> rows = new ArrayList<String>();
             Row row = sheet.getRow(i);
             for (Cell cell : row) {
                 String val = Utils.getCellValue(cell);
