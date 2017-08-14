@@ -77,7 +77,7 @@ public class ExcelUtils {
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
                                                  int sheetIndex) throws Exception {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
-        Row row = sheet.getRow(offsetLine);
+        Row row = sheet.getRow(0);
         List<T> list = new ArrayList<>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
