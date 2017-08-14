@@ -101,14 +101,13 @@ public class ExcelTemplate {
 
     /***********************************初始化模板开始***********************************/
 
-    private ExcelTemplate loadTemplate(String templatePath) throws Exception {
+    private void loadTemplate(String templatePath) throws Exception {
         this.workbook = WorkbookFactory.create(new File(templatePath));
         this.sheet = this.workbook.getSheetAt(this.sheetIndex);
         initModuleConfig();
         this.currentRowIndex = this.initRowIndex;
         this.currentColumnIndex = this.initColumnIndex;
         this.lastRowIndex = this.sheet.getLastRowNum();
-        return this;
     }
 
     /**
@@ -323,23 +322,19 @@ public class ExcelTemplate {
      * @param filepath 输出文件路径
      */
     public void write2File(String filepath) {
-        FileOutputStream fos = null;
+
         try {
-            fos = new FileOutputStream(filepath);
-            this.workbook.write(fos);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException("写入的文件不存在");
+            try(FileOutputStream fos = new FileOutputStream(filepath)){
+                try {
+                    this.workbook.write(fos);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("写入的文件不存在");
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("写入数据失败:" + e.getMessage());
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            throw new RuntimeException("写入数据失败:" + e);
         }
     }
 
@@ -353,7 +348,7 @@ public class ExcelTemplate {
             this.workbook.write(os);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("写入流失败:" + e.getMessage());
+            throw new RuntimeException("写入流失败:" + e);
         }
     }
 

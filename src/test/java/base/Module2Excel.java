@@ -75,8 +75,8 @@ public class Module2Excel {
                 _list.add(i + " -- " + j);
             }
             list2.add(_list);
-            header.add(i + "---");
+            header.add(i + "---栏");
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D:\\D.xlsx");
     }
 }
