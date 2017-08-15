@@ -2,8 +2,8 @@ package com.github;
 
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
+import com.github.utils.IStringConverter;
 import com.github.utils.Utils;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,10 +13,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class ExcelUtils {
 
@@ -42,15 +41,48 @@ public class ExcelUtils {
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex, IStringConverter stringConverter) throws Exception {
+        Workbook workbook = WorkbookFactory.create(new File(excelPath));
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
+            sheetIndex, IStringConverter stringConverter) throws Exception {
+        Workbook workbook = WorkbookFactory.create(is);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0, stringConverter);
+    }
+
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, IStringConverter stringConverter)
+            throws Exception {
+        return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0, stringConverter);
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(new File(excelPath));
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
     }
 
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(is);
-        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+        return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
     }
 
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
@@ -75,16 +107,16 @@ public class ExcelUtils {
     }
 
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
-                                                 int sheetIndex) throws Exception {
+                                                 int sheetIndex, IStringConverter converter) throws Exception {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(0);
-        List<T> list = new ArrayList<>();
+        List<T> list = new ArrayList<T>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
             throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
         int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
                 .getLastRowNum();
-        for (int i = offsetLine; i <= maxLine; i++) {
+        for (int i = offsetLine + 1; i <= maxLine; i++) {
             row = sheet.getRow(i);
             T obj = clazz.newInstance();
             for (Cell cell : row) {
@@ -94,8 +126,15 @@ public class ExcelUtils {
                     continue;
                 String filed = header.getFiled();
                 String val = Utils.getCellValue(cell);
-                Object value = Utils.str2TargetClass(val, header.getFiledClazz());
-                BeanUtils.copyProperty(obj, filed, value);
+				Object value;
+				if (converter != null) {
+					value = converter.convert(filed, val) == null ? Utils.str2TargetClass(val, header.getFiledClazz()) : converter.convert(filed, val);
+				} else {
+					value = Utils.str2TargetClass(val, header.getFiledClazz());
+				}
+                Field mField = clazz.getDeclaredField(filed);
+                mField.setAccessible(true);
+                mField.set(obj,value);
             }
             list.add(obj);
         }
@@ -158,12 +197,12 @@ public class ExcelUtils {
             sheetIndex)
             throws Exception {
 
-        List<List<String>> list = new ArrayList<>();
+        List<List<String>> list = new ArrayList<List<String>>();
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
                 .getLastRowNum();
         for (int i = offsetLine; i <= maxLine; i++) {
-            List<String> rows = new ArrayList<>();
+            List<String> rows = new ArrayList<String>();
             Row row = sheet.getRow(i);
             for (Cell cell : row) {
                 String val = Utils.getCellValue(cell);
@@ -259,7 +298,9 @@ public class ExcelUtils {
             templates.createNewRow();
             templates.insertSerial(null);
             for (ExcelHeader header : headers) {
-                templates.createCell(BeanUtils.getProperty(object, header.getFiled()), null);
+                Field mField = clazz.getDeclaredField(header.getFiled());
+                mField.setAccessible(true);
+                templates.createCell(mField.get(object), null);
             }
         }
         return templates;
@@ -327,7 +368,9 @@ public class ExcelUtils {
                 templates.createNewRow();
                 templates.insertSerial(entry.getKey());
                 for (ExcelHeader header : headers) {
-                    templates.createCell(BeanUtils.getProperty(object, header.getFiled()), entry.getKey());
+                    Field mField = clazz.getDeclaredField(header.getFiled());
+                    mField.setAccessible(true);
+                    templates.createCell(mField.get(object), entry.getKey());
                 }
             }
         }
@@ -402,7 +445,33 @@ public class ExcelUtils {
             row = sheet.createRow(i + 1);
             _data = data.get(i);
             for (int j = 0; j < headers.size(); j++) {
-                row.createCell(j).setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
+                Class mClass = headers.get(j).getFiledClazz();
+                Cell c = row.createCell(j);
+                Field mField = clazz.getDeclaredField(headers.get(j).getFiled());
+                mField.setAccessible(true);
+                if (String.class == mClass) {
+                    c.setCellValue((String) mField.get(_data));
+                }else if ((Long.class == mClass) || (long.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double((Long)mField.get(_data)));
+                } else if ((Integer.class == mClass) || (int.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double((Integer)mField.get(_data)));
+                } else if ((Float.class == mClass) || (float.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double((Float)mField.get(_data)));
+                } else if ((Double.class == mClass) || (double.class == mClass)) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue((Double) mField.get(_data));
+                } else if (BigDecimal.class == mClass){
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue(new Double(mField.get(_data).toString()));
+                } else if (Date.class == mClass) {
+                    c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                    c.setCellValue((Date) mField.get(_data));
+                } else {
+                    c.setCellValue(mField.get(_data).toString());
+                }
             }
         }
         return workbook;

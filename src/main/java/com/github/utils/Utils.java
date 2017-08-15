@@ -2,6 +2,7 @@ package com.github.utils;
 
 import com.github.annotation.ExcelField;
 import com.github.handler.ExcelHeader;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -22,8 +24,8 @@ public class Utils {
      */
     static
     public List<ExcelHeader> getHeaderList(Class<?> clz) {
-        List<ExcelHeader> headers = new ArrayList<>();
-        List<Field> fields = new ArrayList<>();
+        List<ExcelHeader> headers = new ArrayList<ExcelHeader>();
+        List<Field> fields = new ArrayList<Field>();
         for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
@@ -41,7 +43,7 @@ public class Utils {
     static
     public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz) {
         List<ExcelHeader> headers = getHeaderList(clz);
-        Map<Integer, ExcelHeader> maps = new HashMap<>();
+        Map<Integer, ExcelHeader> maps = new HashMap<Integer, ExcelHeader>();
         for (Cell c : titleRow) {
             String title = c.getStringCellValue();
             for (ExcelHeader eh : headers) {
@@ -88,10 +90,10 @@ public class Utils {
      */
     static
     public void fixCellType(Cell c, Class<?> clazz){
-    	int cellType = c.getCellType();
-    	if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
-    		c.setCellType(Cell.CELL_TYPE_STRING);
-    	}
+        int cellType = c.getCellType();
+        if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
+            c.setCellType(Cell.CELL_TYPE_STRING);
+        }
     }
 
     static
@@ -108,9 +110,15 @@ public class Utils {
                 o = String.valueOf(c.getCellFormula());
                 break;
             case Cell.CELL_TYPE_NUMERIC:
-                o = String.valueOf(c.getNumericCellValue());
-                o = matchDoneBigDecimal(o);
-                o = RegularUtils.converNumByReg(o);
+                if (HSSFDateUtil.isCellDateFormatted(c)) {
+                    Date date = HSSFDateUtil.getJavaDate(c.getNumericCellValue());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                    o = sdf.format(date);
+                }else {
+                    o = String.valueOf(c.getNumericCellValue());
+                    o = matchDoneBigDecimal(o);
+                    o = RegularUtils.converNumByReg(o);
+                }
                 break;
             case Cell.CELL_TYPE_STRING:
                 o = c.getStringCellValue();
@@ -124,31 +132,38 @@ public class Utils {
     
     static 
     public Object str2TargetClass(String strField, Class<?> clazz){
-        if (null == strField || "".equals(strField))
+        if (String.class == clazz){
+            return strField;
+        }
+        else if (null == strField || "".equals(strField)) {
             return null;
-        if ((Long.class == clazz) || (long.class == clazz)) {
+        }
+        else if ((Long.class == clazz) || (long.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             strField = RegularUtils.converNumByReg(strField);
             return Long.parseLong(strField);
         }
-        if ((Integer.class == clazz) || (int.class == clazz)) {
+        else if ((Integer.class == clazz) || (int.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             strField = RegularUtils.converNumByReg(strField);
             return Integer.parseInt(strField);
         }
-        if ((Float.class == clazz) || (float.class == clazz)) {
+        else if ((Float.class == clazz) || (float.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             return Float.parseFloat(strField);
         }
-        if ((Double.class == clazz) || (double.class == clazz)) {
+        else if ((Double.class == clazz) || (double.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
             return Double.parseDouble(strField);
         }
-        if ((Character.class == clazz) || (char.class == clazz)) {
+        else if ((Character.class == clazz) || (char.class == clazz)) {
             return strField.toCharArray()[0];
         }
-        if (Date.class == clazz) {
+        else if (Date.class == clazz) {
             return DateUtils.str2DateUnmatch2Null(strField);
+        }
+        else if (BigDecimal.class == clazz){
+            return new BigDecimal(strField);
         }
         return strField;
     }
