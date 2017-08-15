@@ -292,19 +292,23 @@ public class ExcelTemplate {
      * @param filepath 输出文件路径
      */
     public void write2File(String filepath) {
-
+        FileOutputStream fos = null;
         try {
-            try(FileOutputStream fos = new FileOutputStream(filepath)){
-                try {
-                    this.workbook.write(fos);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("写入的文件不存在");
-                }
-            }
+            fos = new FileOutputStream(filepath);
+            this.workbook.write(fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("写入的文件不存在");
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("写入数据失败:" + e);
+            throw new RuntimeException("写入数据失败:" + e.getMessage());
+        } finally {
+            try {
+                if (fos != null)
+                    fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
