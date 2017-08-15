@@ -109,14 +109,14 @@ public class ExcelUtils {
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
                                                  int sheetIndex, IStringConverter converter) throws Exception {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
-        Row row = sheet.getRow(offsetLine);
+        Row row = sheet.getRow(0);
         List<T> list = new ArrayList<T>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
             throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
         int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
                 .getLastRowNum();
-        for (int i = offsetLine + 1; i <= maxLine; i++) {
+        for (int i = offsetLine; i <= maxLine; i++) {
             row = sheet.getRow(i);
             T obj = clazz.newInstance();
             for (Cell cell : row) {

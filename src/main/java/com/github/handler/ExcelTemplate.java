@@ -102,14 +102,13 @@ public class ExcelTemplate {
 
     /***********************************初始化模板开始***********************************/
 
-    private ExcelTemplate loadTemplate(String templatePath) throws Exception {
+    private void loadTemplate(String templatePath) throws Exception {
         this.workbook = WorkbookFactory.create(new File(templatePath));
         this.sheet = this.workbook.getSheetAt(this.sheetIndex);
         initModuleConfig();
         this.currentRowIndex = this.initRowIndex;
         this.currentColumnIndex = this.initColumnIndex;
         this.lastRowIndex = this.sheet.getLastRowNum();
-        return this;
     }
 
     /**
@@ -123,11 +122,11 @@ public class ExcelTemplate {
                     continue;
                 String str = c.getStringCellValue().trim();
                 // 寻找序号列
-                if (str.equals(HanderConstant.SERIAL_NUMBER)) {
+                if (str.equals(HandlerConstant.SERIAL_NUMBER)) {
                     this.serialNumberColumnIndex = c.getColumnIndex();
                 }
                 // 寻找数据列
-                if (str.equals(HanderConstant.DATA_INIT_INDEX)) {
+                if (str.equals(HandlerConstant.DATA_INIT_INDEX)) {
                     this.initColumnIndex = c.getColumnIndex();
                     this.initRowIndex = row.getRowNum();
                     this.rowHeight = row.getHeightInPoints();
@@ -143,7 +142,7 @@ public class ExcelTemplate {
      */
     private void initStyles(Cell cell, String moduleContext) {
 
-        if (HanderConstant.DEFAULT_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.DEFAULT_STYLE.equals(moduleContext)) {
             this.defaultStyle = cell.getCellStyle();
             clearCell(cell);
         }
@@ -151,15 +150,15 @@ public class ExcelTemplate {
             this.classifyStyle.put(moduleContext.substring(1), cell.getCellStyle());
             clearCell(cell);
         }
-        if (HanderConstant.APPOINT_LINE_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.APPOINT_LINE_STYLE.equals(moduleContext)) {
             this.appointLineStyle.put(cell.getRowIndex(), cell.getCellStyle());
             clearCell(cell);
         }
-        if (HanderConstant.SINGLE_LINE_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.SINGLE_LINE_STYLE.equals(moduleContext)) {
             this.singleLineStyle = cell.getCellStyle();
             clearCell(cell);
         }
-        if (HanderConstant.DOUBLE_LINE_STYLE.equals(moduleContext)) {
+        if (HandlerConstant.DOUBLE_LINE_STYLE.equals(moduleContext)) {
             this.doubleLineStyle = cell.getCellStyle();
             clearCell(cell);
         }
@@ -293,23 +292,19 @@ public class ExcelTemplate {
      * @param filepath 输出文件路径
      */
     public void write2File(String filepath) {
-        FileOutputStream fos = null;
+
         try {
-            fos = new FileOutputStream(filepath);
-            this.workbook.write(fos);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException("写入的文件不存在");
+            try(FileOutputStream fos = new FileOutputStream(filepath)){
+                try {
+                    this.workbook.write(fos);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("写入的文件不存在");
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("写入数据失败:" + e.getMessage());
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            throw new RuntimeException("写入数据失败:" + e);
         }
     }
 
@@ -323,7 +318,7 @@ public class ExcelTemplate {
             this.workbook.write(os);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("写入流失败:" + e.getMessage());
+            throw new RuntimeException("写入流失败:" + e);
         }
     }
 

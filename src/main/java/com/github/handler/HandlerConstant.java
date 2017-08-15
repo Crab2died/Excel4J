@@ -4,7 +4,7 @@ package com.github.handler;
 /**
  * <p>Excel模板自定义属性,不区分大小写</p></br>
  */
-public class HanderConstant {
+public class HandlerConstant {
 
     // 数据插入起始坐标点
     static protected final String DATA_INIT_INDEX = "$data_index";
