@@ -9,16 +9,16 @@ import java.util.regex.Pattern;
 
 /**
  * <p>正则匹配相关工具</p>
- * author : Crab2Died</br>
- * date : 2017/5/24  9:43</br>
+ * author : Crab2Died
+ * date : 2017/5/24  9:43
  */
 public class RegularUtils {
 
 
     /**
-     * <p>判断内容是否匹配</p></br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:46:25</br>
+     * <p>判断内容是否匹配</p>
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:46:25
      *
      * @param pattern 匹配目标内容
      * @param reg     正则表达式
@@ -33,15 +33,15 @@ public class RegularUtils {
     /**
      * <p>正则提取匹配到的内容</p>
      * <p>例如：</p>
-     * </br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:49:51</br>
+     *
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:49:51
      *
      * @param pattern 匹配目标内容
      * @param reg     正则表达式
      * @param group   提取内容索引
      * @return 提取内容集合
-     * @throws {@link IllegalGroupIndexException}
+     * @throws IllegalGroupIndexException 异常
      */
     static
     public List<String> match(String pattern, String reg, int group)
@@ -61,14 +61,13 @@ public class RegularUtils {
     /**
      * <p>正则提取匹配到的内容,默认提取索引为0</p>
      * <p>例如：</p>
-     * </br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:49:51</br>
+     *
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:49:51
      *
      * @param pattern 匹配目标内容
      * @param reg     正则表达式
      * @return 提取内容集合
-     * @throws {@link IllegalGroupIndexException}
      */
     static public String match(String pattern, String reg) {
 

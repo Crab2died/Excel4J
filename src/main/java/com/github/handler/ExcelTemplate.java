@@ -207,6 +207,7 @@ public class ExcelTemplate {
 
     /**
      * 插入序号，会自动找相应的序号标示的位置完成插入
+     * @param styleKey  样式标识
      */
     public void insertSerial(String styleKey) {
         if (this.serialNumberColumnIndex < 0)
@@ -218,7 +219,9 @@ public class ExcelTemplate {
     }
 
     /**
-     * <p>设置Excel元素样式及内容</p></br>
+     * <p>设置Excel元素样式及内容</p>
+     * @param value 内容
+     * @param styleKey  样式
      */
     public void createCell(Object value, String styleKey) {
         Cell cell = this.currentRow.createCell(currentColumnIndex);
@@ -286,6 +289,7 @@ public class ExcelTemplate {
      * 设置某个元素的样式
      *
      * @param cell cell元素
+     * @param styleKey  样式标识
      */
     private void setCellStyle(Cell cell, String styleKey) {
         if (null != styleKey && null != this.classifyStyle.get(styleKey)) {

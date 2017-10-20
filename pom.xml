@@ -8,7 +8,8 @@
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
-    <url>http://maven.apache.org</url>
+    <description>Operation EXCEL based on poi</description>
+    <url>https://github.com/Crab2died/Excel4J</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,15 +25,15 @@
 
     <scm>
         <url>https://github.com/Crab2died/Excel4J</url>
-        <connection>https://github.com/Crab2died/Excel4J.git</connection>
-        <developerConnection>https://github.com/Crab2died/Excel4J</developerConnection>
+        <connection>scm:git:https://github.com/Crab2died/Excel4J.git</connection>
+        <developerConnection>scm:git:https://github.com/Crab2died/Excel4J.git</developerConnection>
     </scm>
 
     <developers>
         <developer>
             <name>Crab2Died</name>
             <email>hwb9588@126.com</email>
-            <url>https://github.com/Crab2died/Excel4J</url>
+            <url>https://github.com/Crab2died</url>
         </developer>
     </developers>
 
@@ -181,11 +182,11 @@
     <distributionManagement>
         <repository>
             <id>releases</id>
-            <url>http://ci.tunnel.qydev.com/nexus/content/repositories/releases/</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <url>http://ci.tunnel.qydev.com/nexus/content/repositories/snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

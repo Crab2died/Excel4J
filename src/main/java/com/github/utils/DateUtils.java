@@ -7,9 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * <p>时间处理工具类</p></br>
- * author : Crab2Died</br>
- * date : 2017/5/23  10:35</br>
+ * <p>时间处理工具类</p>
+ * author : Crab2Died
+ * date : 2017/5/23  10:35
  */
 public class DateUtils {
 
@@ -60,9 +60,9 @@ public class DateUtils {
             "(20|21|22|23|[0-1]\\d):[0-5]\\d:[0-5]\\d\\.\\d{3}Z$";
 
     /**
-     * <p>将{@link Date}类型转换为指定格式的字符串</p></br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:32:04</br>
+     * <p>将{@link Date}类型转换为指定格式的字符串</p>
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:32:04
      *
      * @param date   {@link Date}类型的时间
      * @param format 指定格式化类型
@@ -75,9 +75,9 @@ public class DateUtils {
     }
 
     /**
-     * <p>将{@link Date}类型转换为默认为[yyyy-MM-dd HH:mm:ss]类型的字符串</p></br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:30:01</br>
+     * <p>将{@link Date}类型转换为默认为[yyyy-MM-dd HH:mm:ss]类型的字符串</p>
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:30:01
      *
      * @param date {@link Date}类型的时间
      * @return 返回格式化后的时间字符串
@@ -89,9 +89,9 @@ public class DateUtils {
     }
 
     /**
-     * <p>根据给出的格式化类型将时间字符串转为{@link Date}类型</p></br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:27:22</br>
+     * <p>根据给出的格式化类型将时间字符串转为{@link Date}类型</p>
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:27:22
      *
      * @param strDate 时间字符串
      * @param format  格式化类型
@@ -119,13 +119,14 @@ public class DateUtils {
      * <p>yyyy-MM-dd HH:mm:ss</p>
      * <p>yyyy-MM-dd'T'HH:mm:ss.SSS</p>
      * <p>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</p>
-     * </br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:21:54</br>
+     *
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:21:54
      *
      * @param strDate 时间字符串
      * @return Date  {@link Date}时间
-     * @throws TimeMatchFormatException
+     * @throws TimeMatchFormatException 异常
+     * @throws ParseException   异常
      */
     @Deprecated
     static
@@ -173,9 +174,9 @@ public class DateUtils {
      * <p>HH:mm:ss</p>
      * <p>yyyy-MM-dd HH:mm:ss</p>
      * <p>yyyy-MM-dTHH:mm:ss.SSS</p>
-     * </br>
-     * author : Crab2Died</br>
-     * date   : 2017年06月02日  15:21:54</br>
+     *
+     * author : Crab2Died
+     * date   : 2017年06月02日  15:21:54
      *
      * @param strDate 时间字符串
      * @return Date  {@link Date}时间

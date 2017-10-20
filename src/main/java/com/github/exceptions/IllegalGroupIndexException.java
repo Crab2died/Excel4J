@@ -1,8 +1,8 @@
 package com.github.exceptions;
 
 /**
- * author : Crab2Died</br>
- * date : 2017/5/24  14:29</br>
+ * author : Crab2Died
+ * date : 2017/5/24  14:29
  */
 public class IllegalGroupIndexException extends Exception {
 	

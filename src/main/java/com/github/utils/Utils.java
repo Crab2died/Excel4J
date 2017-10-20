@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
 public class Utils {
 
     /**
-     * <p>根据JAVA对象注解获取Excel表头信息</p></br>
+     * <p>根据JAVA对象注解获取Excel表头信息</p>
+     * @param clz 类型
+     * @return 表头信息
      */
     static
     public List<ExcelHeader> getHeaderList(Class<?> clz) {
@@ -85,6 +87,8 @@ public class Utils {
     
     /**
      * 修正Cell的类型
+     * @param c 单元格
+     * @param clazz 类型
      */
     static
     public void fixCellType(Cell c, Class<?> clazz){
