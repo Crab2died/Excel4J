@@ -1,8 +1,8 @@
 package base;
 
 import com.github.ExcelUtils;
-import moudles.Student1;
-import moudles.Student2;
+import modules.Student1;
+import modules.Student2;
 import org.junit.Test;
 
 import java.util.List;

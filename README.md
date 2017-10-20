@@ -6,7 +6,7 @@
 3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
 4. Excel新增了Map数据样式映射功能(模板可以为每个key设置一个样式,具体定义为:&key, 导出Map数据的样式将与key值映射)
 
-## 二. 基于注解
+## 二. 基于注解(/src/test/java/modules/Student2.java)
 ```
    @ExcelField(title = "学号", order = 1)
    private Long id;
