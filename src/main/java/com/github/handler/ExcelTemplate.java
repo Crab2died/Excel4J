@@ -28,10 +28,6 @@ public class ExcelTemplate {
      */
     private Row currentRow;
     /**
-     * 当前单元格样式
-     */
-    private CellStyle currentStyle;
-    /**
      * 当前列数
      */
     private int currentColumnIndex;
@@ -324,7 +320,7 @@ public class ExcelTemplate {
     public void write2File(String filepath) {
 
         try {
-            try(FileOutputStream fos = new FileOutputStream(filepath)){
+            try (FileOutputStream fos = new FileOutputStream(filepath)) {
                 try {
                     this.workbook.write(fos);
                 } catch (IOException e) {

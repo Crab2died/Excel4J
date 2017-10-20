@@ -1,5 +1,6 @@
 package com.github;
 
+import com.github.exceptions.Excel4jReadException;
 import com.github.handler.ExcelHeader;
 import com.github.handler.ExcelTemplate;
 import com.github.utils.Utils;
@@ -81,7 +82,7 @@ public class ExcelUtils {
         List<T> list = new ArrayList<>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
-            throw new RuntimeException("要读取的Excel的格式不正确，检查是否设定了合适的行");
+            throw new Excel4jReadException("要读取的Excel的格式不正确，检查是否设定了合适的行");
         int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
                 .getLastRowNum();
         for (int i = offsetLine; i <= maxLine; i++) {
