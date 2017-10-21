@@ -158,7 +158,6 @@ public class Utils {
     }
 
     private static String matchDoneBigDecimal(String bigDecimal){
-        // 对科学计数法进行处理
         boolean flg = Pattern.matches("^-?\\d+(\\.\\d+)?(E-?\\d+)?$", bigDecimal);
         if (flg) {
             BigDecimal bd = new BigDecimal(bigDecimal);
