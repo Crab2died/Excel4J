@@ -98,7 +98,7 @@ public class ExcelTemplate {
     /***********************************初始化模板开始***********************************/
 
     private void loadTemplate(String templatePath) throws Exception {
-        this.workbook = WorkbookFactory.create(new File(templatePath));
+        this.workbook = WorkbookFactory.create(ExcelTemplate.class.getResourceAsStream(templatePath));
         this.sheet = this.workbook.getSheetAt(this.sheetIndex);
         initModuleConfig();
         this.currentRowIndex = this.initRowIndex;
