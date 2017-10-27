@@ -239,7 +239,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 git clone https://github.com/Crab2died/Excel4J.git Excel4J
 ```
 
-#### 2) maven 引用：
+#### 2) 最新版本maven 引用：
 ```
 <dependency>
     <groupId>com.github.crab2died</groupId>
