@@ -27,7 +27,6 @@
     // 读取数据转换器 Student2ExpelConverter
     @ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelConverter.class)
     private boolean expel;
-
 ```
 
 ## 三. 读取Excel快速实现
@@ -160,7 +159,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
     @Test
     public void testObject2Excel() throws Exception {
 
-        String tempPath = "D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\normal_template.xlsx";
+        String tempPath = "/normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
         list.add(new Student1("1010002", "古尔丹", "一年级三班"));
@@ -223,7 +222,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
             add(new Student1("1010003", "蒙多", "六年级一班"));
         }});
 
-        ExcelUtils.getInstance().exportObject2Excel("D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\map_template.xlsx",
+        ExcelUtils.getInstance().exportObject2Excel("/map_template.xlsx",
                 0, classes, data, Student1.class, false, "D:/C.xlsx");
     }
 ```

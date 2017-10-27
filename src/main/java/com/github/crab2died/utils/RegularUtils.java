@@ -90,9 +90,9 @@ public class RegularUtils {
 
         String match = null;
         try {
-            List<String> matchs = match(pattern, reg, 0);
-            if (null != matchs && matchs.size() > 0) {
-                match = matchs.get(0);
+            List<String> matches = match(pattern, reg, 0);
+            if (null != matches && matches.size() > 0) {
+                match = matches.get(0);
             }
         } catch (IllegalGroupIndexException e) {
             e.printStackTrace();

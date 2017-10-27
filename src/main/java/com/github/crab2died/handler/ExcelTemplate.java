@@ -17,6 +17,7 @@
 
 package com.github.crab2died.handler;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.*;
@@ -101,21 +102,24 @@ public class ExcelTemplate {
     private ExcelTemplate() {
     }
 
-    public static ExcelTemplate getInstance(String templatePath, int sheetIndex) {
+    public static ExcelTemplate getInstance(String templatePath, int sheetIndex) throws Exception {
         ExcelTemplate template = new ExcelTemplate();
         template.sheetIndex = sheetIndex;
-        try {
-            template.loadTemplate(templatePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        template.loadTemplate(templatePath);
         return template;
     }
 
     /*-----------------------------------初始化模板开始-----------------------------------*/
 
-    private void loadTemplate(String templatePath) throws Exception {
-        this.workbook = WorkbookFactory.create(ExcelTemplate.class.getResourceAsStream(templatePath));
+    private void loadTemplate(String templatePath) throws IOException, InvalidFormatException {
+
+        try {
+            // 读取模板文件
+            this.workbook = WorkbookFactory.create(new File(templatePath));
+        } catch (IOException | InvalidFormatException e) {
+            // 读取模板相对文件
+            this.workbook = WorkbookFactory.create(ExcelTemplate.class.getResourceAsStream(templatePath));
+        }
         this.sheet = this.workbook.getSheetAt(this.sheetIndex);
         initModuleConfig();
         this.currentRowIndex = this.initRowIndex;
@@ -336,12 +340,12 @@ public class ExcelTemplate {
     /**
      * 将文件写到相应的路径下
      *
-     * @param filepath 输出文件路径
+     * @param filePath 输出文件路径
      */
-    public void write2File(String filepath) {
+    public void write2File(String filePath) {
 
         try {
-            try (FileOutputStream fos = new FileOutputStream(filepath)) {
+            try (FileOutputStream fos = new FileOutputStream(filePath)) {
                 try {
                     this.workbook.write(fos);
                 } catch (IOException e) {

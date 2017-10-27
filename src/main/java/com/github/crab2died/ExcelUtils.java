@@ -63,8 +63,8 @@ public class ExcelUtils {
     /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
-    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine, int
-            sheetIndex) throws Exception {
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine,
+                                         int sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(new File(excelPath));
         return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
     }
@@ -100,9 +100,8 @@ public class ExcelUtils {
         return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0);
     }
 
-    private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz,
-                                                 int offsetLine, int limitLine,
-                                                 int sheetIndex) throws Exception {
+    private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine,
+                                                 int limitLine, int sheetIndex) throws Exception {
 
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(offsetLine);

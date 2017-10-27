@@ -18,7 +18,7 @@
 package com.github.crab2died.converter;
 
 /**
- * 默认转换器
+ * 默认转换器, 实现了{@link WriteConvertible} 与 {@link ReadConvertible}接口
  */
 public class DefaultConvertible implements WriteConvertible, ReadConvertible {
 

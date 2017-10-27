@@ -35,10 +35,31 @@ import java.util.regex.Pattern;
 public class Utils {
 
     /**
+     * <p>getter与setter方法的枚举</p>
+     * @author  Crab2Died
+     */
+    private enum MethodType {
+
+        GET("get"), SET("set");
+
+        private String value;
+
+        MethodType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
      * <p>根据JAVA对象注解获取Excel表头信息</p>
      *
      * @param clz 类型
      * @return 表头信息
+     * @throws IllegalAccessException 异常
+     * @throws InstantiationException 异常
      */
     static
     public List<ExcelHeader> getHeaderList(Class<?> clz) throws IllegalAccessException,
@@ -60,6 +81,15 @@ public class Utils {
         return headers;
     }
 
+    /**
+     * 获取excel列表头
+     *
+     * @param titleRow      excel行
+     * @param clz           类型
+     * @return  ExcelHeader集合
+     * @throws InstantiationException   异常
+     * @throws IllegalAccessException   异常
+     */
     static
     public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
             throws InstantiationException, IllegalAccessException {
@@ -78,6 +108,12 @@ public class Utils {
         return maps;
     }
 
+    /**
+     * 获取单元格内容
+     *
+     * @param c 单元格
+     * @return  单元格内容
+     */
     static
     public String getCellValue(Cell c) {
         String o;
@@ -106,6 +142,13 @@ public class Utils {
         return o;
     }
 
+    /**
+     * 字符串转对象
+     *
+     * @param strField  字符串
+     * @param clazz     待转类型
+     * @return  转换后数据
+     */
     static
     public Object str2TargetClass(String strField, Class<?> clazz) {
         if (null == strField || "".equals(strField))
@@ -137,6 +180,12 @@ public class Utils {
         return strField;
     }
 
+    /**
+     * 科学计数法数据转换
+     *
+     * @param bigDecimal 科学计数法
+     * @return  数据字符串
+     */
     private static String matchDoneBigDecimal(String bigDecimal) {
         // 对科学计数法进行处理
         boolean flg = Pattern.matches("^-?\\d+(\\.\\d+)?(E-?\\d+)?$", bigDecimal);
@@ -147,6 +196,14 @@ public class Utils {
         return bigDecimal;
     }
 
+    /**
+     * 获取字段的getter或setter方法
+     *
+     * @param fieldClass    字段类型
+     * @param fieldName     字段名
+     * @param methodType    getter或setter
+     * @return  getter或setter方法
+     */
     private static String getOrSet(Class fieldClass, String fieldName, MethodType methodType) {
 
         if (null == fieldClass || null == fieldName)
@@ -187,13 +244,26 @@ public class Utils {
         return methodType.getValue() + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
+    /**
+     * 根据属性名与属性类型获取字段内容
+     *
+     * @param bean              对象
+     * @param fieldName         字段名
+     * @param fieldClass        字段类型
+     * @param writeConvertible  写入转换器
+     * @return  对象指定字段内容
+     * @throws NoSuchMethodException        异常
+     * @throws InvocationTargetException    异常
+     * @throws IllegalAccessException       异常
+     */
     static
     public String getProperty(Object bean, String fieldName, Class fieldClass, WriteConvertible writeConvertible)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         Method method = bean.getClass().getDeclaredMethod(getOrSet(fieldClass, fieldName, MethodType.GET));
         Object object = method.invoke(bean);
         if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
+            // 写入转换器
             object = writeConvertible.execWrite(object);
         }
         return object.toString();

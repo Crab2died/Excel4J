@@ -30,25 +30,34 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelField {
 
-    /*
+    /**
      * 属性的标题名称
+     * @return 表头名
      */
     String title();
 
-    /*
+    /**
      * 写数据转换器
+     *
+     * @see WriteConvertible
+     * @return 写入Excel数据转换器
      */
     Class<? extends WriteConvertible> writeConverter()
             default DefaultConvertible.class;
 
-    /*
+    /**
      * 读数据转换器
+     *
+     * @see ReadConvertible
+     * @return 读取Excel数据转换器
      */
     Class<? extends ReadConvertible> readConverter()
             default DefaultConvertible.class;
 
-    /*
+    /**
      * 在excel的顺序
+     *
+     * @return 列表顺序
      */
     int order() default 9999;
 }

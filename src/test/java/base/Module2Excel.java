@@ -13,7 +13,7 @@ public class Module2Excel {
     @Test
     public void testObject2Excel() throws Exception {
 
-        String tempPath = "D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\normal_template.xlsx";
+        String tempPath = "D:\\JProject\\Excel4J\\src\\test\\resource\\normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
         list.add(new Student1("1010002", "古尔丹", "一年级三班"));
@@ -61,8 +61,8 @@ public class Module2Excel {
                 new Student1("1010003", "蒙多", "六年级一班")
         ));
 
-        ExcelUtils.getInstance().exportObject2Excel("D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\map_template.xlsx",
-                0, classes, data, Student1.class, false, "C.xlsx");
+        ExcelUtils.getInstance().exportObject2Excel("/map_template.xlsx",
+                0, classes, data, Student1.class, false, "D:/C.xlsx");
     }
 
     @Test
