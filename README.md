@@ -32,7 +32,22 @@
 ### 1.待读取Excel(截图)
 ![待读取Excel截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/students_02.png)
 
-### 2. 转换函数(/src/test/java/base/Excel2Module.java#excel2Object2)
+### 2. 读取转换函数(/src/test/java/converter/Student2ExpelConverter.java)
+```
+    /**
+     * excel是否开除 列数据转换器
+     */
+    public class Student2ExpelConverter implements ReadConvertible{
+    
+        @Override
+        public Object execRead(String object) {
+    
+            return object.equals("是");
+        }
+    }
+```
+
+### 3. 读取函数(/src/test/java/base/Excel2Module.java#excel2Object2)
 ```
     @Test
     public void excel2Object2() {
@@ -63,7 +78,7 @@
     }
 ```
 
-### 3. 转换结果
+### 4. 读取结果
 ```
 读取Excel至String数组：
 [10000000000001, 张三, 2016/01/19, 101, 是]
@@ -101,7 +116,24 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 
 ### 2. 带有写入转换函数的导出
 
-#### 1）导出函数(/src/test/java/base/Module2Excel.java#testWriteConverter)
+#### 1) 转换函数(/src/test/java/converter/Student2DateConverter.java)
+```
+    /**
+     * 导出excel日期数据转换器
+     */
+    public class Student2DateConverter implements WriteConvertible {
+    
+    
+        @Override
+        public Object execWrite(Object object) {
+    
+            Date date = (Date) object;
+            return DateUtils.date2Str(date, DateUtils.DATE_FORMAT_MSEC_T_Z);
+        }
+    }
+
+```
+#### 2）导出函数(/src/test/java/base/Module2Excel.java#testWriteConverter)
 ```
     // 验证日期转换函数 Student2DateConverter
     // 注解 `@ExcelField(title = "入学日期", order = 3, writeConverter = Student2DateConverter.class)`
@@ -115,7 +147,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
         ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "D:/D.xlsx");
     }
 ```
-#### 2) 导出效果(截图)
+#### 3) 导出效果(截图)
 ![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/converter_export.png)
 
 ### 3. 基于模板`List<Oject>`导出
@@ -200,10 +232,12 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ![导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/map_export.png)
 
 ## 五. 使用(JDK1.7及以上)
-#### 1) git clone https://github.com/Crab2died/Excel4J.git Excel4J
-#### 2) cd Excel4J
-#### 3) mvn install -DskipTests
-#### 4) maven 引用：
+#### 1) github拷贝项目
+```
+git clone https://github.com/Crab2died/Excel4J.git Excel4J
+```
+
+#### 2) maven 引用：
 ```
 <dependency>
     <groupId>com.github.crab2died</groupId>
