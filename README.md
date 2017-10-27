@@ -32,7 +32,7 @@
 ### 1.待读取Excel(截图)
 ![待读取Excel截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/students_02.png)
 
-### 2. 读取转换函数(/src/test/java/converter/Student2ExpelConverter.java)
+### 2. 读取转换器(/src/test/java/converter/Student2ExpelConverter.java)
 ```
     /**
      * excel是否开除 列数据转换器
@@ -114,9 +114,9 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 2) 导出效果(截图)
 ![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/list_export.png)
 
-### 2. 带有写入转换函数的导出
+### 2. 带有写入转换器函数的导出
 
-#### 1) 转换函数(/src/test/java/converter/Student2DateConverter.java)
+#### 1) 转换器(/src/test/java/converter/Student2DateConverter.java)
 ```
     /**
      * 导出excel日期数据转换器
