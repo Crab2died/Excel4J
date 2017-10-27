@@ -1,8 +1,9 @@
 package base;
 
 
-import com.github.ExcelUtils;
+import com.github.crab2died.ExcelUtils;
 import modules.Student1;
+import modules.Student2;
 import org.junit.Test;
 
 import java.util.*;
@@ -11,7 +12,7 @@ public class Module2Excel {
 
     @Test
     public void testObject2Excel() throws Exception {
-    	
+
         String tempPath = "D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
@@ -29,7 +30,7 @@ public class Module2Excel {
         // 基于模板导出Excel
         ExcelUtils.getInstance().exportObjects2Excel(tempPath, 0, list, data, Student1.class, false, "A.xlsx");
         // 不基于模板导出Excel
-        ExcelUtils.getInstance().exportObjects2Excel( list, Student1.class, true, null, true, "B.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student1.class, true, null, true, "B.xlsx");
     }
 
     @Test
@@ -42,23 +43,23 @@ public class Module2Excel {
         data.put("info", "学校统一花名册");
 
         classes.put("class_one", Arrays.asList(
-        		new Student1("1010009", "李四", "一年级一班"),
-        		new Student1("1010002", "古尔丹", "一年级三班")
-        		));
+                new Student1("1010009", "李四", "一年级一班"),
+                new Student1("1010002", "古尔丹", "一年级三班")
+        ));
         classes.put("class_two", Collections.singletonList(
                 new Student1("1010008", "战三", "二年级一班")
         ));
         classes.put("class_three", Arrays.asList(
-	            new Student1("1010004", "萝卜特", "三年级二班"),
-	            new Student1("1010005", "奥拉基", "三年级二班")
-	            ));
+                new Student1("1010004", "萝卜特", "三年级二班"),
+                new Student1("1010005", "奥拉基", "三年级二班")
+        ));
         classes.put("class_four", Collections.singletonList(
                 new Student1("1010006", "得嘞", "四年级二班")
         ));
         classes.put("class_six", Arrays.asList(
-	            new Student1("1010001", "盖伦", "六年级三班"),
-	            new Student1("1010003", "蒙多", "六年级一班")
-        		));
+                new Student1("1010001", "盖伦", "六年级三班"),
+                new Student1("1010003", "蒙多", "六年级一班")
+        ));
 
         ExcelUtils.getInstance().exportObject2Excel("D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\map_template.xlsx",
                 0, classes, data, Student1.class, false, "C.xlsx");
@@ -78,5 +79,17 @@ public class Module2Excel {
             header.add(i + "---栏");
         }
         ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D:\\D.xlsx");
+    }
+
+    // 验证日期转换函数 Student2DateConverter
+    // 注解 `@ExcelField(title = "入学日期", order = 3, writeConverter = Student2DateConverter.class)`
+    @Test
+    public void testWriteConverter() throws Exception {
+
+        List<Student2> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, false));
+        }
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "D:/D.xlsx");
     }
 }

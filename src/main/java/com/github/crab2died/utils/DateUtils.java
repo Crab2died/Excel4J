@@ -1,6 +1,6 @@
-package com.github.utils;
+package com.github.crab2died.utils;
 
-import com.github.exceptions.TimeMatchFormatException;
+import com.github.crab2died.exceptions.TimeMatchFormatException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

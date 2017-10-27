@@ -1,15 +1,15 @@
-package com.github.utils;
+package com.github.crab2died.utils;
 
-import com.github.annotation.ExcelField;
-import com.github.handler.ExcelHeader;
+import com.github.crab2died.annotation.ExcelField;
+import com.github.crab2died.converter.DefaultConvertible;
+import com.github.crab2died.converter.WriteConvertible;
+import com.github.crab2died.handler.ExcelHeader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -19,11 +19,13 @@ public class Utils {
 
     /**
      * <p>根据JAVA对象注解获取Excel表头信息</p>
+     *
      * @param clz 类型
      * @return 表头信息
      */
     static
-    public List<ExcelHeader> getHeaderList(Class<?> clz) {
+    public List<ExcelHeader> getHeaderList(Class<?> clz) throws IllegalAccessException,
+            InstantiationException {
         List<ExcelHeader> headers = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
         for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
@@ -33,7 +35,8 @@ public class Utils {
             // 是否使用ExcelField注解
             if (field.isAnnotationPresent(ExcelField.class)) {
                 ExcelField er = field.getAnnotation(ExcelField.class);
-                headers.add(new ExcelHeader(er.title(), er.order(), field.getName(), field.getType()));
+                headers.add(new ExcelHeader(er.title(), er.order(), er.writeConverter().newInstance(),
+                        er.readConverter().newInstance(), field.getName(), field.getType()));
             }
         }
         Collections.sort(headers);
@@ -41,7 +44,9 @@ public class Utils {
     }
 
     static
-    public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz) {
+    public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
+            throws InstantiationException, IllegalAccessException {
+
         List<ExcelHeader> headers = getHeaderList(clz);
         Map<Integer, ExcelHeader> maps = new HashMap<>();
         for (Cell c : titleRow) {
@@ -54,48 +59,6 @@ public class Utils {
             }
         }
         return maps;
-    }
-
-    static
-    public void outPutFile(Workbook wb, String outFilePath){
-        FileOutputStream fos = null;
-        try {
-            File f = new File(outFilePath);
-            if (f.getParentFile().isDirectory() && !f.getParentFile().exists()) {
-                if(!f.mkdirs()){
-                    throw new RuntimeException("创建文件夹失败 > " + outFilePath);
-                }
-            }
-            if (!f.exists()) {
-                if(!f.createNewFile()){
-                    throw new RuntimeException("创建文件失败 > " + outFilePath);
-                }
-            }
-            fos = new FileOutputStream(outFilePath);
-            wb.write(fos);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    /**
-     * 修正Cell的类型
-     * @param c 单元格
-     * @param clazz 类型
-     */
-    static
-    public void fixCellType(Cell c, Class<?> clazz){
-    	int cellType = c.getCellType();
-    	if(clazz == String.class && cellType != Cell.CELL_TYPE_STRING){
-    		c.setCellType(Cell.CELL_TYPE_STRING);
-    	}
     }
 
     static
@@ -125,9 +88,9 @@ public class Utils {
         }
         return o;
     }
-    
-    static 
-    public Object str2TargetClass(String strField, Class<?> clazz){
+
+    static
+    public Object str2TargetClass(String strField, Class<?> clazz) {
         if (null == strField || "".equals(strField))
             return null;
         if ((Long.class == clazz) || (long.class == clazz)) {
@@ -157,7 +120,8 @@ public class Utils {
         return strField;
     }
 
-    private static String matchDoneBigDecimal(String bigDecimal){
+    private static String matchDoneBigDecimal(String bigDecimal) {
+        // 对科学计数法进行处理
         boolean flg = Pattern.matches("^-?\\d+(\\.\\d+)?(E-?\\d+)?$", bigDecimal);
         if (flg) {
             BigDecimal bd = new BigDecimal(bigDecimal);
@@ -165,4 +129,57 @@ public class Utils {
         }
         return bigDecimal;
     }
+
+    private static String getOrSet(Class fieldClass, String fieldName, MethodType methodType) {
+
+        if (null == fieldClass || null == fieldName)
+            return null;
+
+        // 对boolean类型的特殊处理
+        if (boolean.class == fieldClass) {
+            if (MethodType.SET == methodType) {
+                if (fieldName.startsWith("is") &&
+                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
+                    return methodType.getValue() + fieldName.substring(2);
+                }
+            }
+            if (MethodType.GET == methodType) {
+                if (fieldName.startsWith("is") &&
+                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
+                    return fieldName;
+                } else {
+                    return "is" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                }
+            }
+        }
+        // 对Boolean类型的特殊处理
+        if (Boolean.class == fieldClass) {
+            if (MethodType.SET == methodType) {
+                if (fieldName.startsWith("is") &&
+                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
+                    return methodType.getValue() + fieldName.substring(2);
+                }
+            }
+            if (MethodType.GET == methodType) {
+                if (fieldName.startsWith("is") &&
+                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
+                    return methodType.getValue() + fieldName.substring(2);
+                }
+            }
+        }
+        return methodType.getValue() + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    }
+
+    static
+    public String getProperty(Object bean, String fieldName, Class fieldClass, WriteConvertible writeConvertible)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+
+        Method method = bean.getClass().getDeclaredMethod(getOrSet(fieldClass, fieldName, MethodType.GET));
+        Object object = method.invoke(bean);
+        if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
+            object = writeConvertible.execWrite(object);
+        }
+        return object.toString();
+    }
+
 }

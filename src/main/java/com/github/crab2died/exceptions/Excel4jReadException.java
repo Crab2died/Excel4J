@@ -1,4 +1,4 @@
-package com.github.exceptions;
+package com.github.crab2died.exceptions;
 
 public class Excel4jReadException extends Exception {
 

@@ -1,21 +1,38 @@
-package com.github.handler;
+package com.github.crab2died.handler;
+
+import com.github.crab2died.converter.ReadConvertible;
+import com.github.crab2died.converter.WriteConvertible;
 
 /**
  * 功能说明: 用来存储Excel标题的对象，通过该对象可以获取标题和方法的对应关系
  */
 public class ExcelHeader implements Comparable<ExcelHeader> {
+
     /**
      * excel的标题名称
      */
     private String title;
+
     /**
      * 每一个标题的顺序
      */
     private int order;
+
+    /**
+     * 写数据转换器
+     */
+    private WriteConvertible writeConverter;
+
+    /**
+     * 读数据转换器
+     */
+    private ReadConvertible readConverter;
+
     /**
      * 注解域
      */
     private String filed;
+
     /**
      * 属性类型
      */
@@ -35,6 +52,22 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public WriteConvertible getWriteConverter() {
+        return writeConverter;
+    }
+
+    public void setWriteConverter(WriteConvertible writeConverter) {
+        this.writeConverter = writeConverter;
+    }
+
+    public ReadConvertible getReadConverter() {
+        return readConverter;
+    }
+
+    public void setReadConverter(ReadConvertible readConverter) {
+        this.readConverter = readConverter;
     }
 
     public String getFiled() {
@@ -58,12 +91,13 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
         return order - o.order;
     }
 
-    public ExcelHeader(String title, int order, String filed, Class<?> filedClazz) {
-        super();
+    public ExcelHeader(String title, int order, WriteConvertible writeConverter, ReadConvertible readConverter,
+                       String filed, Class<?> filedClazz) {
         this.title = title;
         this.order = order;
+        this.writeConverter = writeConverter;
+        this.readConverter = readConverter;
         this.filed = filed;
         this.filedClazz = filedClazz;
     }
-
 }

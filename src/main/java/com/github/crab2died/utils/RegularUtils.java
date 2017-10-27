@@ -1,6 +1,6 @@
-package com.github.utils;
+package com.github.crab2died.utils;
 
-import com.github.exceptions.IllegalGroupIndexException;
+import com.github.crab2died.exceptions.IllegalGroupIndexException;
 
 import java.util.ArrayList;
 import java.util.List;

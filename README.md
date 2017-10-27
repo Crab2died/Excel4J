@@ -1,27 +1,30 @@
-# Excel4J v2.0.0
+# Excel4J v2.x
    
-## 一. v2.0.0新特性
+## 一. v2.x新特性
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
 2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
 3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
 4. Excel新增了Map数据样式映射功能(模板可以为每个key设置一个样式,具体定义为:&key, 导出Map数据的样式将与key值映射)
+5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
+6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
+7. 修复相关bug
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
 ```
-   @ExcelField(title = "学号", order = 1)
-   private Long id;
+    @ExcelField(title = "学号", order = 1)
+    private Long id;
 
-   @ExcelField(title = "姓名", order = 2)
-   private String name;
+    @ExcelField(title = "姓名", order = 2)
+    private String name;
+    
+    @ExcelField(title = "入学日期", order = 3, writeConverter = Student2DateConverter.class)
+    private Date date;
 
-   @ExcelField(title = "入学日期", order = 3)
-   private Date date;
+    @ExcelField(title = "班级", order = 4)
+    private Integer classes;
 
-   @ExcelField(title = "班级", order = 4)
-   private Integer classes;
-
-   @ExcelField(title = "是否开除", order = 5)
-   private String expel;
+    @ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelConverter.class)
+    private boolean expel;
 ```
 
 ## 三. 读取Excel快速实现
@@ -31,24 +34,33 @@
 
 ### 2. 转换函数(/src/test/java/base/Excel2Module.java#excel2Object2)
 ```
-   @Test
-   public void excel2Object2() throws Exception {
-       
-       String path = "D:\\IdeaSpace\\Excel4J\\src\\test\\resource\\students_02.xlsx";
+    @Test
+    public void excel2Object2() {
 
-       // 不基于注解,将Excel内容读至List<List<String>>对象内
-       List<List<String>> lists = ExcelUtils.getInstance().readExcel2List(path, 1, 3, 0);
-       System.out.println("读取Excel至String数组：");
-       for (List<String> list : lists) {
-           System.out.println(list);
-       }
-       // 基于注解,将Excel内容读至List<Student2>对象内
-       List<Student2> students = ExcelUtils.getInstance().readExcel2Objects(path, Student2.class, 0);
-       System.out.println("读取Excel至对象数组(支持类型转换)：");
-       for (Student2 st : students) {
-           System.out.println(st);
-       }
-   }
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resource\\students_02.xlsx";
+        try {
+            
+            // 1)
+            // 不基于注解,将Excel内容读至List<List<String>>对象内
+            List<List<String>> lists = ExcelUtils.getInstance().readExcel2List(path, 1, 2, 0);
+            System.out.println("读取Excel至String数组：");
+            for (List<String> list : lists) {
+                System.out.println(list);
+            }
+            
+            // 2)
+            // 基于注解,将Excel内容读至List<Student2>对象内
+            // 验证读取转换函数Student2ExpelConverter 
+            // 注解 `@ExcelField(title = "是否开除", order = 5, readConverter =  Student2ExpelConverter.class)`
+            List<Student2> students = ExcelUtils.getInstance().readExcel2Objects(path, Student2.class, 0, 0);
+            System.out.println("读取Excel至对象数组(支持类型转换)：");
+            for (Student2 st : students) {
+                System.out.println(st);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 ```
 
 ### 3. 转换结果
@@ -56,11 +68,10 @@
 读取Excel至String数组：
 [10000000000001, 张三, 2016/01/19, 101, 是]
 [10000000000002, 李四, 2017-11-17 10:19:10, 201, 否]
-[10000000000004, 王二, 2017/11/17, 301, 否]
 读取Excel至对象数组(支持类型转换)：
-Student2{id=10000000000001, name='张三', date=Tue Jan 19 00:00:00 CST 2016, classes=101, expel='是'}
-Student2{id=10000000000002, name='李四', date=Fri Nov 17 10:19:10 CST 2017, classes=201, expel='否'}
-Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, classes=301, expel='否'}
+Student2{id=10000000000001, name='张三', date=Tue Jan 19 00:00:00 CST 2016, classes=101, expel='true'}
+Student2{id=10000000000002, name='李四', date=Fri Nov 17 10:19:10 CST 2017, classes=201, expel='false'}
+Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, classes=301, expel='false'}
 ```
 
 ## 四. 导出Excel
@@ -88,7 +99,26 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 2) 导出效果(截图)
 ![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/list_export.png)
 
-### 2. 基于模板`List<Oject>`导出
+### 2. 带有写入转换函数的导出
+
+#### 1）导出函数(/src/test/java/base/Module2Excel.java#testWriteConverter)
+```
+    // 验证日期转换函数 Student2DateConverter
+    // 注解 `@ExcelField(title = "入学日期", order = 3, writeConverter = Student2DateConverter.class)`
+    @Test
+    public void testWriteConverter() throws Exception {
+
+        List<Student2> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, false));
+        }
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "D:/D.xlsx");
+    }
+```
+#### 2) 导出效果(截图)
+![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/converter_export.png)
+
+### 3. 基于模板`List<Oject>`导出
 
 #### 1) 导出函数(/src/test/java/base/Module2Excel.java#testObject2Excel)
 ```
@@ -126,7 +156,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 4) 不基于模板导出结果(截图)
 ![不基于模板导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/object_export.png)
 
-### 3. 基于模板`Map<String, Collection<Object.toString>>`导出
+### 4. 基于模板`Map<String, Collection<Object.toString>>`导出
 
 #### 1) 导出函数(/src/test/java/base/Module2Excel.java#testMap2Excel)
 ```
@@ -170,11 +200,15 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ![导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/map_export.png)
 
 ## 五. 使用(JDK1.7及以上)
+#### 1) git clone https://github.com/Crab2died/Excel4J.git Excel4J
+#### 2) cd Excel4J
+#### 3) mvn install -DskipTests
+#### 4) maven 引用：
 ```
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.0.2</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 

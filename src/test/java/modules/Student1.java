@@ -1,7 +1,7 @@
 package modules;
 
 
-import com.github.annotation.ExcelField;
+import com.github.crab2died.annotation.ExcelField;
 
 public class Student1 {
 

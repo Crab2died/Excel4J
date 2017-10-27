@@ -1,4 +1,4 @@
-package com.github.exceptions;
+package com.github.crab2died.exceptions;
 
 /**
  * author : Crab2Died

@@ -1,9 +1,10 @@
-package com.github;
+package com.github.crab2died;
 
-import com.github.exceptions.Excel4jReadException;
-import com.github.handler.ExcelHeader;
-import com.github.handler.ExcelTemplate;
-import com.github.utils.Utils;
+import com.github.crab2died.converter.DefaultConvertible;
+import com.github.crab2died.exceptions.Excel4jReadException;
+import com.github.crab2died.handler.ExcelHeader;
+import com.github.crab2died.handler.ExcelTemplate;
+import com.github.crab2died.utils.Utils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -54,6 +55,11 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
     }
 
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int sheetIndex)
+            throws Exception {
+        return readExcel2Objects(excelPath, clazz, offsetLine, Integer.MAX_VALUE, sheetIndex);
+    }
+
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
             throws Exception {
         return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex);
@@ -75,17 +81,19 @@ public class ExcelUtils {
         return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0);
     }
 
-    private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine, int limitLine,
+    private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz,
+                                                 int offsetLine, int limitLine,
                                                  int sheetIndex) throws Exception {
+
         Sheet sheet = workbook.getSheetAt(sheetIndex);
-        Row row = sheet.getRow(0);
+        Row row = sheet.getRow(offsetLine);
         List<T> list = new ArrayList<>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
             throw new Excel4jReadException("要读取的Excel的格式不正确，检查是否设定了合适的行");
-        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
-                .getLastRowNum();
-        for (int i = offsetLine; i <= maxLine; i++) {
+        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ?
+                (offsetLine + limitLine) : sheet.getLastRowNum();
+        for (int i = offsetLine + 1; i <= maxLine; i++) {
             row = sheet.getRow(i);
             T obj = clazz.newInstance();
             for (Cell cell : row) {
@@ -93,9 +101,17 @@ public class ExcelUtils {
                 ExcelHeader header = maps.get(ci);
                 if (null == header)
                     continue;
-                String filed = header.getFiled();
                 String val = Utils.getCellValue(cell);
-                Object value = Utils.str2TargetClass(val, header.getFiledClazz());
+                Object value;
+                String filed = header.getFiled();
+                // 读取转换器
+                if (null != header.getReadConverter() &&
+                        header.getReadConverter().getClass() != DefaultConvertible.class) {
+                    value = header.getReadConverter().execRead(val);
+                } else {
+                    // 默认转换
+                    value = Utils.str2TargetClass(val, header.getFiledClazz());
+                }
                 BeanUtils.copyProperty(obj, filed, value);
             }
             list.add(obj);
@@ -155,15 +171,17 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
     }
 
-    private List<List<String>> readExcel2ObjectsHandler(Workbook workbook, int offsetLine, int limitLine, int
-            sheetIndex)
+    private List<List<String>> readExcel2ObjectsHandler(Workbook workbook,
+                                                        int offsetLine,
+                                                        int limitLine,
+                                                        int sheetIndex)
             throws Exception {
 
         List<List<String>> list = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(sheetIndex);
-        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ? (offsetLine + limitLine) : sheet
-                .getLastRowNum();
-        for (int i = offsetLine; i <= maxLine; i++) {
+        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ?
+                (offsetLine + limitLine) : sheet.getLastRowNum();
+        for (int i = offsetLine; i < maxLine; i++) {
             List<String> rows = new ArrayList<>();
             Row row = sheet.getRow(i);
             for (Cell cell : row) {
@@ -260,7 +278,11 @@ public class ExcelUtils {
             templates.createNewRow();
             templates.insertSerial(null);
             for (ExcelHeader header : headers) {
-                templates.createCell(BeanUtils.getProperty(object, header.getFiled()), null);
+                templates.createCell(Utils.getProperty(object,
+                        header.getFiled(),
+                        header.getFiledClazz(),
+                        header.getWriteConverter()),
+                        null);
             }
         }
         return templates;
@@ -309,9 +331,9 @@ public class ExcelUtils {
                 .write2Stream(os);
     }
 
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex, Map<String, List<?>> data,
-                                                     Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
-            throws Exception {
+    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
+                                                     Map<String, List<?>> data, Map<String, String> extendMap,
+                                                     Class clazz, boolean isWriteHeader) throws Exception {
 
         ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
         templates.extendData(extendMap);
@@ -328,7 +350,9 @@ public class ExcelUtils {
                 templates.createNewRow();
                 templates.insertSerial(entry.getKey());
                 for (ExcelHeader header : headers) {
-                    templates.createCell(BeanUtils.getProperty(object, header.getFiled()), entry.getKey());
+                    templates.createCell(Utils.getProperty(object, header.getFiled(),
+                            header.getFiledClazz(), header.getWriteConverter()),
+                            entry.getKey());
                 }
             }
         }
@@ -374,8 +398,8 @@ public class ExcelUtils {
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(os);
     }
 
-    private Workbook exportExcelNoModuleHandler(List<?> data, Class clazz, boolean isWriteHeader, String sheetName,
-                                                boolean isXSSF) throws Exception {
+    private Workbook exportExcelNoModuleHandler(List<?> data, Class clazz, boolean isWriteHeader,
+                                                String sheetName, boolean isXSSF) throws Exception {
 
         Workbook workbook;
         if (isXSSF) {
@@ -403,7 +427,10 @@ public class ExcelUtils {
             row = sheet.createRow(i + 1);
             _data = data.get(i);
             for (int j = 0; j < headers.size(); j++) {
-                row.createCell(j).setCellValue(BeanUtils.getProperty(_data, headers.get(j).getFiled()));
+                row.createCell(j).setCellValue(Utils.getProperty(_data,
+                        headers.get(j).getFiled(),
+                        headers.get(j).getFiledClazz(),
+                        headers.get(j).getWriteConverter()));
             }
         }
         return workbook;
@@ -455,7 +482,8 @@ public class ExcelUtils {
         exportExcelNoModuleHandler(data, null, null, true).write(os);
     }
 
-    private Workbook exportExcelNoModuleHandler(List<?> data, List<String> header, String sheetName, boolean isXSSF)
+    private Workbook exportExcelNoModuleHandler(List<?> data, List<String> header,
+                                                String sheetName, boolean isXSSF)
             throws Exception {
 
         Workbook workbook;
