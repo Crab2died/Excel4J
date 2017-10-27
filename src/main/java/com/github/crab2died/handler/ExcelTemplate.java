@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.crab2died.handler;
 
 import org.apache.poi.ss.usermodel.*;
@@ -95,7 +112,7 @@ public class ExcelTemplate {
         return template;
     }
 
-    /***********************************初始化模板开始***********************************/
+    /*-----------------------------------初始化模板开始-----------------------------------*/
 
     private void loadTemplate(String templatePath) throws Exception {
         this.workbook = WorkbookFactory.create(ExcelTemplate.class.getResourceAsStream(templatePath));
@@ -164,10 +181,10 @@ public class ExcelTemplate {
         cell.setCellValue("");
     }
 
-    /***********************************初始化模板结束***********************************/
+    /*-----------------------------------初始化模板结束-----------------------------------*/
 
 
-    /*************************************数据填充开始***********************************/
+    /*-----------------------------------数据填充开始------------------------------------*/
 
     /**
      * 根据map替换相应的常量，通过Map中的值来替换#开头的值
@@ -312,9 +329,9 @@ public class ExcelTemplate {
         if (null != this.defaultStyle)
             cell.setCellStyle(this.defaultStyle);
     }
-    /*************************************数据填充结束***********************************/
+    /*-----------------------------------数据填充结束-----------------------------------*/
 
-    /*************************************写出数据开始***********************************/
+    /*-----------------------------------写出数据开始-----------------------------------*/
 
     /**
      * 将文件写到相应的路径下
@@ -352,6 +369,6 @@ public class ExcelTemplate {
         }
     }
 
-    /*************************************写出数据结束***********************************/
+    /*-----------------------------------写出数据结束-----------------------------------*/
 
 }
