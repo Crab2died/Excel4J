@@ -21,13 +21,16 @@ import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.converter.ReadConvertible;
 import com.github.crab2died.converter.WriteConvertible;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 功能说明: 用来在对象的属性上加入的annotation，通过该annotation说明某个属性所对应的标题
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface ExcelField {
 
     /**
