@@ -16,15 +16,18 @@
 
     @ExcelField(title = "姓名", order = 2)
     private String name;
-    
+
+    // 写入数据转换器 Student2DateConverter
     @ExcelField(title = "入学日期", order = 3, writeConverter = Student2DateConverter.class)
     private Date date;
 
     @ExcelField(title = "班级", order = 4)
     private Integer classes;
 
+    // 读取数据转换器 Student2ExpelConverter
     @ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelConverter.class)
     private boolean expel;
+
 ```
 
 ## 三. 读取Excel快速实现
