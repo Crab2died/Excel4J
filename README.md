@@ -4,7 +4,7 @@
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
 2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
 3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
-4. Excel新增了Map数据样式映射功能(模板可以为每个key设置一个样式,具体定义为:&key, 导出Map数据的样式将与key值映射)
+4. Excel新增了Map数据样式映射功能(模板可为每个key设置一个样式,定义为:&key, 导出Map数据的样式将与key值映射)
 5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
 6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
 7. 修复相关bug
