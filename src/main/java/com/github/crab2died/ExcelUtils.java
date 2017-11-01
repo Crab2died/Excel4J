@@ -109,8 +109,10 @@ public class ExcelUtils {
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
         if (maps == null || maps.size() <= 0)
             throw new Excel4jReadException("The Excel format to read is not correct, and check to see if the appropriate rows are set");
-        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ?
-                (offsetLine + limitLine) : sheet.getLastRowNum();
+
+        long maxLine = sheet.getLastRowNum() > ((long)offsetLine + limitLine) ?
+                ((long)offsetLine + limitLine) : sheet.getLastRowNum();
+
         for (int i = offsetLine + 1; i <= maxLine; i++) {
             row = sheet.getRow(i);
             T obj = clazz.newInstance();
@@ -194,8 +196,8 @@ public class ExcelUtils {
 
         List<List<String>> list = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(sheetIndex);
-        int maxLine = sheet.getLastRowNum() > (offsetLine + limitLine) ?
-                (offsetLine + limitLine) : sheet.getLastRowNum();
+        long maxLine = sheet.getLastRowNum() > ((long)offsetLine + limitLine) ?
+                ((long)offsetLine + limitLine) : sheet.getLastRowNum();
         for (int i = offsetLine; i < maxLine; i++) {
             List<String> rows = new ArrayList<>();
             Row row = sheet.getRow(i);
