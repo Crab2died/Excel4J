@@ -45,7 +45,8 @@ public class Utils {
 
     /**
      * <p>getter与setter方法的枚举</p>
-     * @author  Crab2Died
+     *
+     * @author Crab2Died
      */
     private enum MethodType {
 
@@ -93,11 +94,11 @@ public class Utils {
     /**
      * 获取excel列表头
      *
-     * @param titleRow      excel行
-     * @param clz           类型
-     * @return  ExcelHeader集合
-     * @throws InstantiationException   异常
-     * @throws IllegalAccessException   异常
+     * @param titleRow excel行
+     * @param clz      类型
+     * @return ExcelHeader集合
+     * @throws InstantiationException 异常
+     * @throws IllegalAccessException 异常
      */
     static
     public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
@@ -121,7 +122,7 @@ public class Utils {
      * 获取单元格内容
      *
      * @param c 单元格
-     * @return  单元格内容
+     * @return 单元格内容
      */
     static
     public String getCellValue(Cell c) {
@@ -154,9 +155,9 @@ public class Utils {
     /**
      * 字符串转对象
      *
-     * @param strField  字符串
-     * @param clazz     待转类型
-     * @return  转换后数据
+     * @param strField 字符串
+     * @param clazz    待转类型
+     * @return 转换后数据
      */
     static
     public Object str2TargetClass(String strField, Class<?> clazz) {
@@ -183,7 +184,7 @@ public class Utils {
         if ((Character.class == clazz) || (char.class == clazz)) {
             return strField.toCharArray()[0];
         }
-        if ((Boolean.class == clazz) || (boolean.class == clazz)){
+        if ((Boolean.class == clazz) || (boolean.class == clazz)) {
             return Boolean.parseBoolean(strField);
         }
         if (Date.class == clazz) {
@@ -196,7 +197,7 @@ public class Utils {
      * 科学计数法数据转换
      *
      * @param bigDecimal 科学计数法
-     * @return  数据字符串
+     * @return 数据字符串
      */
     private static String matchDoneBigDecimal(String bigDecimal) {
         // 对科学计数法进行处理
@@ -211,10 +212,10 @@ public class Utils {
     /**
      * 获取字段的getter或setter方法
      *
-     * @param fieldClass    字段类型
-     * @param fieldName     字段名
-     * @param methodType    getter或setter
-     * @return  getter或setter方法
+     * @param fieldClass 字段类型
+     * @param fieldName  字段名
+     * @param methodType getter或setter
+     * @return getter或setter方法
      */
     private static String getOrSet(Class fieldClass, String fieldName, MethodType methodType) {
 
@@ -258,11 +259,11 @@ public class Utils {
 
     /**
      * <p>根据对象的属性名{@code fieldName}获取某个java的属性{@link java.lang.reflect.Field}</p>
-     * @author  Crab2Died
      *
      * @param clazz     java对象的class属性
      * @param fieldName 属性名
      * @return {@link java.lang.reflect.Field}   java对象的属性
+     * @author Crab2Died
      */
     private static Field matchClassField(Class clazz, String fieldName) {
         List<Field> fields = new ArrayList<>();
@@ -280,14 +281,14 @@ public class Utils {
     /**
      * 根据属性名与属性类型获取字段内容
      *
-     * @param bean              对象
-     * @param fieldName         字段名
-     * @param fieldClass        字段类型
-     * @param writeConvertible  写入转换器
-     * @return  对象指定字段内容
-     * @throws NoSuchMethodException        异常
-     * @throws InvocationTargetException    异常
-     * @throws IllegalAccessException       异常
+     * @param bean             对象
+     * @param fieldName        字段名
+     * @param fieldClass       字段类型
+     * @param writeConvertible 写入转换器
+     * @return 对象指定字段内容
+     * @throws NoSuchMethodException     异常
+     * @throws InvocationTargetException 异常
+     * @throws IllegalAccessException    异常
      */
     static
     public String getProperty(Object bean, String fieldName, Class fieldClass, WriteConvertible writeConvertible)
@@ -306,16 +307,16 @@ public class Utils {
     public void copyProperty(Object bean, String name, Object value) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
         Field field = matchClassField(bean.getClass(), name);
-        if(null == field)
+        if (null == field)
             return;
         Method method = bean.getClass().getDeclaredMethod(
-                getOrSet(field.getType(),  name, MethodType.SET),
+                getOrSet(field.getType(), name, MethodType.SET),
                 field.getType()
         );
-        if(value.getClass() == field.getType()){
+        if (value.getClass() == field.getType()) {
             method.invoke(bean, value);
-        }else{
-             method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
+        } else {
+            method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
         }
     }
 }
