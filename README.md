@@ -244,10 +244,12 @@ git clone https://github.com/Crab2died/Excel4J.git Excel4J
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 </dependency>
 ```
 
-## 六. 链接
+## 六. 开源协议:Apache-2.0
+
+## 七. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
 #### 码云   -> [码云](https://git.oschina.net/Crab2Died/Excel4J)

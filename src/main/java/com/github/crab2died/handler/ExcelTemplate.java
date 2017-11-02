@@ -1,4 +1,8 @@
 /*
+ *
+ *                  Copyright 2017 Crab2Died
+ *                     All rights reserved.
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,6 +17,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Browse for more information ：
+ * 1) https://gitee.com/Crab2Died/Excel4J
+ * 2) https://github.com/Crab2died/Excel4J
+ *
  */
 
 package com.github.crab2died.handler;
@@ -228,7 +237,8 @@ public class ExcelTemplate {
 
     /**
      * 插入序号，会自动找相应的序号标示的位置完成插入
-     * @param styleKey  样式标识
+     *
+     * @param styleKey 样式标识
      */
     public void insertSerial(String styleKey) {
         if (this.serialNumberColumnIndex < 0)
@@ -241,8 +251,9 @@ public class ExcelTemplate {
 
     /**
      * <p>设置Excel元素样式及内容</p>
-     * @param value 内容
-     * @param styleKey  样式
+     *
+     * @param value    内容
+     * @param styleKey 样式
      */
     public void createCell(Object value, String styleKey) {
         Cell cell = this.currentRow.createCell(currentColumnIndex);
@@ -309,8 +320,8 @@ public class ExcelTemplate {
     /**
      * 设置某个元素的样式
      *
-     * @param cell cell元素
-     * @param styleKey  样式标识
+     * @param cell     cell元素
+     * @param styleKey 样式标识
      */
     private void setCellStyle(Cell cell, String styleKey) {
         if (null != styleKey && null != this.classifyStyle.get(styleKey)) {
@@ -341,21 +352,12 @@ public class ExcelTemplate {
      * 将文件写到相应的路径下
      *
      * @param filePath 输出文件路径
+     * @throws IOException IO异常
      */
-    public void write2File(String filePath) {
+    public void write2File(String filePath) throws IOException {
 
-        try {
-            try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                try {
-                    this.workbook.write(fos);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("写入的文件不存在");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("写入数据失败:" + e);
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            this.workbook.write(fos);
         }
     }
 
@@ -363,14 +365,11 @@ public class ExcelTemplate {
      * 将文件写到某个输出流中
      *
      * @param os 输出流
+     * @throws IOException IO异常
      */
-    public void write2Stream(OutputStream os) {
-        try {
-            this.workbook.write(os);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("写入流失败:" + e);
-        }
+    public void write2Stream(OutputStream os) throws IOException {
+
+        this.workbook.write(os);
     }
 
     /*-----------------------------------写出数据结束-----------------------------------*/

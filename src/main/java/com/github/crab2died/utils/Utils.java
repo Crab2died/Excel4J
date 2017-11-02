@@ -1,4 +1,8 @@
 /*
+ *
+ *                  Copyright 2017 Crab2Died
+ *                     All rights reserved.
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,6 +17,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Browse for more information ：
+ * 1) https://gitee.com/Crab2Died/Excel4J
+ * 2) https://github.com/Crab2died/Excel4J
+ *
  */
 
 package com.github.crab2died.utils;
@@ -174,6 +183,9 @@ public class Utils {
         if ((Character.class == clazz) || (char.class == clazz)) {
             return strField.toCharArray()[0];
         }
+        if ((Boolean.class == clazz) || (boolean.class == clazz)){
+            return Boolean.parseBoolean(strField);
+        }
         if (Date.class == clazz) {
             return DateUtils.str2DateUnmatch2Null(strField);
         }
@@ -245,6 +257,27 @@ public class Utils {
     }
 
     /**
+     * <p>根据对象的属性名{@code fieldName}获取某个java的属性{@link java.lang.reflect.Field}</p>
+     * @author  Crab2Died
+     *
+     * @param clazz     java对象的class属性
+     * @param fieldName 属性名
+     * @return {@link java.lang.reflect.Field}   java对象的属性
+     */
+    private static Field matchClassField(Class clazz, String fieldName) {
+        List<Field> fields = new ArrayList<>();
+        for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        }
+        for (Field field : fields) {
+            if (fieldName.equals(field.getName())) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 根据属性名与属性类型获取字段内容
      *
      * @param bean              对象
@@ -269,4 +302,20 @@ public class Utils {
         return object.toString();
     }
 
+    static
+    public void copyProperty(Object bean, String name, Object value) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+        Field field = matchClassField(bean.getClass(), name);
+        if(null == field)
+            return;
+        Method method = bean.getClass().getDeclaredMethod(
+                getOrSet(field.getType(),  name, MethodType.SET),
+                field.getType()
+        );
+        if(value.getClass() == field.getType()){
+            method.invoke(bean, value);
+        }else{
+             method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
+        }
+    }
 }

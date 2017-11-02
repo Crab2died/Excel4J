@@ -1,4 +1,8 @@
 /*
+ *
+ *                  Copyright 2017 Crab2Died
+ *                     All rights reserved.
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,6 +17,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Browse for more information ：
+ * 1) https://gitee.com/Crab2Died/Excel4J
+ * 2) https://github.com/Crab2died/Excel4J
+ *
  */
 
 package com.github.crab2died.utils;
@@ -85,6 +94,7 @@ public class RegularUtils {
      * @param pattern 匹配目标内容
      * @param reg     正则表达式
      * @return 提取内容集合
+     * @throws IllegalGroupIndexException 异常
      */
     static public String match(String pattern, String reg) throws IllegalGroupIndexException {
 

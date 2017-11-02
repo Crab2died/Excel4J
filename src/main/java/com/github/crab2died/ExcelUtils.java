@@ -1,4 +1,8 @@
 /*
+ *
+ *                  Copyright 2017 Crab2Died
+ *                     All rights reserved.
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,6 +17,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Browse for more information ：
+ * 1) https://gitee.com/Crab2Died/Excel4J
+ * 2) https://github.com/Crab2died/Excel4J
+ *
  */
 
 package com.github.crab2died;
@@ -22,7 +31,6 @@ import com.github.crab2died.exceptions.Excel4jReadException;
 import com.github.crab2died.handler.ExcelHeader;
 import com.github.crab2died.handler.ExcelTemplate;
 import com.github.crab2died.utils.Utils;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -132,7 +140,7 @@ public class ExcelUtils {
                     // 默认转换
                     value = Utils.str2TargetClass(val, header.getFiledClazz());
                 }
-                BeanUtils.copyProperty(obj, filed, value);
+                Utils.copyProperty(obj, filed, value);
             }
             list.add(obj);
         }

@@ -4,11 +4,11 @@
 
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
-    <description>Operation EXCEL based on poi</description>
+    <description>Excel operation component based on poi </description>
     <url>https://github.com/Crab2died/Excel4J</url>
 
     <properties>
@@ -44,11 +44,6 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
