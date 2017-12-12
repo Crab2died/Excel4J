@@ -249,7 +249,8 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ## 六. 使用(JDK1.7及以上)
 #### 1) github拷贝项目
 ```
-git clone https://github.com/Crab2died/Excel4J.git Excel4J
+>> git clone https://github.com/Crab2died/Excel4J.git Excel4J
+>> package.cmd
 ```
 
 #### 2) 最新版本maven 引用：
@@ -265,4 +266,4 @@ git clone https://github.com/Crab2died/Excel4J.git Excel4J
 
 ## 八. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
-#### 码云   -> [码云](https://git.oschina.net/Crab2Died/Excel4J)
+#### 码云(gitee) -> [码云地址](https://gitee.com/Crab2Died/Excel4J)
