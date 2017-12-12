@@ -294,18 +294,22 @@ public class Utils {
     public String getProperty(Object bean, String fieldName, Class fieldClass, WriteConvertible writeConvertible)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
+        if (bean == null || fieldClass == null)
+            throw new IllegalArgumentException("Operating bean or filed class must not be null");
         Method method = bean.getClass().getDeclaredMethod(getOrSet(fieldClass, fieldName, MethodType.GET));
         Object object = method.invoke(bean);
         if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
             // 写入转换器
             object = writeConvertible.execWrite(object);
         }
-        return object.toString();
+        return object == null ? "" : object.toString();
     }
 
     static
     public void copyProperty(Object bean, String name, Object value) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
+        if (null == name || null == value)
+            return;
         Field field = matchClassField(bean.getClass(), name);
         if (null == field)
             return;

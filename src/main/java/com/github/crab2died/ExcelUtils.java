@@ -124,6 +124,8 @@ public class ExcelUtils {
 
         for (int i = offsetLine + 1; i <= maxLine; i++) {
             row = sheet.getRow(i);
+            if (null == row)
+                continue;
             T obj = clazz.newInstance();
             for (Cell cell : row) {
                 int ci = cell.getColumnIndex();
@@ -210,6 +212,8 @@ public class ExcelUtils {
         for (int i = offsetLine; i < maxLine; i++) {
             List<String> rows = new ArrayList<>();
             Row row = sheet.getRow(i);
+            if (null == row)
+                continue;
             for (Cell cell : row) {
                 String val = Utils.getCellValue(cell);
                 rows.add(val);
