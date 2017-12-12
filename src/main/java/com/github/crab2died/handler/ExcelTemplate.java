@@ -29,7 +29,10 @@ package com.github.crab2died.handler;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -145,13 +148,13 @@ public class ExcelTemplate {
             for (Cell c : row) {
                 if (c.getCellType() != Cell.CELL_TYPE_STRING)
                     continue;
-                String str = c.getStringCellValue().trim();
+                String str = c.getStringCellValue().trim().toLowerCase();
                 // 寻找序号列
-                if (str.equals(HandlerConstant.SERIAL_NUMBER)) {
+                if (HandlerConstant.SERIAL_NUMBER.equals(str)) {
                     this.serialNumberColumnIndex = c.getColumnIndex();
                 }
                 // 寻找数据列
-                if (str.equals(HandlerConstant.DATA_INIT_INDEX)) {
+                if (HandlerConstant.DATA_INIT_INDEX.equals(str)) {
                     this.initColumnIndex = c.getColumnIndex();
                     this.initRowIndex = row.getRowNum();
                     this.rowHeight = row.getHeightInPoints();
@@ -166,12 +169,15 @@ public class ExcelTemplate {
      * 初始化样式信息
      */
     private void initStyles(Cell cell, String moduleContext) {
-
+        if (null == moduleContext || "".equals(moduleContext))
+            return;
+        if (!moduleContext.startsWith("&"))
+            moduleContext = moduleContext.toLowerCase();
         if (HandlerConstant.DEFAULT_STYLE.equals(moduleContext)) {
             this.defaultStyle = cell.getCellStyle();
             clearCell(cell);
         }
-        if (null != moduleContext && moduleContext.startsWith("&")) {
+        if (moduleContext.startsWith("&") && moduleContext.length() > 1) {
             this.classifyStyle.put(moduleContext.substring(1), cell.getCellStyle());
             clearCell(cell);
         }

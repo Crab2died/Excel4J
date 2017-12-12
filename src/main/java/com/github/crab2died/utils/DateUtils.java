@@ -144,18 +144,16 @@ public class DateUtils {
      * <p>yyyy-MM-dd HH:mm:ss</p>
      * <p>yyyy-MM-dd'T'HH:mm:ss.SSS</p>
      * <p>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</p>
-     *
+     * <p>
      * author : Crab2Died
      * date   : 2017年06月02日  15:21:54
      *
      * @param strDate 时间字符串
      * @return Date  {@link Date}时间
-     * @throws TimeMatchFormatException 异常
-     * @throws ParseException   异常
+     * @throws ParseException 异常
      */
     static
-    public Date str2Date(String strDate) throws TimeMatchFormatException,
-            ParseException {
+    public Date str2Date(String strDate) throws ParseException {
 
         strDate = strDate.trim();
         SimpleDateFormat sdf = null;
@@ -198,7 +196,7 @@ public class DateUtils {
      * <p>HH:mm:ss</p>
      * <p>yyyy-MM-dd HH:mm:ss</p>
      * <p>yyyy-MM-dTHH:mm:ss.SSS</p>
-     *
+     * <p>
      * author : Crab2Died
      * date   : 2017年06月02日  15:21:54
      *

@@ -30,7 +30,7 @@ package com.github.crab2died.exceptions;
  * author : Crab2Died
  * date : 2017/5/24  14:29
  */
-public class Excel4jReadException extends Exception {
+public class Excel4jReadException extends RuntimeException {
 
 	private static final long serialVersionUID = 8735084330744657672L;
 
