@@ -233,7 +233,20 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 #### 3) 导出结果(截图)
 ![导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/map_export.png)
 
-## 五. 使用(JDK1.7及以上)
+## 五. Excel模板自定义属性,不区分大小写
+### 1)  具体代码定义详见(/src/main/java/com/github/crab2died/handler/HandlerConstant)
+### 2)  Excel模板自定义属性,不区分大小写
+    |定义符|描述|优先级(大到小)|
+    |:----:|:-----|:----:|
+    |$appoint_line_style|当前行样式|3|
+    |$single_line_style|单行样式|2|
+    |$double_line_style|双行样式|2|
+    |$default_style|默认样式|1|
+    |$data_index|数据插入的起始位置|-|
+    |$serial_number|序号左边点|-|
+    
+
+## 六. 使用(JDK1.7及以上)
 #### 1) github拷贝项目
 ```
 git clone https://github.com/Crab2died/Excel4J.git Excel4J
@@ -248,8 +261,8 @@ git clone https://github.com/Crab2died/Excel4J.git Excel4J
 </dependency>
 ```
 
-## 六. 开源协议:Apache-2.0
+## 七. 开源协议:Apache-2.0
 
-## 七. 链接
+## 八. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
 #### 码云   -> [码云](https://git.oschina.net/Crab2Died/Excel4J)
