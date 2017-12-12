@@ -236,7 +236,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ## 五. Excel模板自定义属性,不区分大小写
 ### 1)  具体代码定义详见(/src/main/java/com/github/crab2died/handler/HandlerConstant)
 ### 2)  Excel模板自定义属性,不区分大小写
-|       定义符        |      描述      |优先级(大到小)|
+|       定义符        |        描述    |优先级(大到小)|
 |:-------------------|:---------------|:----------:|
 |$appoint_line_style |当前行样式       |       3    |
 |$single_line_style  |单行样式         |       2    |

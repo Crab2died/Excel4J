@@ -13,7 +13,7 @@ public class Module2Excel {
     @Test
     public void testObject2Excel() throws Exception {
 
-        String tempPath = "D:\\JProject\\Excel4J\\src\\test\\resource\\normal_template.xlsx";
+        String tempPath = "/normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
         list.add(new Student1("1010002", "古尔丹", "一年级三班"));
