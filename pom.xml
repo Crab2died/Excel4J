@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
-    <description>Excel operation component based on poi </description>
+    <description>Excel operation component based on poi</description>
     <url>https://github.com/Crab2died/Excel4J</url>
 
     <properties>
@@ -84,6 +84,18 @@
                         <version>3.0.1</version>
                         <configuration>
                             <attach>true</attach>
+                            <archive>
+                                <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                                <manifest>
+                                    <addClasspath>false</addClasspath>
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                    <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <copyright>Crab2Died</copyright>
+                                </manifestEntries>
+                            </archive>
                         </configuration>
                         <executions>
                             <execution>
@@ -98,7 +110,18 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.0.0</version>
                         <configuration>
-                            <aggregate>true</aggregate>
+                            <archive>
+                                <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                                <manifest>
+                                    <addClasspath>false</addClasspath>
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                    <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <copyright>Crab2Died</copyright>
+                                </manifestEntries>
+                            </archive>
                         </configuration>
                         <executions>
                             <execution>
@@ -155,6 +178,18 @@
                         <version>3.0.1</version>
                         <configuration>
                             <attach>true</attach>
+                            <archive>
+                                <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                                <manifest>
+                                    <addClasspath>false</addClasspath>
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                    <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <copyright>Crab2Died</copyright>
+                                </manifestEntries>
+                            </archive>
                         </configuration>
                         <executions>
                             <execution>
@@ -169,7 +204,18 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.0.0</version>
                         <configuration>
-                            <aggregate>true</aggregate>
+                            <archive>
+                                <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                                <manifest>
+                                    <addClasspath>false</addClasspath>
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                    <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <copyright>Crab2Died</copyright>
+                                </manifestEntries>
+                            </archive>
                         </configuration>
                         <executions>
                             <execution>
