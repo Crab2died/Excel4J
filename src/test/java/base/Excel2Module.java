@@ -12,7 +12,7 @@ public class Excel2Module {
     @Test
     public void excel2Object() throws Exception {
 
-        String path = "D:\\JProject\\Excel4J\\src\\test\\resource\\students_01.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_01.xlsx";
 
         System.out.println("读取全部：");
         List<Student1> students = ExcelUtils.getInstance().readExcel2Objects(path, Student1.class);
@@ -29,7 +29,7 @@ public class Excel2Module {
     @Test
     public void excel2Object2() {
 
-        String path = "D:\\JProject\\Excel4J\\src\\test\\resource\\students_02.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_02.xlsx";
         try {
 
             // 1)
@@ -59,7 +59,7 @@ public class Excel2Module {
     @Test
     public void testReadConverter() throws Exception {
 
-        String path = "D:\\JProject\\Excel4J\\src\\test\\resource\\students_02.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_02.xlsx";
         List<Student2> students = ExcelUtils.getInstance().readExcel2Objects(path, Student2.class, 0, 0);
         System.out.println("读取Excel至对象数组(支持类型转换)：");
         for (Student2 st : students) {

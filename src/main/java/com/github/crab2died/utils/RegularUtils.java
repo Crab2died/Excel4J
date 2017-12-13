@@ -50,8 +50,7 @@ public class RegularUtils {
      * @param reg     正则表达式
      * @return 返回boolean
      */
-    static
-    public boolean isMatched(String pattern, String reg) {
+    public static boolean isMatched(String pattern, String reg) {
         Pattern compile = Pattern.compile(reg);
         return compile.matcher(pattern).matches();
     }
@@ -68,8 +67,7 @@ public class RegularUtils {
      * @param group   提取内容索引
      * @return 提取内容集合
      */
-    static
-    public List<String> match(String pattern, String reg, int group) {
+    public static List<String> match(String pattern, String reg, int group) {
 
         List<String> matchGroups = new ArrayList<>();
         Pattern compile = Pattern.compile(reg);
@@ -93,7 +91,7 @@ public class RegularUtils {
      * @param reg     正则表达式
      * @return 提取内容集合
      */
-    static public String match(String pattern, String reg) {
+     public static String match(String pattern, String reg) {
 
         String match = null;
         List<String> matches = match(pattern, reg, 0);

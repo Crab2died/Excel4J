@@ -62,7 +62,7 @@ public class Module2Excel {
         ));
 
         ExcelUtils.getInstance().exportObject2Excel("/map_template.xlsx",
-                0, classes, data, Student1.class, false, "D:/C.xlsx");
+                0, classes, data, Student1.class, false, "C.xlsx");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class Module2Excel {
             list2.add(_list);
             header.add(i + "---栏");
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D:\\D.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D.xlsx");
     }
 
     // 验证日期转换函数 Student2DateConverter
@@ -87,9 +87,9 @@ public class Module2Excel {
     public void testWriteConverter() throws Exception {
 
         List<Student2> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, false));
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "D:/D.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "E.xlsx");
     }
 }

@@ -38,14 +38,14 @@ import java.util.Date;
  */
 public class DateUtils {
 
-    static public final String DATE_FORMAT_DAY = "yyyy-MM-dd";
-    static public final String DATE_FORMAT_DAY_2 = "yyyy/MM/dd";
-    static public final String TIME_FORMAT_SEC = "HH:mm:ss";
-    static public final String DATE_FORMAT_SEC = "yyyy-MM-dd HH:mm:ss";
-    static public final String DATE_FORMAT_MSEC = "yyyy-MM-dd HH:mm:ss.SSS";
-    static public final String DATE_FORMAT_MSEC_T = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-    static public final String DATE_FORMAT_MSEC_T_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    static public final String DATE_FORMAT_DAY_SIMPLE = "y/M/d";
+    public static final String DATE_FORMAT_DAY = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_DAY_2 = "yyyy/MM/dd";
+    public static final String TIME_FORMAT_SEC = "HH:mm:ss";
+    public static final String DATE_FORMAT_SEC = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_MSEC = "yyyy-MM-dd HH:mm:ss.SSS";
+    public static final String DATE_FORMAT_MSEC_T = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final String DATE_FORMAT_MSEC_T_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String DATE_FORMAT_DAY_SIMPLE = "y/M/d";
 
     /**
      * 匹配yyyy-MM-dd
@@ -93,8 +93,7 @@ public class DateUtils {
      * @param format 指定格式化类型
      * @return 返回格式化后的时间字符串
      */
-    static
-    public String date2Str(Date date, String format) {
+    public static String date2Str(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
     }
@@ -107,8 +106,7 @@ public class DateUtils {
      * @param date {@link Date}类型的时间
      * @return 返回格式化后的时间字符串
      */
-    static
-    public String date2Str(Date date) {
+    public static String date2Str(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_SEC);
         return sdf.format(date);
     }
@@ -122,8 +120,7 @@ public class DateUtils {
      * @param format  格式化类型
      * @return 返回{@link java.util.Date}类型
      */
-    static
-    public Date str2Date(String strDate, String format) {
+    public static Date str2Date(String strDate, String format) {
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         try {
@@ -152,8 +149,7 @@ public class DateUtils {
      * @return Date  {@link Date}时间
      * @throws ParseException 异常
      */
-    static
-    public Date str2Date(String strDate) throws ParseException {
+    public static Date str2Date(String strDate) throws ParseException {
 
         strDate = strDate.trim();
         SimpleDateFormat sdf = null;
@@ -203,8 +199,7 @@ public class DateUtils {
      * @param strDate 时间字符串
      * @return Date  {@link Date}时间
      */
-    static
-    public Date str2DateUnmatch2Null(String strDate) {
+    public static Date str2DateUnmatch2Null(String strDate) {
         Date date = null;
         try {
             date = str2Date(strDate);

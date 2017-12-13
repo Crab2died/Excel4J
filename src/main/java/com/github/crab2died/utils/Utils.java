@@ -33,6 +33,10 @@ import com.github.crab2died.handler.ExcelHeader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,27 +44,16 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-
+/**
+ * Excel4J工具类
+ * author : Crab2Died
+ * date : 2017/5/24  9:43
+ */
 public class Utils {
 
-    /**
-     * <p>getter与setter方法的枚举</p>
-     *
-     * @author Crab2Died
-     */
-    private enum MethodType {
+    public enum FieldAccessType {
 
-        GET("get"), SET("set");
-
-        private String value;
-
-        MethodType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
+        GETTER, SETTER
     }
 
     /**
@@ -71,9 +64,8 @@ public class Utils {
      * @throws IllegalAccessException 异常
      * @throws InstantiationException 异常
      */
-    static
-    public List<ExcelHeader> getHeaderList(Class<?> clz) throws IllegalAccessException,
-            InstantiationException {
+    public static List<ExcelHeader> getHeaderList(Class<?> clz)
+            throws IllegalAccessException, InstantiationException {
         List<ExcelHeader> headers = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
         for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
@@ -100,8 +92,7 @@ public class Utils {
      * @throws InstantiationException 异常
      * @throws IllegalAccessException 异常
      */
-    static
-    public Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
+    public static Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
             throws InstantiationException, IllegalAccessException {
 
         List<ExcelHeader> headers = getHeaderList(clz);
@@ -124,8 +115,7 @@ public class Utils {
      * @param c 单元格
      * @return 单元格内容
      */
-    static
-    public String getCellValue(Cell c) {
+    public static String getCellValue(Cell c) {
         String o;
         switch (c.getCellType()) {
             case Cell.CELL_TYPE_BLANK:
@@ -159,8 +149,7 @@ public class Utils {
      * @param clazz    待转类型
      * @return 转换后数据
      */
-    static
-    public Object str2TargetClass(String strField, Class<?> clazz) {
+    public static Object str2TargetClass(String strField, Class<?> clazz) {
         if (null == strField || "".equals(strField))
             return null;
         if ((Long.class == clazz) || (long.class == clazz)) {
@@ -210,51 +199,35 @@ public class Utils {
     }
 
     /**
-     * 获取字段的getter或setter方法
+     * <p>根据java对象属性{@link Field}获取该属性的getter或setter方法名，
+     * 另对{@link boolean}及{@link Boolean}做了行管处理</p>
      *
-     * @param fieldClass 字段类型
-     * @param fieldName  字段名
-     * @param methodType getter或setter
+     * @param clazz      操作对象
+     * @param fieldName  对象属性
+     * @param methodType 方法类型，getter或setter枚举
      * @return getter或setter方法
+     * @throws IntrospectionException 异常
+     * @author Crab2Died
      */
-    private static String getOrSet(Class fieldClass, String fieldName, MethodType methodType) {
+    public static Method getterOrSetter(Class clazz, String fieldName, FieldAccessType methodType)
+            throws IntrospectionException {
 
-        if (null == fieldClass || null == fieldName)
+        if (null == fieldName || "".equals(fieldName))
             return null;
 
-        // 对boolean类型的特殊处理
-        if (boolean.class == fieldClass) {
-            if (MethodType.SET == methodType) {
-                if (fieldName.startsWith("is") &&
-                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
-                    return methodType.getValue() + fieldName.substring(2);
+        BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+        PropertyDescriptor[] props = beanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor prop : props) {
+            if (fieldName.equals(prop.getName())) {
+                if (FieldAccessType.SETTER == methodType) {
+                    return prop.getWriteMethod();
                 }
-            }
-            if (MethodType.GET == methodType) {
-                if (fieldName.startsWith("is") &&
-                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
-                    return fieldName;
-                } else {
-                    return "is" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                if (FieldAccessType.GETTER == methodType) {
+                    return prop.getReadMethod();
                 }
             }
         }
-        // 对Boolean类型的特殊处理
-        if (Boolean.class == fieldClass) {
-            if (MethodType.SET == methodType) {
-                if (fieldName.startsWith("is") &&
-                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
-                    return methodType.getValue() + fieldName.substring(2);
-                }
-            }
-            if (MethodType.GET == methodType) {
-                if (fieldName.startsWith("is") &&
-                        Character.isUpperCase(fieldName.substring(2, 3).toCharArray()[0])) {
-                    return methodType.getValue() + fieldName.substring(2);
-                }
-            }
-        }
-        return methodType.getValue() + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        throw new IntrospectionException("Can not get the getter or setter method");
     }
 
     /**
@@ -266,6 +239,7 @@ public class Utils {
      * @author Crab2Died
      */
     private static Field matchClassField(Class clazz, String fieldName) {
+
         List<Field> fields = new ArrayList<>();
         for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
@@ -283,20 +257,18 @@ public class Utils {
      *
      * @param bean             对象
      * @param fieldName        字段名
-     * @param fieldClass       字段类型
      * @param writeConvertible 写入转换器
      * @return 对象指定字段内容
-     * @throws NoSuchMethodException     异常
      * @throws InvocationTargetException 异常
      * @throws IllegalAccessException    异常
+     * @throws IntrospectionException    异常
      */
-    static
-    public String getProperty(Object bean, String fieldName, Class fieldClass, WriteConvertible writeConvertible)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static String getProperty(Object bean, String fieldName, WriteConvertible writeConvertible)
+            throws InvocationTargetException, IllegalAccessException, IntrospectionException {
 
-        if (bean == null || fieldClass == null)
+        if (bean == null || fieldName == null)
             throw new IllegalArgumentException("Operating bean or filed class must not be null");
-        Method method = bean.getClass().getDeclaredMethod(getOrSet(fieldClass, fieldName, MethodType.GET));
+        Method method = getterOrSetter(bean.getClass(), fieldName, FieldAccessType.GETTER);
         Object object = method.invoke(bean);
         if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
             // 写入转换器
@@ -305,18 +277,26 @@ public class Utils {
         return object == null ? "" : object.toString();
     }
 
-    static
-    public void copyProperty(Object bean, String name, Object value) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    /**
+     * 根据属性名与属性类型获取字段内容
+     *
+     * @param bean  对象
+     * @param name  字段名
+     * @param value 字段类型
+     * @throws InvocationTargetException 异常
+     * @throws IllegalAccessException    异常
+     * @throws IntrospectionException    异常
+     */
+    public static void copyProperty(Object bean, String name, Object value)
+            throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+
         if (null == name || null == value)
             return;
         Field field = matchClassField(bean.getClass(), name);
         if (null == field)
             return;
-        Method method = bean.getClass().getDeclaredMethod(
-                getOrSet(field.getType(), name, MethodType.SET),
-                field.getType()
-        );
+        Method method = getterOrSetter(bean.getClass(), name, FieldAccessType.SETTER);
+
         if (value.getClass() == field.getType()) {
             method.invoke(bean, value);
         } else {

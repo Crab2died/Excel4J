@@ -308,8 +308,7 @@ public class ExcelUtils {
             templates.createNewRow();
             templates.insertSerial(null);
             for (ExcelHeader header : headers) {
-                templates.createCell(Utils.getProperty(object, header.getFiled(), header.getFiledClazz(),
-                        header.getWriteConverter()), null);
+                templates.createCell(Utils.getProperty(object, header.getFiled(), header.getWriteConverter()), null);
             }
         }
         return templates;
@@ -379,8 +378,7 @@ public class ExcelUtils {
                 templates.insertSerial(entry.getKey());
                 for (ExcelHeader header : headers) {
                     templates.createCell(Utils.getProperty(object, header.getFiled(),
-                            header.getFiledClazz(), header.getWriteConverter()),
-                            entry.getKey());
+                            header.getWriteConverter()), entry.getKey());
                 }
             }
         }
@@ -458,7 +456,6 @@ public class ExcelUtils {
             for (int j = 0; j < headers.size(); j++) {
                 row.createCell(j).setCellValue(Utils.getProperty(_data,
                         headers.get(j).getFiled(),
-                        headers.get(j).getFiledClazz(),
                         headers.get(j).getWriteConverter()));
             }
         }
