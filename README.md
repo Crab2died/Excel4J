@@ -32,7 +32,7 @@
 ## 三. 读取Excel快速实现
 
 ### 1.待读取Excel(截图)
-![待读取Excel截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/students_02.png)
+![待读取Excel截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/students_02.png)
 
 ### 2. 读取转换器(/src/test/java/converter/Student2ExpelConverter.java)
 ```
@@ -54,7 +54,7 @@
     @Test
     public void excel2Object2() {
 
-        String path = "D:\\JProject\\Excel4J\\src\\test\\resource\\students_02.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_02.xlsx";
         try {
             
             // 1)
@@ -114,7 +114,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
     }
 ```
 #### 2) 导出效果(截图)
-![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/list_export.png)
+![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/list_export.png)
 
 ### 2. 带有写入转换器函数的导出
 
@@ -150,7 +150,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
     }
 ```
 #### 3) 导出效果(截图)
-![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/converter_export.png)
+![无模板导出截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/converter_export.png)
 
 ### 3. 基于模板`List<Oject>`导出
 
@@ -182,13 +182,13 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ```
 
 #### 2) 导出模板(截图)
-![导出模板截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/normal_template.png)
+![导出模板截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/normal_template.png)
 
 #### 3) 基于模板导出结果(截图)
-![基于模板导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/normal_export.png)
+![基于模板导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/normal_export.png)
 
 #### 4) 不基于模板导出结果(截图)
-![不基于模板导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/object_export.png)
+![不基于模板导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/object_export.png)
 
 ### 4. 基于模板`Map<String, Collection<Object.toString>>`导出
 
@@ -228,10 +228,10 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ```
 
 #### 2) 导出模板(截图)
-![导出模板截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/map_export_template.png)
+![导出模板截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/map_export_template.png)
 
 #### 3) 导出结果(截图)
-![导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resource/image/v2.0.0/map_export.png)
+![导出结果图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.0.0/map_export.png)
 
 ## 五. Excel模板自定义属性,不区分大小写
 ### 1)  具体代码定义详见(/src/main/java/com/github/crab2died/handler/HandlerConstant)
