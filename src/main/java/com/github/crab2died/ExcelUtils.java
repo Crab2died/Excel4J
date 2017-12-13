@@ -209,7 +209,7 @@ public class ExcelUtils {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         long maxLine = sheet.getLastRowNum() > ((long) offsetLine + limitLine) ?
                 ((long) offsetLine + limitLine) : sheet.getLastRowNum();
-        for (int i = offsetLine; i < maxLine; i++) {
+        for (int i = offsetLine; i <= maxLine; i++) {
             List<String> rows = new ArrayList<>();
             Row row = sheet.getRow(i);
             if (null == row)
