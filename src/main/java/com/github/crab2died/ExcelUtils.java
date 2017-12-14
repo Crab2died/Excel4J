@@ -529,7 +529,7 @@ public class ExcelUtils {
             // 写标题
             Row row = sheet.createRow(rowIndex);
             for (int i = 0; i < header.size(); i++) {
-                row.createCell(i, Cell.CELL_TYPE_STRING).setCellValue(header.get(i));
+                row.createCell(i, CellType.STRING).setCellValue(header.get(i));
             }
             rowIndex++;
         }
@@ -537,17 +537,17 @@ public class ExcelUtils {
             Row row = sheet.createRow(rowIndex);
             if (object.getClass().isArray()) {
                 for (int j = 0; j < Array.getLength(object); j++) {
-                    row.createCell(j, Cell.CELL_TYPE_STRING).setCellValue(Array.get(object, j).toString());
+                    row.createCell(j, CellType.STRING).setCellValue(Array.get(object, j).toString());
                 }
             } else if (object instanceof Collection) {
                 Collection<?> items = (Collection<?>) object;
                 int j = 0;
                 for (Object item : items) {
-                    row.createCell(j, Cell.CELL_TYPE_STRING).setCellValue(item.toString());
+                    row.createCell(j, CellType.STRING).setCellValue(item.toString());
                     j++;
                 }
             } else {
-                row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(object.toString());
+                row.createCell(0, CellType.STRING).setCellValue(object.toString());
             }
             rowIndex++;
         }

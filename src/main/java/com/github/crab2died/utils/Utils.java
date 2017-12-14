@@ -117,22 +117,22 @@ public class Utils {
      */
     public static String getCellValue(Cell c) {
         String o;
-        switch (c.getCellType()) {
-            case Cell.CELL_TYPE_BLANK:
+        switch (c.getCellTypeEnum()) {
+            case BLANK:
                 o = "";
                 break;
-            case Cell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 o = String.valueOf(c.getBooleanCellValue());
                 break;
-            case Cell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 o = String.valueOf(c.getCellFormula());
                 break;
-            case Cell.CELL_TYPE_NUMERIC:
+            case NUMERIC:
                 o = String.valueOf(c.getNumericCellValue());
                 o = matchDoneBigDecimal(o);
                 o = RegularUtils.converNumByReg(o);
                 break;
-            case Cell.CELL_TYPE_STRING:
+            case STRING:
                 o = c.getStringCellValue();
                 break;
             default:

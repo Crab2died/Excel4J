@@ -146,7 +146,7 @@ public class ExcelTemplate {
 
         for (Row row : sheet) {
             for (Cell c : row) {
-                if (c.getCellType() != Cell.CELL_TYPE_STRING)
+                if (c.getCellTypeEnum() != CellType.STRING)
                     continue;
                 String str = c.getStringCellValue().trim().toLowerCase();
                 // 寻找序号列
@@ -215,7 +215,7 @@ public class ExcelTemplate {
             return;
         for (Row row : this.sheet) {
             for (Cell c : row) {
-                if (c.getCellType() != Cell.CELL_TYPE_STRING)
+                if (c.getCellTypeEnum() != CellType.STRING)
                     continue;
                 String str = c.getStringCellValue().trim();
                 if (str.startsWith("#")) {
