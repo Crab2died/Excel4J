@@ -59,14 +59,16 @@ import java.util.Map;
  * 另外列举了部分常用的参数格式的方法(不同参数的排列组合实在是太多,没必要完全列出)
  * 如遇没有自己需要的参数类型的方法,可通过最全的方法来自行变换<br>
  * <p>
- * 详细用法请关注:<a href="https://gitee.com/Crab2Died/Excel4J" target="_blank"></a>
+ * 详细用法请关注: https://gitee.com/Crab2Died/Excel4J
  *
  * @author Crab2Died
  */
 public class ExcelUtils {
 
     /**
-     * 单例
+     * 单例模式
+     * <p>
+     * 通过{@link ExcelUtils#getInstance()}获取对象实例
      */
     static private ExcelUtils excelUtils = new ExcelUtils();
 
@@ -483,7 +485,7 @@ public class ExcelUtils {
     public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
                                     String targetPath) throws Exception {
 
-        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, targetPath);
+        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, true, targetPath);
     }
 
     /**
@@ -500,7 +502,7 @@ public class ExcelUtils {
     public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
                                     OutputStream os) throws Exception {
 
-        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, os);
+        exportObjects2Excel(templatePath, 0, data, extendMap, clazz, true, os);
     }
 
     /**
@@ -516,7 +518,7 @@ public class ExcelUtils {
     public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, String targetPath)
             throws Exception {
 
-        exportObjects2Excel(templatePath, 0, data, null, clazz, false, targetPath);
+        exportObjects2Excel(templatePath, 0, data, null, clazz, true, targetPath);
     }
 
     /**
@@ -532,7 +534,7 @@ public class ExcelUtils {
     public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, OutputStream os)
             throws Exception {
 
-        exportObjects2Excel(templatePath, 0, data, null, clazz, false, os);
+        exportObjects2Excel(templatePath, 0, data, null, clazz, true, os);
     }
 
     private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
