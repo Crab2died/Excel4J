@@ -14,4 +14,4 @@ DIR=`dirname "$PRG"`
 
 # go to mvn package
 cd $DIR
-mvn clean package -Dmaven.test.skip=true -Ppackage
+mvn clean package -Dmaven.test.skip=true -Prelease
