@@ -7,7 +7,7 @@
 4. Excel新增了Map数据样式映射功能(模板可为每个key设置一个样式,定义为:&key, 导出Map数据的样式将与key值映射)
 5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
 6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
-7. 修复已知bug
+7. 修复已知bug及代码与注释优化
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
 ```
