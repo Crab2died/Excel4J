@@ -634,7 +634,7 @@ public class ExcelUtils {
     public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                    Class clazz, String targetPath) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
+        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, true)
                 .write2File(targetPath);
     }
 
@@ -653,7 +653,43 @@ public class ExcelUtils {
     public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                    Class clazz, OutputStream os) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, false)
+        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, true)
+                .write2Stream(os);
+    }
+
+    /**
+     * 基于模板、注解导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出的{@code Map<String, List<?>>}类型数据
+     * @param clazz        映射对象Class
+     * @param targetPath   生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
+    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Class clazz, String targetPath)
+            throws Exception {
+
+        exportExcelByModuleHandler(templatePath, 0, data, null, clazz, true)
+                .write2File(targetPath);
+    }
+
+    /**
+     * 基于模板、注解导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出的{@code Map<String, List<?>>}类型数据
+     * @param clazz        映射对象Class
+     * @param os           生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
+    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Class clazz, OutputStream os)
+            throws Exception {
+
+        exportExcelByModuleHandler(templatePath, 0, data, null, clazz, true)
                 .write2Stream(os);
     }
 
