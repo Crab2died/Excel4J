@@ -45,6 +45,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Excel4J的主要操作工具类
+ * <p>
+ * 主要包含6大操作类型,并且每个类型都配有一个私有handler：<br>
+ * 1.读取Excel操作基于注解映射,handler为{@link ExcelUtils#readExcel2ObjectsHandler}<br>
+ * 2.读取Excel操作无映射,handler为{@link ExcelUtils#readExcel2ObjectsHandler}<br>
+ * 3.基于模板、注解导出excel,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
+ * 4.基于模板、注解导出Map数据,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
+ * 5.无模板基于注解导出,handler为{@link ExcelUtils#exportExcelNoModuleHandler}<br>
+ * 6.无模板无注解导出,handler为{@link ExcelUtils#exportExcelNoModuleHandler}<br>
+ * <p>
+ * 另外列举了部分常用的参数格式的方法(不同参数的排列组合实在是太多,没必要完全列出)
+ * 如遇没有自己需要的参数类型的方法,可通过最全的方法来自行变换<br>
+ * <p>
+ * 详细用法请关注:<a href="https://gitee.com/Crab2Died/Excel4J" target="_blank"></a>
+ *
+ * @author Crab2Died
+ */
 public class ExcelUtils {
 
     /**
@@ -59,7 +77,7 @@ public class ExcelUtils {
         return excelUtils;
     }
 
-    /*----------------------------------------读取Excel操作基于注解映射---------------------------------------------*/
+    /*---------------------------------------1.读取Excel操作基于注解映射--------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
     /*      1) 读取表头信息,与给出的Class类注解匹配                                                                  */
     /*      2) 读取表头下面的数据内容, 按行读取, 并映射至java对象                                                      */
@@ -71,38 +89,118 @@ public class ExcelUtils {
     /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param excelPath  待导出Excel的路径
+     * @param clazz      待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param offsetLine Excel表头行(默认是0)
+     * @param limitLine  最大读取行数(默认表尾)
+     * @param sheetIndex Sheet索引(默认0)
+     * @param <T>        绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int limitLine,
                                          int sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(new File(excelPath));
         return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
     }
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param is         待导出Excel的数据流
+     * @param clazz      待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param offsetLine Excel表头行(默认是0)
+     * @param limitLine  最大读取行数(默认表尾)
+     * @param sheetIndex Sheet索引(默认0)
+     * @param <T>        绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine, int limitLine, int
             sheetIndex) throws Exception {
         Workbook workbook = WorkbookFactory.create(is);
         return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
     }
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param excelPath  待导出Excel的路径
+     * @param clazz      待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param offsetLine Excel表头行(默认是0)
+     * @param sheetIndex Sheet索引(默认0)
+     * @param <T>        绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int sheetIndex)
             throws Exception {
         return readExcel2Objects(excelPath, clazz, offsetLine, Integer.MAX_VALUE, sheetIndex);
     }
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param excelPath  待导出Excel的路径
+     * @param clazz      待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param sheetIndex Sheet索引(默认0)
+     * @param <T>        绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
             throws Exception {
         return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex);
     }
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param excelPath 待导出Excel的路径
+     * @param clazz     待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param <T>       绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz)
             throws Exception {
         return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0);
     }
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param is         待导出Excel的数据流
+     * @param clazz      待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param sheetIndex Sheet索引(默认0)
+     * @param <T>        绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex)
             throws Exception {
         return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex);
     }
 
+    /**
+     * 读取Excel操作基于注解映射成绑定的java对象
+     *
+     * @param is    待导出Excel的数据流
+     * @param clazz 待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @param <T>   绑定的数据类
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz)
             throws Exception {
         return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0);
@@ -150,7 +248,7 @@ public class ExcelUtils {
         return list;
     }
 
-    /*----------------------------------------读取Excel操作无映射--------------------------------------------------*/
+    /*---------------------------------------2.读取Excel操作无映射-------------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
     /*      *) 按行读取Excel文件,存储形式为  Cell->String => Row->List<Cell> => Excel->List<Row>                    */
     /*  二. 参数说明                                                                                               */
@@ -160,6 +258,17 @@ public class ExcelUtils {
     /*      *) limitLine        =>      最大读取行数(默认表尾)                                                      */
     /*      *) sheetIndex       =>      Sheet索引(默认0)                                                           */
 
+    /**
+     * 读取Excel表格数据,返回{@code List[List[String]]}类型的数据集合
+     *
+     * @param excelPath  待读取Excel的路径
+     * @param offsetLine Excel表头行(默认是0)
+     * @param limitLine  最大读取行数(默认表尾)
+     * @param sheetIndex Sheet索引(默认0)
+     * @return 返回{@code List<List<String>>}类型的数据集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public List<List<String>> readExcel2List(String excelPath, int offsetLine, int limitLine, int sheetIndex)
             throws Exception {
 
@@ -167,6 +276,17 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
     }
 
+    /**
+     * 读取Excel表格数据,返回{@code List[List[String]]}类型的数据集合
+     *
+     * @param is         待读取Excel的数据流
+     * @param offsetLine Excel表头行(默认是0)
+     * @param limitLine  最大读取行数(默认表尾)
+     * @param sheetIndex Sheet索引(默认0)
+     * @return 返回{@code List<List<String>>}类型的数据集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public List<List<String>> readExcel2List(InputStream is, int offsetLine, int limitLine, int sheetIndex)
             throws Exception {
 
@@ -174,6 +294,15 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
     }
 
+    /**
+     * 读取Excel表格数据,返回{@code List[List[String]]}类型的数据集合
+     *
+     * @param excelPath  待读取Excel的路径
+     * @param offsetLine Excel表头行(默认是0)
+     * @return 返回{@code List<List<String>>}类型的数据集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public List<List<String>> readExcel2List(String excelPath, int offsetLine)
             throws Exception {
 
@@ -181,6 +310,15 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
     }
 
+    /**
+     * 读取Excel表格数据,返回{@code List[List[String]]}类型的数据集合
+     *
+     * @param is         待读取Excel的数据流
+     * @param offsetLine Excel表头行(默认是0)
+     * @return 返回{@code List<List<String>>}类型的数据集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public List<List<String>> readExcel2List(InputStream is, int offsetLine)
             throws Exception {
 
@@ -188,6 +326,14 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
     }
 
+    /**
+     * 读取Excel表格数据,返回{@code List[List[String]]}类型的数据集合
+     *
+     * @param excelPath 待读取Excel的路径
+     * @return 返回{@code List<List<String>>}类型的数据集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public List<List<String>> readExcel2List(String excelPath)
             throws Exception {
 
@@ -195,6 +341,14 @@ public class ExcelUtils {
         return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
     }
 
+    /**
+     * 读取Excel表格数据,返回{@code List[List[String]]}类型的数据集合
+     *
+     * @param is 待读取Excel的数据流
+     * @return 返回{@code List<List<String>>}类型的数据集合
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public List<List<String>> readExcel2List(InputStream is)
             throws Exception {
 
@@ -224,7 +378,7 @@ public class ExcelUtils {
     }
 
 
-    /*--------------------------------------------基于模板、注解导出excel-------------------------------------------*/
+    /*-------------------------------------------3.基于模板、注解导出excel------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
     /*      1) 初始化模板                                                                                          */
     /*      2) 根据Java对象映射表头                                                                                 */
@@ -239,6 +393,19 @@ public class ExcelUtils {
     /*      *) targetPath       =>      导出文件路径                                                               */
     /*      *) os               =>      导出文件流                                                                 */
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath  Excel模板路径
+     * @param sheetIndex    指定导出Excel的sheet索引号(默认为0)
+     * @param data          待导出数据的集合
+     * @param extendMap     扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz         映射对象Class
+     * @param isWriteHeader 是否写表头
+     * @param targetPath    生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
                                     Class clazz, boolean isWriteHeader, String targetPath) throws Exception {
 
@@ -246,6 +413,19 @@ public class ExcelUtils {
                 .write2File(targetPath);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath  Excel模板路径
+     * @param sheetIndex    指定导出Excel的sheet索引号(默认为0)
+     * @param data          待导出数据的集合
+     * @param extendMap     扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz         映射对象Class
+     * @param isWriteHeader 是否写表头
+     * @param os            生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, int sheetIndex, List<?> data, Map<String, String> extendMap,
                                     Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
@@ -253,36 +433,102 @@ public class ExcelUtils {
                 .write2Stream(os);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath  Excel模板路径
+     * @param data          待导出数据的集合
+     * @param extendMap     扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz         映射对象Class
+     * @param isWriteHeader 是否写表头
+     * @param targetPath    生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
                                     boolean isWriteHeader, String targetPath) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, targetPath);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath  Excel模板路径
+     * @param data          待导出数据的集合
+     * @param extendMap     扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz         映射对象Class
+     * @param isWriteHeader 是否写表头
+     * @param os            生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
                                     boolean isWriteHeader, OutputStream os) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, isWriteHeader, os);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出数据的集合
+     * @param extendMap    扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz        映射对象Class
+     * @param targetPath   生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
                                     String targetPath) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, targetPath);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出数据的集合
+     * @param extendMap    扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz        映射对象Class
+     * @param os           生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, List<?> data, Map<String, String> extendMap, Class clazz,
                                     OutputStream os) throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, extendMap, clazz, false, os);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出数据的集合
+     * @param clazz        映射对象Class
+     * @param targetPath   生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, String targetPath)
             throws Exception {
 
         exportObjects2Excel(templatePath, 0, data, null, clazz, false, targetPath);
     }
 
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出Excel
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出数据的集合
+     * @param clazz        映射对象Class
+     * @param os           生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(String templatePath, List<?> data, Class clazz, OutputStream os)
             throws Exception {
 
@@ -314,7 +560,7 @@ public class ExcelUtils {
         return templates;
     }
 
-    /*---------------------------------------基于模板、注解导出Map数据----------------------------------------------*/
+    /*-------------------------------------4.基于模板、注解导出Map数据----------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
     /*      1) 初始化模板                                                                                          */
     /*      2) 根据Java对象映射表头                                                                                */
@@ -329,6 +575,20 @@ public class ExcelUtils {
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
 
+    /**
+     * 基于模板、注解导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param templatePath  Excel模板路径
+     * @param sheetIndex    指定导出Excel的sheet索引号(默认为0)
+     * @param data          待导出的{@code Map<String, List<?>>}类型数据
+     * @param extendMap     扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz         映射对象Class
+     * @param isWriteHeader 是否写入表头
+     * @param targetPath    生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data,
                                    Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
@@ -337,6 +597,20 @@ public class ExcelUtils {
                 .write2File(targetPath);
     }
 
+    /**
+     * 基于模板、注解导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param templatePath  Excel模板路径
+     * @param sheetIndex    指定导出Excel的sheet索引号(默认为0)
+     * @param data          待导出的{@code Map<String, List<?>>}类型数据
+     * @param extendMap     扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz         映射对象Class
+     * @param isWriteHeader 是否写入表头
+     * @param os            生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
             extendMap, Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
@@ -344,6 +618,18 @@ public class ExcelUtils {
                 .write2Stream(os);
     }
 
+    /**
+     * 基于模板、注解导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出的{@code Map<String, List<?>>}类型数据
+     * @param extendMap    扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz        映射对象Class
+     * @param targetPath   生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                    Class clazz, String targetPath) throws Exception {
 
@@ -351,6 +637,18 @@ public class ExcelUtils {
                 .write2File(targetPath);
     }
 
+    /**
+     * 基于模板、注解导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param templatePath Excel模板路径
+     * @param data         待导出的{@code Map<String, List<?>>}类型数据
+     * @param extendMap    扩展内容Map数据(具体就是key匹配替换模板#key内容,详情请查阅Excel模板定制方法)
+     * @param clazz        映射对象Class
+     * @param os           生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                    Class clazz, OutputStream os) throws Exception {
 
@@ -386,7 +684,7 @@ public class ExcelUtils {
         return templates;
     }
 
-    /*----------------------------------------无模板基于注解导出---------------------------------------------------*/
+    /*--------------------------------------5.无模板基于注解导出---------------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
     /*      1) 根据Java对象映射表头                                                                                */
     /*      2) 写入数据内容                                                                                       */
@@ -395,10 +693,22 @@ public class ExcelUtils {
     /*      *) isWriteHeader    =>      是否写入表头                                                              */
     /*      *) sheetName        =>      Sheet索引名(默认0)                                                        */
     /*      *) clazz            =>      映射对象Class                                                             */
-    /*      *) isXSSF           =>      是否Excel2007以上                                                         */
+    /*      *) isXSSF           =>      是否Excel2007及以上版本                                                   */
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
 
+    /**
+     * 无模板、基于注解的数据导出
+     *
+     * @param data          待导出数据
+     * @param clazz         {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param isWriteHeader 是否写入表头
+     * @param sheetName     指定导出Excel的sheet名称
+     * @param isXSSF        导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param targetPath    生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
                                     String targetPath) throws Exception {
 
@@ -406,12 +716,34 @@ public class ExcelUtils {
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(fos);
     }
 
+    /**
+     * 无模板、基于注解的数据导出
+     *
+     * @param data          待导出数据
+     * @param clazz         {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param isWriteHeader 是否写入表头
+     * @param sheetName     指定导出Excel的sheet名称
+     * @param isXSSF        导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param os            生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
                                     OutputStream os) throws Exception {
 
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(os);
     }
 
+    /**
+     * 无模板、基于注解的数据导出
+     *
+     * @param data          待导出数据
+     * @param clazz         {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param isWriteHeader 是否写入表头
+     * @param targetPath    生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
 
@@ -419,10 +751,48 @@ public class ExcelUtils {
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(fos);
     }
 
+    /**
+     * 无模板、基于注解的数据导出
+     *
+     * @param data          待导出数据
+     * @param clazz         {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param isWriteHeader 是否写入表头
+     * @param os            生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, OutputStream os)
             throws Exception {
 
         exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(os);
+    }
+
+    /**
+     * 无模板、基于注解的数据导出
+     *
+     * @param data  待导出数据
+     * @param clazz {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param os    生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
+    public void exportObjects2Excel(List<?> data, Class clazz, OutputStream os) throws Exception {
+        exportExcelNoModuleHandler(data, clazz, true, null, true).write(os);
+    }
+
+    /**
+     * 无模板、基于注解的数据导出
+     *
+     * @param data       待导出数据
+     * @param clazz      {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
+    public void exportObjects2Excel(List<?> data, Class clazz, String targetPath) throws Exception {
+
+        FileOutputStream fos = new FileOutputStream(targetPath);
+        exportExcelNoModuleHandler(data, clazz, true, null, true).write(fos);
     }
 
     private Workbook exportExcelNoModuleHandler(List<?> data, Class clazz, boolean isWriteHeader,
@@ -462,7 +832,7 @@ public class ExcelUtils {
         return workbook;
     }
 
-    /*-----------------------------------------无模板无注解导出----------------------------------------------------*/
+    /*---------------------------------------6.无模板无注解导出----------------------------------------------------*/
     /*  一. 操作流程 ：                                                                                           */
     /*      1) 写入表头内容(可选)                                                                                  */
     /*      2) 写入数据内容                                                                                       */
@@ -470,39 +840,95 @@ public class ExcelUtils {
     /*      *) data             =>      导出内容List集合                                                          */
     /*      *) header           =>      表头集合,有则写,无则不写                                                   */
     /*      *) sheetName        =>      Sheet索引名(默认0)                                                        */
-    /*      *) isXSSF           =>      是否Excel2007以上                                                         */
+    /*      *) isXSSF           =>      是否Excel2007及以上版本                                                   */
     /*      *) targetPath       =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
 
+    /**
+     * 无模板、无注解的数据(形如{@code List[?]}、{@code List[List[?]]}、{@code List[Object[]]})导出
+     *
+     * @param data       待导出数据
+     * @param header     设置表头信息
+     * @param sheetName  指定导出Excel的sheet名称
+     * @param isXSSF     导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF,
                                     String targetPath) throws Exception {
 
         exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(new FileOutputStream(targetPath));
     }
 
+    /**
+     * 无模板、无注解的数据(形如{@code List[?]}、{@code List[List[?]]}、{@code List[Object[]]})导出
+     *
+     * @param data      待导出数据
+     * @param header    设置表头信息
+     * @param sheetName 指定导出Excel的sheet名称
+     * @param isXSSF    导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param os        生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF,
                                     OutputStream os) throws Exception {
 
         exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(os);
     }
 
+    /**
+     * 无模板、无注解的数据(形如{@code List[?]}、{@code List[List[?]]}、{@code List[Object[]]})导出
+     *
+     * @param data       待导出数据
+     * @param header     设置表头信息
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, List<String> header, String targetPath) throws Exception {
 
         exportExcelNoModuleHandler(data, header, null, true)
                 .write(new FileOutputStream(targetPath));
     }
 
+    /**
+     * 无模板、无注解的数据(形如{@code List[?]}、{@code List[List[?]]}、{@code List[Object[]]})导出
+     *
+     * @param data   待导出数据
+     * @param header 设置表头信息
+     * @param os     生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, List<String> header, OutputStream os) throws Exception {
 
         exportExcelNoModuleHandler(data, header, null, true).write(os);
     }
 
+    /**
+     * 无模板、无注解的数据(形如{@code List[?]}、{@code List[List[?]]}、{@code List[Object[]]})导出
+     *
+     * @param data       待导出数据
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, String targetPath) throws Exception {
 
         exportExcelNoModuleHandler(data, null, null, true)
                 .write(new FileOutputStream(targetPath));
     }
 
+    /**
+     * 无模板、无注解的数据(形如{@code List[?]}、{@code List[List[?]]}、{@code List[Object[]]})导出
+     *
+     * @param data 待导出数据
+     * @param os   生成的Excel待输出数据流
+     * @throws Exception 异常
+     * @author Crab2Died
+     */
     public void exportObjects2Excel(List<?> data, OutputStream os) throws Exception {
 
         exportExcelNoModuleHandler(data, null, null, true).write(os);
