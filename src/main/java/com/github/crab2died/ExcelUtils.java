@@ -539,6 +539,7 @@ public class ExcelUtils {
                                                      List<?> data, Map<String, String> extendMap,
                                                      Class clazz, boolean isWriteHeader) throws Exception {
 
+        if (sheetIndex < 0) sheetIndex = 0;
         ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
         templates.extendData(extendMap);
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
@@ -660,6 +661,7 @@ public class ExcelUtils {
                                                      Map<String, List<?>> data, Map<String, String> extendMap,
                                                      Class clazz, boolean isWriteHeader) throws Exception {
 
+        if (sheetIndex < 0) sheetIndex = 0;
         ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
         templates.extendData(extendMap);
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);

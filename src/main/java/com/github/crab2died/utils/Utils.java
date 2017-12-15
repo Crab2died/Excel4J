@@ -51,6 +51,9 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
+    /**
+     * getter或setter枚举
+     */
     public enum FieldAccessType {
 
         GETTER, SETTER
