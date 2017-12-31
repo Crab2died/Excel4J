@@ -243,7 +243,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 |$double_line_style  |双行样式         |       2    |
 |$default_style      |默认样式         |       1    |
 |$data_index         |数据插入的起始位置|       -    |
-|$serial_number      |插入序号标记列    |       -    |
+|$serial_number      |插入序号标记     |       -    |
     
 
 ## 六. 使用(JDK1.7及以上)
