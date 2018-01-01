@@ -1,5 +1,5 @@
 # Excel4J v2.x
-   
+---
 ## 一. v2.x新特性
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
 2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
@@ -236,20 +236,21 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ## 五. Excel模板自定义属性,不区分大小写
 ### 1)  具体代码定义详见(/src/main/java/com/github/crab2died/handler/HandlerConstant)
 ### 2)  Excel模板自定义属性,不区分大小写
-|       定义符        |        描述    |优先级(大到小)|
+|       定义符        |      描述      |优先级(大到小)|
 |:-------------------|:---------------|:----------:|
 |$appoint_line_style |当前行样式       |       3    |
 |$single_line_style  |单行样式         |       2    |
 |$double_line_style  |双行样式         |       2    |
 |$default_style      |默认样式         |       1    |
 |$data_index         |数据插入的起始位置|       -    |
-|$serial_number      |序号左边点       |       -    |
+|$serial_number      |插入序号标记     |       -    |
     
 
 ## 六. 使用(JDK1.7及以上)
 #### 1) github拷贝项目
 ```
-git clone https://github.com/Crab2died/Excel4J.git Excel4J
+>> git clone https://github.com/Crab2died/Excel4J.git Excel4J
+>> package.cmd
 ```
 
 #### 2) 最新版本maven 引用：
@@ -257,12 +258,12 @@ git clone https://github.com/Crab2died/Excel4J.git Excel4J
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>[2.0,)</version>
+    <version>2.1.2</version>
 </dependency>
 ```
 
-## 七. 开源协议:Apache-2.0
+## 七. 开源协议:[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## 八. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
-#### 码云   -> [码云](https://git.oschina.net/Crab2Died/Excel4J)
+#### 码云(gitee) -> [码云地址](https://gitee.com/Crab2Died/Excel4J)
