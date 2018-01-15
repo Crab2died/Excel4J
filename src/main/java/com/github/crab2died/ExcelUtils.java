@@ -993,14 +993,13 @@ public class ExcelUtils {
         int rowIndex = 0;
         if (null != header && header.size() > 0) {
             // 写标题
-            Row row = sheet.createRow(rowIndex);
+            Row row = sheet.createRow(rowIndex++);
             for (int i = 0; i < header.size(); i++) {
                 row.createCell(i, CellType.STRING).setCellValue(header.get(i));
             }
-            rowIndex++;
         }
         for (Object object : data) {
-            Row row = sheet.createRow(rowIndex);
+            Row row = sheet.createRow(rowIndex++);
             if (object.getClass().isArray()) {
                 for (int j = 0; j < Array.getLength(object); j++) {
                     row.createCell(j, CellType.STRING).setCellValue(Array.get(object, j).toString());
@@ -1009,13 +1008,11 @@ public class ExcelUtils {
                 Collection<?> items = (Collection<?>) object;
                 int j = 0;
                 for (Object item : items) {
-                    row.createCell(j, CellType.STRING).setCellValue(item.toString());
-                    j++;
+                    row.createCell(j++, CellType.STRING).setCellValue(item.toString());
                 }
             } else {
                 row.createCell(0, CellType.STRING).setCellValue(object.toString());
             }
-            rowIndex++;
         }
         return workbook;
     }
