@@ -3,8 +3,10 @@ package base;
 import com.github.crab2died.ExcelUtils;
 import modules.Student1;
 import modules.Student2;
+import modules.StudentScore;
 import org.junit.Test;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Excel2Module {
@@ -65,5 +67,14 @@ public class Excel2Module {
         for (Student2 st : students) {
             System.out.println(st);
         }
+    }
+
+    //测试读取带有公式的单元格，并返回公式的值
+    @Test
+    public void testReadExcel_XLS() throws  Exception{
+        String path = "D:\\IdeaSpace\\Excel4J\\src\\test\\resources\\StudentScore.xlsx";
+        System.out.println(Paths.get(path).toUri().getPath());
+        List<StudentScore> projectExcelModels = ExcelUtils.getInstance().readExcel2Objects(path, StudentScore.class);
+        System.out.println(projectExcelModels);
     }
 }

@@ -31,6 +31,7 @@ import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.converter.WriteConvertible;
 import com.github.crab2died.handler.ExcelHeader;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.beans.BeanInfo;
@@ -128,7 +129,7 @@ public class Utils {
                 o = String.valueOf(c.getBooleanCellValue());
                 break;
             case FORMULA:
-                o = String.valueOf(c.getCellFormula());
+                o = calculationFormula(c);
                 break;
             case NUMERIC:
                 o = String.valueOf(c.getNumericCellValue());
@@ -305,5 +306,21 @@ public class Utils {
         } else {
             method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
         }
+    }
+
+    /**
+     * 计算公式结果
+     *
+     * @param cell 单元格类型为公式的单元格
+     * @return 返回单元格计算后的值 格式化成String
+     * @author QingMings
+     * Email:1821063757@qq.com
+     * date 2018-01-13
+     */
+    public static String calculationFormula(Cell cell) {
+
+        CellValue cellValue = cell.getSheet().getWorkbook().getCreationHelper()
+                .createFormulaEvaluator().evaluate(cell);
+        return cellValue.formatAsString();
     }
 }
