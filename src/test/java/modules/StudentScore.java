@@ -19,6 +19,7 @@ public class StudentScore {
     @ExcelField(title="英语成绩", order = 5)
     private Double english;
 
+    // 总成是excel内函数计算所得
     @ExcelField(title="总成绩", order = 1)
     private Double total;
 
