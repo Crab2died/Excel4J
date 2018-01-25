@@ -27,17 +27,8 @@
 package com.github.crab2died.converter;
 
 /**
- * 默认转换器, 实现了{@link WriteConvertible} 与 {@link ReadConvertible}接口
+ * 抽象默认转换器, 实现了{@link WriteConvertible} 与 {@link ReadConvertible}接口
  */
-public class DefaultConvertible implements WriteConvertible, ReadConvertible {
+public abstract class DefaultConvertible implements WriteConvertible, ReadConvertible {
 
-    @Override
-    public Object execWrite(Object object) {
-        return object;
-    }
-
-    @Override
-    public Object execRead(String object) {
-        return object;
-    }
 }
