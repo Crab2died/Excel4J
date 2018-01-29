@@ -82,7 +82,7 @@ public class ExcelUtils {
         if (null == excelUtils) {
             synchronized (ExcelUtils.class) {
                 if (null == excelUtils) {
-                    return new ExcelUtils();
+                    excelUtils = new ExcelUtils();
                 }
             }
         }
