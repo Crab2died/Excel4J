@@ -70,12 +70,22 @@ public class ExcelUtils {
      * <p>
      * 通过{@link ExcelUtils#getInstance()}获取对象实例
      */
-    static private ExcelUtils excelUtils = new ExcelUtils();
+    static volatile private ExcelUtils excelUtils;
 
     private ExcelUtils() {
     }
 
+    /**
+     * 双检锁保证绝对线程安全
+     */
     public static ExcelUtils getInstance() {
+        if (null == excelUtils) {
+            synchronized (ExcelUtils.class) {
+                if (null == excelUtils) {
+                    return new ExcelUtils();
+                }
+            }
+        }
         return excelUtils;
     }
 
