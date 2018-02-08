@@ -67,7 +67,6 @@ public class ExcelUtils {
 
     /**
      * 单例模式
-     * <p>
      * 通过{@link ExcelUtils#getInstance()}获取对象实例
      */
     static volatile private ExcelUtils excelUtils;
