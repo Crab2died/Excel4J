@@ -117,11 +117,18 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
         return order - o.order;
     }
 
-    public ExcelHeader() {
+    @Override
+    public boolean equals(Object object) {
+        return this.getClass() == object.getClass() && (this == object);
     }
 
-    public ExcelHeader(String title, int order, WriteConvertible writeConverter, ReadConvertible readConverter,
-                       String filed, Class<?> filedClazz) {
+    public ExcelHeader() {
+        super();
+    }
+
+    public ExcelHeader(String title, int order, WriteConvertible writeConverter,
+                       ReadConvertible readConverter, String filed, Class<?> filedClazz) {
+        super();
         this.title = title;
         this.order = order;
         this.writeConverter = writeConverter;

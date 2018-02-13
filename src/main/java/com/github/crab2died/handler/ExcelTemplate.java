@@ -218,10 +218,8 @@ public class ExcelTemplate {
                 if (c.getCellTypeEnum() != CellType.STRING)
                     continue;
                 String str = c.getStringCellValue().trim();
-                if (str.startsWith("#")) {
-                    if (data.containsKey(str.substring(1))) {
-                        c.setCellValue(data.get(str.substring(1)));
-                    }
+                if (str.startsWith("#") && data.containsKey(str.substring(1))) {
+                    c.setCellValue(data.get(str.substring(1)));
                 }
             }
         }

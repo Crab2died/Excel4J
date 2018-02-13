@@ -30,7 +30,7 @@ package com.github.crab2died.handler;
 /**
  * <p>Excel模板自定义属性,不区分大小写</p>
  */
-class HandlerConstant {
+final class HandlerConstant {
 
     // 数据插入起始坐标点
     static final String DATA_INIT_INDEX         = "$data_index";
