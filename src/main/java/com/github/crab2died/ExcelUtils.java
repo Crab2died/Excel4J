@@ -63,7 +63,7 @@ import java.util.Map;
  *
  * @author Crab2Died
  */
-public class ExcelUtils {
+public final class ExcelUtils {
 
     /**
      * 单例模式

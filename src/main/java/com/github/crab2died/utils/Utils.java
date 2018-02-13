@@ -253,7 +253,7 @@ public class Utils {
                 return field;
             }
         }
-        return null;
+        throw new IllegalArgumentException("[" + clazz.getName() + "] can`t found field with [" + fieldName + "]");
     }
 
     /**

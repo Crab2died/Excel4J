@@ -29,6 +29,7 @@ import com.github.crab2died.exceptions.TimeMatchFormatException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.util.Date;
 
 /**
@@ -126,7 +127,7 @@ public class DateUtils {
         try {
             date = sdf.parse(strDate);
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new DateTimeException("[" + strDate + "] parse to [" + format + "] exception", e);
         }
         return date;
     }
@@ -200,11 +201,11 @@ public class DateUtils {
      * @return Date  {@link Date}时间
      */
     public static Date str2DateUnmatch2Null(String strDate) {
-        Date date = null;
+        Date date;
         try {
             date = str2Date(strDate);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DateTimeException("[" + strDate + "] date auto parse exception", e);
         }
         return date;
     }
