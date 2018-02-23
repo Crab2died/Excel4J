@@ -258,7 +258,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.1.2</version>
+    <version>2.1.3</version>
 </dependency>
 ```
 
