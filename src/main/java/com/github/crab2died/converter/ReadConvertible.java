@@ -33,9 +33,9 @@ public interface ReadConvertible {
     /**
      * 读取Excel列内容转换
      *
-     * @see com.github.crab2died.annotation.ExcelField#readConverter()
      * @param object 待转换数据
-     * @return  转换完成的结果
+     * @return 转换完成的结果
+     * @see com.github.crab2died.annotation.ExcelField#readConverter()
      */
     Object execRead(String object);
 }

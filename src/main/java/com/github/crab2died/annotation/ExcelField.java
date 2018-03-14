@@ -44,6 +44,7 @@ public @interface ExcelField {
 
     /**
      * 属性的标题名称
+     *
      * @return 表头名
      */
     String title();
@@ -51,8 +52,8 @@ public @interface ExcelField {
     /**
      * 写数据转换器
      *
-     * @see WriteConvertible
      * @return 写入Excel数据转换器
+     * @see WriteConvertible
      */
     Class<? extends WriteConvertible> writeConverter()
             default DefaultConvertible.class;
@@ -60,8 +61,8 @@ public @interface ExcelField {
     /**
      * 读数据转换器
      *
-     * @see ReadConvertible
      * @return 读取Excel数据转换器
+     * @see ReadConvertible
      */
     Class<? extends ReadConvertible> readConverter()
             default DefaultConvertible.class;
