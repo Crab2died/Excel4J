@@ -257,7 +257,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 ## 六. 使用(JDK1.7及以上)
 #### 1) github拷贝项目
 ```
->> git clone https://github.com/Crab2died/Excel4J.git Excel4J
+>> git clone git@github.com:Crab2died/Excel4J.git Excel4J
 >> package.cmd
 ```
 
