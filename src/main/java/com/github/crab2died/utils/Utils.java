@@ -174,6 +174,9 @@ public class Utils {
             strField = matchDoneBigDecimal(strField);
             return Double.parseDouble(strField);
         }
+        if(BigDecimal.class == clazz) {
+            return new BigDecimal(strField);
+        }
         if ((Character.class == clazz) || (char.class == clazz)) {
             return strField.toCharArray()[0];
         }
