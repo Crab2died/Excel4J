@@ -30,7 +30,8 @@ import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.exceptions.Excel4jReadException;
 import com.github.crab2died.handler.ExcelHeader;
 import com.github.crab2died.handler.SheetTemplateHandler;
-import com.github.crab2died.sheet.wrapper.MapDataSheetWrapper;
+import com.github.crab2died.sheet.wrapper.MapSheetWrapper;
+import com.github.crab2died.sheet.wrapper.NoTemplateSheetWrapper;
 import com.github.crab2died.sheet.wrapper.NormalSheetWrapper;
 import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import com.github.crab2died.utils.Utils;
@@ -56,8 +57,8 @@ import java.util.Map;
  * 2.读取Excel操作无映射,handler为{@link ExcelUtils#readExcel2ObjectsHandler}<br>
  * 3.基于模板、注解导出excel,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
  * 4.基于模板、注解导出Map数据,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
- * 5.无模板基于注解导出,handler为{@link ExcelUtils#exportExcelNoModuleHandler}<br>
- * 6.无模板无注解导出,handler为{@link ExcelUtils#exportExcelNoModuleHandler}<br>
+ * 5.无模板基于注解导出,handler为{@link ExcelUtils#exportExcelByMapHandler}<br>
+ * 6.无模板无注解导出,handler为{@link ExcelUtils#exportExcelBySimpleHandler}<br>
  * <p>
  * 另外列举了部分常用的参数格式的方法(不同参数的排列组合实在是太多,没必要完全列出)
  * 如遇没有自己需要的参数类型的方法,可通过最全的方法来自行变换<br>
@@ -567,7 +568,7 @@ public final class ExcelUtils {
      * @param targetPath    导出Excel文件路径
      * @throws Exception 异常
      */
-    public void exportObjects2ExcelX(List<NormalSheetWrapper> sheetWrappers, String templatePath, String targetPath)
+    public void normalSheet2Excel(List<NormalSheetWrapper> sheetWrappers, String templatePath, String targetPath)
             throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetWrappers)
@@ -582,7 +583,7 @@ public final class ExcelUtils {
      * @param os            生成的Excel待输出数据流
      * @throws Exception 异常
      */
-    public void exportObjects2ExcelX(List<NormalSheetWrapper> sheetWrappers, String templatePath, OutputStream os)
+    public void normalSheet2Excel(List<NormalSheetWrapper> sheetWrappers, String templatePath, OutputStream os)
             throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetWrappers)
@@ -601,6 +602,7 @@ public final class ExcelUtils {
         return template;
     }
 
+    // 生成sheet数据
     private void generateSheet(int sheetIndex, List<?> data, Map<String, String> extendMap, Class clazz,
                                boolean isWriteHeader, SheetTemplateHandler.SheetTemplate template)
             throws Exception {
@@ -660,7 +662,7 @@ public final class ExcelUtils {
                                 Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
 
-        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
+        exportExcelByMapHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2File(targetPath);
     }
 
@@ -681,7 +683,7 @@ public final class ExcelUtils {
     public void exportMap2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
             extendMap, Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
+        exportExcelByMapHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
                 .write2Stream(os);
     }
 
@@ -700,7 +702,7 @@ public final class ExcelUtils {
     public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                 Class clazz, String targetPath) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, true)
+        exportExcelByMapHandler(templatePath, 0, data, extendMap, clazz, true)
                 .write2File(targetPath);
     }
 
@@ -719,7 +721,7 @@ public final class ExcelUtils {
     public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
                                 Class clazz, OutputStream os) throws Exception {
 
-        exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, true)
+        exportExcelByMapHandler(templatePath, 0, data, extendMap, clazz, true)
                 .write2Stream(os);
     }
 
@@ -737,7 +739,7 @@ public final class ExcelUtils {
     public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Class clazz, String targetPath)
             throws Exception {
 
-        exportExcelByModuleHandler(templatePath, 0, data, null, clazz, true)
+        exportExcelByMapHandler(templatePath, 0, data, null, clazz, true)
                 .write2File(targetPath);
     }
 
@@ -755,15 +757,15 @@ public final class ExcelUtils {
     public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Class clazz, OutputStream os)
             throws Exception {
 
-        exportExcelByModuleHandler(templatePath, 0, data, null, clazz, true)
+        exportExcelByMapHandler(templatePath, 0, data, null, clazz, true)
                 .write2Stream(os);
     }
 
     // 单sheet导出
-    private SheetTemplateHandler.SheetTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
-                                                                          Map<String, List<?>> data,
-                                                                          Map<String, String> extendMap,
-                                                                          Class clazz, boolean isWriteHeader)
+    private SheetTemplateHandler.SheetTemplate exportExcelByMapHandler(String templatePath, int sheetIndex,
+                                                                       Map<String, List<?>> data,
+                                                                       Map<String, String> extendMap,
+                                                                       Class clazz, boolean isWriteHeader)
             throws Exception {
 
         // 加载模板
@@ -784,10 +786,10 @@ public final class ExcelUtils {
      * @param targetPath    导出Excel路径
      * @throws Exception 异常
      */
-    public void exportMap2ExcelX(List<MapDataSheetWrapper> sheetWrappers, String templatePath, String targetPath)
+    public void mapSheet2Excel(List<MapSheetWrapper> sheetWrappers, String templatePath, String targetPath)
             throws Exception {
 
-        exportExcelByModuleHandler(sheetWrappers, templatePath).write2File(targetPath);
+        exportExcelByMapHandler(sheetWrappers, templatePath).write2File(targetPath);
     }
 
     /**
@@ -799,22 +801,22 @@ public final class ExcelUtils {
      * @param os            输出流
      * @throws Exception 异常
      */
-    public void exportMap2Excel(List<MapDataSheetWrapper> sheetWrappers, String templatePath, OutputStream os)
+    public void mapSheet2Excel(List<MapSheetWrapper> sheetWrappers, String templatePath, OutputStream os)
             throws Exception {
 
-        exportExcelByModuleHandler(sheetWrappers, templatePath).write2Stream(os);
+        exportExcelByMapHandler(sheetWrappers, templatePath).write2Stream(os);
     }
 
     // 多sheet导出
-    private SheetTemplateHandler.SheetTemplate exportExcelByModuleHandler(List<MapDataSheetWrapper> sheetWrappers,
-                                                                          String templatePath)
+    private SheetTemplateHandler.SheetTemplate exportExcelByMapHandler(List<MapSheetWrapper> sheetWrappers,
+                                                                       String templatePath)
             throws Exception {
 
         // 加载模板
         SheetTemplateHandler.SheetTemplate template = SheetTemplateHandler.sheetTemplateBuilder(templatePath);
 
         // 多sheet生成
-        for (MapDataSheetWrapper sheet : sheetWrappers) {
+        for (MapSheetWrapper sheet : sheetWrappers) {
             generateSheet(template, sheet.getSheetIndex(), sheet.getData(), sheet.getExtendMap(), sheet.getClazz(),
                     sheet.isWriteHeader());
         }
@@ -879,7 +881,7 @@ public final class ExcelUtils {
                                     String targetPath) throws Exception {
 
         FileOutputStream fos = new FileOutputStream(targetPath);
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(fos);
+        exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(fos);
     }
 
     /**
@@ -897,7 +899,7 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String sheetName, boolean isXSSF,
                                     OutputStream os) throws Exception {
 
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(os);
+        exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF).write(os);
     }
 
     /**
@@ -914,7 +916,7 @@ public final class ExcelUtils {
             throws Exception {
 
         FileOutputStream fos = new FileOutputStream(targetPath);
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(fos);
+        exportExcelNoTemplateHandler(data, clazz, isWriteHeader, null, true).write(fos);
     }
 
     /**
@@ -930,7 +932,7 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, OutputStream os)
             throws Exception {
 
-        exportExcelNoModuleHandler(data, clazz, isWriteHeader, null, true).write(os);
+        exportExcelNoTemplateHandler(data, clazz, isWriteHeader, null, true).write(os);
     }
 
     /**
@@ -943,7 +945,7 @@ public final class ExcelUtils {
      * @author Crab2Died
      */
     public void exportObjects2Excel(List<?> data, Class clazz, OutputStream os) throws Exception {
-        exportExcelNoModuleHandler(data, clazz, true, null, true).write(os);
+        exportExcelNoTemplateHandler(data, clazz, true, null, true).write(os);
     }
 
     /**
@@ -958,11 +960,12 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, Class clazz, String targetPath) throws Exception {
 
         FileOutputStream fos = new FileOutputStream(targetPath);
-        exportExcelNoModuleHandler(data, clazz, true, null, true).write(fos);
+        exportExcelNoTemplateHandler(data, clazz, true, null, true).write(fos);
     }
 
-    private Workbook exportExcelNoModuleHandler(List<?> data, Class clazz, boolean isWriteHeader,
-                                                String sheetName, boolean isXSSF) throws Exception {
+    // 单sheet数据导出
+    private Workbook exportExcelNoTemplateHandler(List<?> data, Class clazz, boolean isWriteHeader,
+                                                  String sheetName, boolean isXSSF) throws Exception {
 
         Workbook workbook;
         if (isXSSF) {
@@ -970,6 +973,87 @@ public final class ExcelUtils {
         } else {
             workbook = new HSSFWorkbook();
         }
+
+        generateSheet(workbook, data, clazz, isWriteHeader, sheetName);
+
+        return workbook;
+    }
+
+    /**
+     * 无模板、基于注解、多sheet数据
+     *
+     * @param sheets     待导出sheet数据
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     */
+    public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, String targetPath) throws Exception {
+
+        exportExcelNoTemplateHandler(sheets, true).write(new FileOutputStream(targetPath));
+    }
+
+    /**
+     * 无模板、基于注解、多sheet数据
+     *
+     * @param sheets     待导出sheet数据
+     * @param isXSSF     导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     */
+    public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, boolean isXSSF, String targetPath)
+            throws Exception {
+
+        exportExcelNoTemplateHandler(sheets, isXSSF).write(new FileOutputStream(targetPath));
+    }
+
+    /**
+     * 无模板、基于注解、多sheet数据
+     *
+     * @param sheets 待导出sheet数据
+     * @param os     生成的Excel输出文件流
+     * @throws Exception 异常
+     */
+    public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, OutputStream os) throws Exception {
+
+        exportExcelNoTemplateHandler(sheets, true).write(os);
+    }
+
+    /**
+     * 无模板、基于注解、多sheet数据
+     *
+     * @param sheets 待导出sheet数据
+     * @param isXSSF 导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param os     生成的Excel输出文件流
+     * @throws Exception 异常
+     */
+    public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, boolean isXSSF, OutputStream os)
+            throws Exception {
+
+        exportExcelNoTemplateHandler(sheets, isXSSF).write(os);
+    }
+
+    // 多sheet数据导出
+    private Workbook exportExcelNoTemplateHandler(List<NoTemplateSheetWrapper> sheetWrappers, boolean isXSSF)
+            throws Exception {
+
+        Workbook workbook;
+        if (isXSSF) {
+            workbook = new XSSFWorkbook();
+        } else {
+            workbook = new HSSFWorkbook();
+        }
+
+        // 导出sheet
+        for (NoTemplateSheetWrapper sheet : sheetWrappers) {
+            generateSheet(workbook, sheet.getData(), sheet.getClazz(), sheet.isWriteHeader(), sheet.getSheetName());
+        }
+
+        return workbook;
+    }
+
+    // 生成sheet数据
+    private void generateSheet(Workbook workbook, List<?> data, Class clazz, boolean isWriteHeader, String sheetName)
+            throws Exception {
+
         Sheet sheet;
         if (null != sheetName && !"".equals(sheetName)) {
             sheet = workbook.createSheet(sheetName);
@@ -995,7 +1079,7 @@ public final class ExcelUtils {
                         headers.get(j).getWriteConverter()));
             }
         }
-        return workbook;
+
     }
 
     /*---------------------------------------6.无模板无注解导出----------------------------------------------------*/
@@ -1024,7 +1108,7 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF,
                                     String targetPath) throws Exception {
 
-        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(new FileOutputStream(targetPath));
+        exportExcelBySimpleHandler(data, header, sheetName, isXSSF).write(new FileOutputStream(targetPath));
     }
 
     /**
@@ -1041,7 +1125,7 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, List<String> header, String sheetName, boolean isXSSF,
                                     OutputStream os) throws Exception {
 
-        exportExcelNoModuleHandler(data, header, sheetName, isXSSF).write(os);
+        exportExcelBySimpleHandler(data, header, sheetName, isXSSF).write(os);
     }
 
     /**
@@ -1055,7 +1139,7 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, List<String> header, String targetPath) throws Exception {
 
-        exportExcelNoModuleHandler(data, header, null, true)
+        exportExcelBySimpleHandler(data, header, null, true)
                 .write(new FileOutputStream(targetPath));
     }
 
@@ -1070,7 +1154,7 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, List<String> header, OutputStream os) throws Exception {
 
-        exportExcelNoModuleHandler(data, header, null, true).write(os);
+        exportExcelBySimpleHandler(data, header, null, true).write(os);
     }
 
     /**
@@ -1083,7 +1167,7 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, String targetPath) throws Exception {
 
-        exportExcelNoModuleHandler(data, null, null, true)
+        exportExcelBySimpleHandler(data, null, null, true)
                 .write(new FileOutputStream(targetPath));
     }
 
@@ -1097,10 +1181,10 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, OutputStream os) throws Exception {
 
-        exportExcelNoModuleHandler(data, null, null, true).write(os);
+        exportExcelBySimpleHandler(data, null, null, true).write(os);
     }
 
-    private Workbook exportExcelNoModuleHandler(List<?> data, List<String> header,
+    private Workbook exportExcelBySimpleHandler(List<?> data, List<String> header,
                                                 String sheetName, boolean isXSSF) throws Exception {
 
         Workbook workbook;
@@ -1122,9 +1206,9 @@ public final class ExcelUtils {
      * @param targetPath 生成的Excel输出全路径
      * @throws Exception 异常
      */
-    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, String targetPath) throws Exception {
+    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, String targetPath) throws Exception {
 
-        exportExcelNoModuleHandler(sheets, true).write(new FileOutputStream(targetPath));
+        exportExcelBySimpleHandler(sheets, true).write(new FileOutputStream(targetPath));
     }
 
     /**
@@ -1135,10 +1219,10 @@ public final class ExcelUtils {
      * @param targetPath 生成的Excel输出全路径
      * @throws Exception 异常
      */
-    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, boolean isXSSF, String targetPath) throws
+    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, String targetPath) throws
             Exception {
 
-        exportExcelNoModuleHandler(sheets, isXSSF).write(new FileOutputStream(targetPath));
+        exportExcelBySimpleHandler(sheets, isXSSF).write(new FileOutputStream(targetPath));
     }
 
     /**
@@ -1148,9 +1232,9 @@ public final class ExcelUtils {
      * @param os     生成的Excel待输出数据流
      * @throws Exception 异常
      */
-    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, OutputStream os) throws Exception {
+    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, OutputStream os) throws Exception {
 
-        exportExcelNoModuleHandler(sheets, true).write(os);
+        exportExcelBySimpleHandler(sheets, true).write(os);
     }
 
     /**
@@ -1161,13 +1245,13 @@ public final class ExcelUtils {
      * @param os     生成的Excel待输出数据流
      * @throws Exception 异常
      */
-    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, boolean isXSSF, OutputStream os) throws
+    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, OutputStream os) throws
             Exception {
 
-        exportExcelNoModuleHandler(sheets, isXSSF).write(os);
+        exportExcelBySimpleHandler(sheets, isXSSF).write(os);
     }
 
-    private Workbook exportExcelNoModuleHandler(List<SimpleSheetWrapper> sheets, boolean isXSSF) {
+    private Workbook exportExcelBySimpleHandler(List<SimpleSheetWrapper> sheets, boolean isXSSF) {
 
         Workbook workbook;
         if (isXSSF) {

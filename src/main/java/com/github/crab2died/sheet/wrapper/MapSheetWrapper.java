@@ -34,7 +34,7 @@ import java.util.Map;
  * author : Crab2Died
  * date : 2015/5/1  10:35
  */
-public class MapDataSheetWrapper {
+public class MapSheetWrapper {
 
     /**
      * sheet序号
@@ -61,25 +61,25 @@ public class MapDataSheetWrapper {
      */
     private boolean isWriteHeader;
 
-    public MapDataSheetWrapper(Map<String, List<?>> data, Class clazz) {
+    public MapSheetWrapper(Map<String, List<?>> data, Class clazz) {
         this.data = data;
         this.clazz = clazz;
     }
 
-    public MapDataSheetWrapper(int sheetIndex, Map<String, List<?>> data, Class clazz) {
+    public MapSheetWrapper(int sheetIndex, Map<String, List<?>> data, Class clazz) {
         this.sheetIndex = sheetIndex;
         this.data = data;
         this.clazz = clazz;
     }
 
-    public MapDataSheetWrapper(Map<String, List<?>> data, Map<String, String> extendMap, Class clazz) {
+    public MapSheetWrapper(Map<String, List<?>> data, Map<String, String> extendMap, Class clazz) {
         this.data = data;
         this.extendMap = extendMap;
         this.clazz = clazz;
     }
 
-    public MapDataSheetWrapper(int sheetIndex, Map<String, List<?>> data, Map<String, String> extendMap, Class clazz,
-                               boolean isWriteHeader) {
+    public MapSheetWrapper(int sheetIndex, Map<String, List<?>> data, Map<String, String> extendMap, Class clazz,
+                           boolean isWriteHeader) {
         this.sheetIndex = sheetIndex;
         this.data = data;
         this.extendMap = extendMap;

@@ -2,7 +2,8 @@ package base;
 
 
 import com.github.crab2died.ExcelUtils;
-import com.github.crab2died.sheet.wrapper.MapDataSheetWrapper;
+import com.github.crab2died.sheet.wrapper.MapSheetWrapper;
+import com.github.crab2died.sheet.wrapper.NoTemplateSheetWrapper;
 import com.github.crab2died.sheet.wrapper.NormalSheetWrapper;
 import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import modules.Student1;
@@ -62,7 +63,7 @@ public class Module2Excel {
         String tempPath = "/normal_batch_sheet_template.xlsx";
 
         // 基于模板导出Excel
-        ExcelUtils.getInstance().exportObjects2ExcelX(sheets, tempPath, "AA.xlsx");
+        ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, "AA.xlsx");
 
     }
 
@@ -102,7 +103,7 @@ public class Module2Excel {
     @Test
     public void testMap2BatchSheet() throws Exception {
 
-        List<MapDataSheetWrapper> sheets = new ArrayList<>();
+        List<MapSheetWrapper> sheets = new ArrayList<>();
 
         for (int i = 0; i < 2; i++) {
             Map<String, List<?>> classes = new HashMap<>();
@@ -130,9 +131,9 @@ public class Module2Excel {
                     new Student1("1010003", "蒙多", "六年级一班")
             ));
 
-            sheets.add(new MapDataSheetWrapper(i, classes, data, Student1.class, false));
+            sheets.add(new MapSheetWrapper(i, classes, data, Student1.class, false));
         }
-        ExcelUtils.getInstance().exportMap2ExcelX(sheets, "/map_batch_sheet_template.xlsx", "CC.xlsx");
+        ExcelUtils.getInstance().mapSheet2Excel(sheets, "/map_batch_sheet_template.xlsx", "CC.xlsx");
     }
 
     @Test
@@ -163,6 +164,22 @@ public class Module2Excel {
         ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "E.xlsx");
     }
 
+    // 多sheet无模板、基于注解的导出
+    @Test
+    public void testBatchNoTemplate2Excel() throws Exception {
+
+        List<NoTemplateSheetWrapper> sheets = new ArrayList<>();
+
+        for (int s = 0; s < 3; s++) {
+            List<Student2> list = new ArrayList<>();
+            for (int i = 0; i < 1000; i++) {
+                list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, false));
+            }
+            sheets.add(new NoTemplateSheetWrapper(list, Student2.class, true, "sheet_" + s));
+        }
+        ExcelUtils.getInstance().noTemplateSheet2Excel(sheets, "EE.xlsx");
+    }
+
     // 多sheet无模板、无注解导出
     @Test
     public void testBatchSimple2Excel() throws Exception {
@@ -188,7 +205,7 @@ public class Module2Excel {
             }
             list.add(new SimpleSheetWrapper(data, header, "sheet_" + i));
         }
-        ExcelUtils.getInstance().exportObjects2ExcelX(list, "K.xlsx");
+        ExcelUtils.getInstance().simpleSheet2Excel(list, "K.xlsx");
     }
 
 }
