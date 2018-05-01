@@ -29,7 +29,9 @@ package com.github.crab2died;
 import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.exceptions.Excel4jReadException;
 import com.github.crab2died.handler.ExcelHeader;
-import com.github.crab2died.handler.ExcelTemplate;
+import com.github.crab2died.handler.SheetTemplateHandler;
+import com.github.crab2died.sheet.wrapper.MapDataSheetWrapper;
+import com.github.crab2died.sheet.wrapper.NormalSheetWrapper;
 import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import com.github.crab2died.utils.Utils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -547,31 +549,83 @@ public final class ExcelUtils {
         exportObjects2Excel(templatePath, 0, data, null, clazz, true, os);
     }
 
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
-                                                     List<?> data, Map<String, String> extendMap,
-                                                     Class clazz, boolean isWriteHeader) throws Exception {
+    // 单sheet导出
+    private SheetTemplateHandler.SheetTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
+                                                                          List<?> data, Map<String, String> extendMap,
+                                                                          Class clazz, boolean isWriteHeader)
+            throws Exception {
+        SheetTemplateHandler.SheetTemplate template = SheetTemplateHandler.sheetTemplateBuilder(templatePath);
+        generateSheet(sheetIndex, data, extendMap, clazz, isWriteHeader, template);
+        return template;
+    }
 
-        if (sheetIndex < 0) sheetIndex = 0;
-        ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
-        templates.extendData(extendMap);
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出多sheet的Excel
+     *
+     * @param sheetWrappers sheet包装类
+     * @param templatePath  Excel模板路径
+     * @param targetPath    导出Excel文件路径
+     * @throws Exception 异常
+     */
+    public void exportObjects2ExcelX(List<NormalSheetWrapper> sheetWrappers, String templatePath, String targetPath)
+            throws Exception {
+
+        exportExcelByModuleHandler(templatePath, sheetWrappers)
+                .write2File(targetPath);
+    }
+
+    /**
+     * 基于Excel模板与注解{@link com.github.crab2died.annotation.ExcelField}导出多sheet的Excel
+     *
+     * @param sheetWrappers sheet包装类
+     * @param templatePath  Excel模板路径
+     * @param os            生成的Excel待输出数据流
+     * @throws Exception 异常
+     */
+    public void exportObjects2ExcelX(List<NormalSheetWrapper> sheetWrappers, String templatePath, OutputStream os)
+            throws Exception {
+
+        exportExcelByModuleHandler(templatePath, sheetWrappers)
+                .write2Stream(os);
+    }
+
+    // 多sheet导出
+    private SheetTemplateHandler.SheetTemplate exportExcelByModuleHandler(String templatePath,
+                                                                          List<NormalSheetWrapper> sheets)
+            throws Exception {
+        SheetTemplateHandler.SheetTemplate template = SheetTemplateHandler.sheetTemplateBuilder(templatePath);
+        for (NormalSheetWrapper sheet : sheets) {
+            generateSheet(sheet.getSheetIndex(), sheet.getData(), sheet.getExtendMap(), sheet.getClazz(),
+                    sheet.isWriteHeader(), template);
+        }
+        return template;
+    }
+
+    private void generateSheet(int sheetIndex, List<?> data, Map<String, String> extendMap, Class clazz,
+                               boolean isWriteHeader, SheetTemplateHandler.SheetTemplate template)
+            throws Exception {
+
+        SheetTemplateHandler.loadTemplate(template, sheetIndex);
+        SheetTemplateHandler.extendData(template, extendMap);
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
         if (isWriteHeader) {
             // 写标题
-            templates.createNewRow();
+            SheetTemplateHandler.createNewRow(template);
             for (ExcelHeader header : headers) {
-                templates.createCell(header.getTitle(), null);
+                SheetTemplateHandler.createCell(template, header.getTitle(), null);
             }
         }
 
         for (Object object : data) {
-            templates.createNewRow();
-            templates.insertSerial(null);
+            SheetTemplateHandler.createNewRow(template);
+            SheetTemplateHandler.insertSerial(template, null);
             for (ExcelHeader header : headers) {
-                templates.createCell(Utils.getProperty(object, header.getFiled(), header.getWriteConverter()), null);
+                SheetTemplateHandler.createCell(template, Utils.getProperty(object, header.getFiled(),
+                        header.getWriteConverter()), null);
             }
         }
-        return templates;
     }
+
 
     /*-------------------------------------4.基于模板、注解导出Map数据----------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
@@ -602,8 +656,8 @@ public final class ExcelUtils {
      * @throws Exception 异常
      * @author Crab2Died
      */
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data,
-                                   Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
+    public void exportMap2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data,
+                                Map<String, String> extendMap, Class clazz, boolean isWriteHeader, String targetPath)
             throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
@@ -624,7 +678,7 @@ public final class ExcelUtils {
      * @throws Exception 异常
      * @author Crab2Died
      */
-    public void exportObject2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
+    public void exportMap2Excel(String templatePath, int sheetIndex, Map<String, List<?>> data, Map<String, String>
             extendMap, Class clazz, boolean isWriteHeader, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)
@@ -643,8 +697,8 @@ public final class ExcelUtils {
      * @throws Exception 异常
      * @author Crab2Died
      */
-    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
-                                   Class clazz, String targetPath) throws Exception {
+    public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
+                                Class clazz, String targetPath) throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, true)
                 .write2File(targetPath);
@@ -662,8 +716,8 @@ public final class ExcelUtils {
      * @throws Exception 异常
      * @author Crab2Died
      */
-    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
-                                   Class clazz, OutputStream os) throws Exception {
+    public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Map<String, String> extendMap,
+                                Class clazz, OutputStream os) throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, extendMap, clazz, true)
                 .write2Stream(os);
@@ -680,7 +734,7 @@ public final class ExcelUtils {
      * @throws Exception 异常
      * @author Crab2Died
      */
-    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Class clazz, String targetPath)
+    public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Class clazz, String targetPath)
             throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, null, clazz, true)
@@ -698,41 +752,103 @@ public final class ExcelUtils {
      * @throws Exception 异常
      * @author Crab2Died
      */
-    public void exportObject2Excel(String templatePath, Map<String, List<?>> data, Class clazz, OutputStream os)
+    public void exportMap2Excel(String templatePath, Map<String, List<?>> data, Class clazz, OutputStream os)
             throws Exception {
 
         exportExcelByModuleHandler(templatePath, 0, data, null, clazz, true)
                 .write2Stream(os);
     }
 
-    private ExcelTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
-                                                     Map<String, List<?>> data, Map<String, String> extendMap,
-                                                     Class clazz, boolean isWriteHeader) throws Exception {
+    // 单sheet导出
+    private SheetTemplateHandler.SheetTemplate exportExcelByModuleHandler(String templatePath, int sheetIndex,
+                                                                          Map<String, List<?>> data,
+                                                                          Map<String, String> extendMap,
+                                                                          Class clazz, boolean isWriteHeader)
+            throws Exception {
 
-        if (sheetIndex < 0) sheetIndex = 0;
-        ExcelTemplate templates = ExcelTemplate.getInstance(templatePath, sheetIndex);
-        templates.extendData(extendMap);
+        // 加载模板
+        SheetTemplateHandler.SheetTemplate template = SheetTemplateHandler.sheetTemplateBuilder(templatePath);
+
+        // 生成sheet
+        generateSheet(template, sheetIndex, data, extendMap, clazz, isWriteHeader);
+
+        return template;
+    }
+
+    /**
+     * 基于模板、注解的多sheet导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param sheetWrappers sheet包装类
+     * @param templatePath  Excel模板
+     * @param targetPath    导出Excel路径
+     * @throws Exception 异常
+     */
+    public void exportMap2ExcelX(List<MapDataSheetWrapper> sheetWrappers, String templatePath, String targetPath)
+            throws Exception {
+
+        exportExcelByModuleHandler(sheetWrappers, templatePath).write2File(targetPath);
+    }
+
+    /**
+     * 基于模板、注解的多sheet导出{@code Map[String, List[?]]}类型数据
+     * 模板定制详见定制说明
+     *
+     * @param sheetWrappers sheet包装类
+     * @param templatePath  Excel模板
+     * @param os            输出流
+     * @throws Exception 异常
+     */
+    public void exportMap2Excel(List<MapDataSheetWrapper> sheetWrappers, String templatePath, OutputStream os)
+            throws Exception {
+
+        exportExcelByModuleHandler(sheetWrappers, templatePath).write2Stream(os);
+    }
+
+    // 多sheet导出
+    private SheetTemplateHandler.SheetTemplate exportExcelByModuleHandler(List<MapDataSheetWrapper> sheetWrappers,
+                                                                          String templatePath)
+            throws Exception {
+
+        // 加载模板
+        SheetTemplateHandler.SheetTemplate template = SheetTemplateHandler.sheetTemplateBuilder(templatePath);
+
+        // 多sheet生成
+        for (MapDataSheetWrapper sheet : sheetWrappers) {
+            generateSheet(template, sheet.getSheetIndex(), sheet.getData(), sheet.getExtendMap(), sheet.getClazz(),
+                    sheet.isWriteHeader());
+        }
+
+        return template;
+    }
+
+    // sheet生成
+    private void generateSheet(SheetTemplateHandler.SheetTemplate template, int sheetIndex, Map<String, List<?>> data,
+                               Map<String, String> extendMap, Class clazz, boolean isWriteHeader)
+            throws Exception {
+
+        SheetTemplateHandler.loadTemplate(template, sheetIndex);
+        SheetTemplateHandler.extendData(template, extendMap);
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
         if (isWriteHeader) {
             // 写标题
-            templates.createNewRow();
+            SheetTemplateHandler.createNewRow(template);
             for (ExcelHeader header : headers) {
-                templates.createCell(header.getTitle(), null);
+                SheetTemplateHandler.createCell(template, header.getTitle(), null);
             }
         }
         for (Map.Entry<String, List<?>> entry : data.entrySet()) {
             for (Object object : entry.getValue()) {
-                templates.createNewRow();
-                templates.insertSerial(entry.getKey());
+                SheetTemplateHandler.createNewRow(template);
+                SheetTemplateHandler.insertSerial(template, entry.getKey());
                 for (ExcelHeader header : headers) {
-                    templates.createCell(Utils.getProperty(object, header.getFiled(),
+                    SheetTemplateHandler.createCell(template, Utils.getProperty(object, header.getFiled(),
                             header.getWriteConverter()), entry.getKey());
                 }
             }
         }
-
-        return templates;
     }
+
 
     /*--------------------------------------5.无模板基于注解导出---------------------------------------------------*/
     /*  一. 操作流程 ：                                                                                            */
