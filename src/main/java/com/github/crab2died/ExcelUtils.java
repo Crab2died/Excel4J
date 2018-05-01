@@ -73,7 +73,7 @@ public final class ExcelUtils {
      * 单例模式
      * 通过{@link ExcelUtils#getInstance()}获取对象实例
      */
-    static volatile private ExcelUtils excelUtils;
+    private static volatile ExcelUtils excelUtils;
 
     private ExcelUtils() {
     }
@@ -1219,8 +1219,8 @@ public final class ExcelUtils {
      * @param targetPath 生成的Excel输出全路径
      * @throws Exception 异常
      */
-    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, String targetPath) throws
-            Exception {
+    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, String targetPath)
+            throws Exception {
 
         exportExcelBySimpleHandler(sheets, isXSSF).write(new FileOutputStream(targetPath));
     }
@@ -1245,8 +1245,8 @@ public final class ExcelUtils {
      * @param os     生成的Excel待输出数据流
      * @throws Exception 异常
      */
-    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, OutputStream os) throws
-            Exception {
+    public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, OutputStream os)
+            throws Exception {
 
         exportExcelBySimpleHandler(sheets, isXSSF).write(os);
     }

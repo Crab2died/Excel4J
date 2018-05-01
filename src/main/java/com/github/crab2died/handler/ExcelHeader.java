@@ -117,11 +117,6 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
         return order - o.order;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        return this.getClass() == object.getClass() && (this == object);
-    }
-
     public ExcelHeader() {
         super();
     }

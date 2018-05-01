@@ -72,5 +72,5 @@ public @interface ExcelField {
      *
      * @return 列表顺序
      */
-    int order() default 9999;
+    int order() default Integer.MAX_VALUE;
 }
