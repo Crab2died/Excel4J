@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class SheetTemplateHandler {
 
+    // 构建SheetTemplate
     public static SheetTemplate sheetTemplateBuilder(String templatePath) throws Exception {
         SheetTemplate sheetTemplate = new SheetTemplate();
         try {
@@ -18,7 +19,8 @@ public class SheetTemplateHandler {
             sheetTemplate.workbook = WorkbookFactory.create(new File(templatePath));
         } catch (IOException | InvalidFormatException e) {
             // 读取模板相对文件
-            sheetTemplate.workbook = WorkbookFactory.create(SheetTemplateHandler.class.getResourceAsStream(templatePath));
+            sheetTemplate.workbook = WorkbookFactory.create(SheetTemplateHandler.class.getResourceAsStream
+                    (templatePath));
         }
         return sheetTemplate;
     }
@@ -50,7 +52,7 @@ public class SheetTemplateHandler {
      */
     private static void initModuleConfig(SheetTemplate template) {
 
-        for (Row row : template.getSheet()) {
+        for (Row row : template.sheet) {
             for (Cell c : row) {
                 if (c.getCellTypeEnum() != CellType.STRING)
                     continue;
@@ -329,143 +331,7 @@ public class SheetTemplateHandler {
          */
         private int serialNumber;
 
-        public Workbook getWorkbook() {
-            return workbook;
-        }
-
-        public void setWorkbook(Workbook workbook) {
-            this.workbook = workbook;
-        }
-
-        public Sheet getSheet() {
-            return sheet;
-        }
-
-        public void setSheet(Sheet sheet) {
-            this.sheet = sheet;
-        }
-
-        public int getSheetIndex() {
-            return sheetIndex;
-        }
-
-        public void setSheetIndex(int sheetIndex) {
-            this.sheetIndex = sheetIndex;
-        }
-
-        public Row getCurrentRow() {
-            return currentRow;
-        }
-
-        public void setCurrentRow(Row currentRow) {
-            this.currentRow = currentRow;
-        }
-
-        public int getCurrentColumnIndex() {
-            return currentColumnIndex;
-        }
-
-        public void setCurrentColumnIndex(int currentColumnIndex) {
-            this.currentColumnIndex = currentColumnIndex;
-        }
-
-        public int getCurrentRowIndex() {
-            return currentRowIndex;
-        }
-
-        public void setCurrentRowIndex(int currentRowIndex) {
-            this.currentRowIndex = currentRowIndex;
-        }
-
-        public CellStyle getDefaultStyle() {
-            return defaultStyle;
-        }
-
-        public void setDefaultStyle(CellStyle defaultStyle) {
-            this.defaultStyle = defaultStyle;
-        }
-
-        public Map<Integer, CellStyle> getAppointLineStyle() {
-            return appointLineStyle;
-        }
-
-        public void setAppointLineStyle(Map<Integer, CellStyle> appointLineStyle) {
-            this.appointLineStyle = appointLineStyle;
-        }
-
-        public Map<String, CellStyle> getClassifyStyle() {
-            return classifyStyle;
-        }
-
-        public void setClassifyStyle(Map<String, CellStyle> classifyStyle) {
-            this.classifyStyle = classifyStyle;
-        }
-
-        public CellStyle getSingleLineStyle() {
-            return singleLineStyle;
-        }
-
-        public void setSingleLineStyle(CellStyle singleLineStyle) {
-            this.singleLineStyle = singleLineStyle;
-        }
-
-        public CellStyle getDoubleLineStyle() {
-            return doubleLineStyle;
-        }
-
-        public void setDoubleLineStyle(CellStyle doubleLineStyle) {
-            this.doubleLineStyle = doubleLineStyle;
-        }
-
-        public int getInitColumnIndex() {
-            return initColumnIndex;
-        }
-
-        public void setInitColumnIndex(int initColumnIndex) {
-            this.initColumnIndex = initColumnIndex;
-        }
-
-        public int getInitRowIndex() {
-            return initRowIndex;
-        }
-
-        public void setInitRowIndex(int initRowIndex) {
-            this.initRowIndex = initRowIndex;
-        }
-
-        public int getLastRowIndex() {
-            return lastRowIndex;
-        }
-
-        public void setLastRowIndex(int lastRowIndex) {
-            this.lastRowIndex = lastRowIndex;
-        }
-
-        public float getRowHeight() {
-            return rowHeight;
-        }
-
-        public void setRowHeight(float rowHeight) {
-            this.rowHeight = rowHeight;
-        }
-
-        public int getSerialNumberColumnIndex() {
-            return serialNumberColumnIndex;
-        }
-
-        public void setSerialNumberColumnIndex(int serialNumberColumnIndex) {
-            this.serialNumberColumnIndex = serialNumberColumnIndex;
-        }
-
-        public int getSerialNumber() {
-            return serialNumber;
-        }
-
-        public void setSerialNumber(int serialNumber) {
-            this.serialNumber = serialNumber;
-        }
-
-            /*-----------------------------------写出数据开始-----------------------------------*/
+        /*-----------------------------------写出数据开始-----------------------------------*/
 
         /**
          * 将文件写到相应的路径下
@@ -491,7 +357,7 @@ public class SheetTemplateHandler {
             this.workbook.write(os);
         }
 
-    /*-----------------------------------写出数据结束-----------------------------------*/
+        /*-----------------------------------写出数据结束-----------------------------------*/
 
     }
 }
