@@ -2,6 +2,7 @@ package base;
 
 
 import com.github.crab2died.ExcelUtils;
+import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import modules.Student1;
 import modules.Student2;
 import org.junit.Test;
@@ -92,4 +93,33 @@ public class Module2Excel {
         }
         ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "E.xlsx");
     }
+
+    // 多sheet无模板、无注解导出
+    @Test
+    public void testBatchSimple2Excel() throws Exception {
+
+        // 生成sheet数据
+        List<SimpleSheetWrapper> list = new ArrayList<>();
+        for (int i = 0; i <= 2; i++) {
+            //表格内容数据
+            List<String[]> data = new ArrayList<>();
+            for (int j = 0; j < 1000; j++) {
+
+                // 行数据(此处是数组) 也可以是List数据
+                String[] rows = new String[5];
+                for (int r = 0; r < 5; r++) {
+                    rows[r] = "sheet_" + i + "row_" + j + "column_" + r;
+                }
+                data.add(rows);
+            }
+            // 表头数据
+            List<String> header = new ArrayList<>();
+            for (int h = 0; h < 5; h++) {
+                header.add("column_" + h);
+            }
+            list.add(new SimpleSheetWrapper(data, header, "sheet_" + i));
+        }
+        ExcelUtils.getInstance().exportObjects2ExcelX(list, "K.xlsx");
+    }
+
 }

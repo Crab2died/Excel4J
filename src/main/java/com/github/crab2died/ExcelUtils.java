@@ -30,6 +30,7 @@ import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.exceptions.Excel4jReadException;
 import com.github.crab2died.handler.ExcelHeader;
 import com.github.crab2died.handler.ExcelTemplate;
+import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import com.github.crab2died.utils.Utils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -992,6 +993,83 @@ public final class ExcelUtils {
         } else {
             workbook = new HSSFWorkbook();
         }
+        // 生成sheet
+        this.generateSheet(workbook, data, header, sheetName);
+
+        return workbook;
+    }
+
+    /**
+     * 无模板、无注解、多sheet数据
+     *
+     * @param sheets     待导出sheet数据
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     */
+    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, String targetPath) throws Exception {
+
+        exportExcelNoModuleHandler(sheets, true).write(new FileOutputStream(targetPath));
+    }
+
+    /**
+     * 无模板、无注解、多sheet数据
+     *
+     * @param sheets     待导出sheet数据
+     * @param isXSSF     导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param targetPath 生成的Excel输出全路径
+     * @throws Exception 异常
+     */
+    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, boolean isXSSF, String targetPath) throws
+            Exception {
+
+        exportExcelNoModuleHandler(sheets, isXSSF).write(new FileOutputStream(targetPath));
+    }
+
+    /**
+     * 无模板、无注解、多sheet数据
+     *
+     * @param sheets 待导出sheet数据
+     * @param os     生成的Excel待输出数据流
+     * @throws Exception 异常
+     */
+    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, OutputStream os) throws Exception {
+
+        exportExcelNoModuleHandler(sheets, true).write(os);
+    }
+
+    /**
+     * 无模板、无注解、多sheet数据
+     *
+     * @param sheets 待导出sheet数据
+     * @param isXSSF 导出的Excel是否为Excel2007及以上版本(默认是)
+     * @param os     生成的Excel待输出数据流
+     * @throws Exception 异常
+     */
+    public void exportObjects2ExcelX(List<SimpleSheetWrapper> sheets, boolean isXSSF, OutputStream os) throws
+            Exception {
+
+        exportExcelNoModuleHandler(sheets, isXSSF).write(os);
+    }
+
+    private Workbook exportExcelNoModuleHandler(List<SimpleSheetWrapper> sheets, boolean isXSSF) {
+
+        Workbook workbook;
+        if (isXSSF) {
+            workbook = new XSSFWorkbook();
+        } else {
+            workbook = new HSSFWorkbook();
+        }
+        // 生成多sheet
+        for (SimpleSheetWrapper sheet : sheets) {
+            this.generateSheet(workbook, sheet.getData(), sheet.getHeader(), sheet.getSheetName());
+        }
+
+        return workbook;
+    }
+
+    // 生成sheet数据内容
+    private void generateSheet(Workbook workbook, List<?> data, List<String> header, String sheetName) {
+
         Sheet sheet;
         if (null != sheetName && !"".equals(sheetName)) {
             sheet = workbook.createSheet(sheetName);
@@ -1023,6 +1101,5 @@ public final class ExcelUtils {
                 row.createCell(0, CellType.STRING).setCellValue(object.toString());
             }
         }
-        return workbook;
     }
 }
