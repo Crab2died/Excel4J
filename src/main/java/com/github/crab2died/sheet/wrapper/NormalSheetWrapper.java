@@ -61,6 +61,17 @@ public class NormalSheetWrapper {
      */
     private boolean isWriteHeader;
 
+    public NormalSheetWrapper(int sheetIndex, List<?> data, Class clazz) {
+        this.sheetIndex = sheetIndex;
+        this.data = data;
+        this.clazz = clazz;
+    }
+
+    public NormalSheetWrapper(List<?> data, Class clazz) {
+        this.data = data;
+        this.clazz = clazz;
+    }
+
     public NormalSheetWrapper(int sheetIndex, List<?> data, Map<String, String> extendMap, Class clazz,
                               boolean isWriteHeader) {
         this.sheetIndex = sheetIndex;

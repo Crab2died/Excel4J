@@ -61,6 +61,23 @@ public class MapDataSheetWrapper {
      */
     private boolean isWriteHeader;
 
+    public MapDataSheetWrapper(Map<String, List<?>> data, Class clazz) {
+        this.data = data;
+        this.clazz = clazz;
+    }
+
+    public MapDataSheetWrapper(int sheetIndex, Map<String, List<?>> data, Class clazz) {
+        this.sheetIndex = sheetIndex;
+        this.data = data;
+        this.clazz = clazz;
+    }
+
+    public MapDataSheetWrapper(Map<String, List<?>> data, Map<String, String> extendMap, Class clazz) {
+        this.data = data;
+        this.extendMap = extendMap;
+        this.clazz = clazz;
+    }
+
     public MapDataSheetWrapper(int sheetIndex, Map<String, List<?>> data, Map<String, String> extendMap, Class clazz,
                                boolean isWriteHeader) {
         this.sheetIndex = sheetIndex;
