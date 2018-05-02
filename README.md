@@ -15,7 +15,7 @@
 4. Excel新增了Map数据样式映射功能(模板可为每个key设置一个样式,定义为:&key, 导出Map数据的样式将与key值映射)
 5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
 6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
-7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内
+7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内包装类
 8. 修复已知bug及代码与注释优化
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
@@ -255,7 +255,8 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 |$serial_number      |插入序号标记     |       -    |
     
 ## 六. 多sheet数据导出
-### 1. 多sheet数据导出包装类,详见`com.github.sheet.wrapper`包
+### 1. 多sheet数据导出包装类,详见`com.github.sheet.wrapper`包内包装类
+   多sheet数据导出只需将待导出数据封装入`com.github.sheet.wrapper`包内的Wrapper类即可实现多sheet一键导出
 
 ### 2. 无模板、无注解的多sheet导出`com.github.sheet.wrapper.SimpleSheetWrapper`
 #### 1) 调用方法
