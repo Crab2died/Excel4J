@@ -1,5 +1,6 @@
 package com.github.crab2died.handler;
 
+import com.github.crab2died.exceptions.Excel4JException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
@@ -12,15 +13,20 @@ import java.util.Map;
 public class SheetTemplateHandler {
 
     // 构建SheetTemplate
-    public static SheetTemplate sheetTemplateBuilder(String templatePath) throws Exception {
+    public static SheetTemplate sheetTemplateBuilder(String templatePath) throws Excel4JException {
         SheetTemplate sheetTemplate = new SheetTemplate();
         try {
             // 读取模板文件
             sheetTemplate.workbook = WorkbookFactory.create(new File(templatePath));
         } catch (IOException | InvalidFormatException e) {
             // 读取模板相对文件
-            sheetTemplate.workbook = WorkbookFactory.create(SheetTemplateHandler.class.getResourceAsStream
-                    (templatePath));
+            try {
+                sheetTemplate.workbook = WorkbookFactory.create(
+                        SheetTemplateHandler.class.getResourceAsStream(templatePath)
+                );
+            } catch (IOException | InvalidFormatException e1) {
+                throw new Excel4JException(e);
+            }
         }
         return sheetTemplate;
     }
@@ -35,7 +41,7 @@ public class SheetTemplateHandler {
 
     /*-----------------------------------初始化模板开始-----------------------------------*/
 
-    public static void loadTemplate(SheetTemplate template, int sheetIndex) throws Exception {
+    public static void loadTemplate(SheetTemplate template, int sheetIndex) {
 
         if (sheetIndex < 0) sheetIndex = 0;
         template.sheetIndex = sheetIndex;
@@ -44,7 +50,6 @@ public class SheetTemplateHandler {
         template.currentRowIndex = template.initRowIndex;
         template.currentColumnIndex = template.initColumnIndex;
         template.lastRowIndex = template.sheet.getLastRowNum();
-
     }
 
     /**
@@ -337,12 +342,13 @@ public class SheetTemplateHandler {
          * 将文件写到相应的路径下
          *
          * @param filePath 输出文件路径
-         * @throws IOException IO异常
          */
-        public void write2File(String filePath) throws IOException {
+        public void write2File(String filePath) throws Excel4JException {
 
             try (FileOutputStream fos = new FileOutputStream(filePath)) {
                 this.workbook.write(fos);
+            } catch (IOException e) {
+                throw new Excel4JException(e);
             }
         }
 
@@ -350,11 +356,14 @@ public class SheetTemplateHandler {
          * 将文件写到某个输出流中
          *
          * @param os 输出流
-         * @throws IOException IO异常
          */
-        public void write2Stream(OutputStream os) throws IOException {
+        public void write2Stream(OutputStream os) throws Excel4JException {
 
-            this.workbook.write(os);
+            try {
+                this.workbook.write(os);
+            } catch (IOException e) {
+                throw new Excel4JException(e);
+            }
         }
 
         /*-----------------------------------写出数据结束-----------------------------------*/

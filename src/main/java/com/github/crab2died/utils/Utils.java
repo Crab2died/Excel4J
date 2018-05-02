@@ -29,6 +29,7 @@ package com.github.crab2died.utils;
 import com.github.crab2died.annotation.ExcelField;
 import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.converter.WriteConvertible;
+import com.github.crab2died.exceptions.Excel4JException;
 import com.github.crab2died.handler.ExcelHeader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -65,11 +66,9 @@ public class Utils {
      *
      * @param clz 类型
      * @return 表头信息
-     * @throws IllegalAccessException 异常
-     * @throws InstantiationException 异常
      */
-    public static List<ExcelHeader> getHeaderList(Class<?> clz)
-            throws IllegalAccessException, InstantiationException {
+    public static List<ExcelHeader> getHeaderList(Class<?> clz) throws Excel4JException {
+
         List<ExcelHeader> headers = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
         for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
@@ -79,8 +78,18 @@ public class Utils {
             // 是否使用ExcelField注解
             if (field.isAnnotationPresent(ExcelField.class)) {
                 ExcelField er = field.getAnnotation(ExcelField.class);
-                headers.add(new ExcelHeader(er.title(), er.order(), er.writeConverter().newInstance(),
-                        er.readConverter().newInstance(), field.getName(), field.getType()));
+                try {
+                    headers.add(new ExcelHeader(
+                            er.title(),
+                            er.order(),
+                            er.writeConverter().newInstance(),
+                            er.readConverter().newInstance(),
+                            field.getName(),
+                            field.getType()
+                    ));
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new Excel4JException(e);
+                }
             }
         }
         Collections.sort(headers);
@@ -93,11 +102,10 @@ public class Utils {
      * @param titleRow excel行
      * @param clz      类型
      * @return ExcelHeader集合
-     * @throws InstantiationException 异常
-     * @throws IllegalAccessException 异常
+     * @throws Excel4JException 异常
      */
     public static Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
-            throws InstantiationException, IllegalAccessException {
+            throws Excel4JException {
 
         List<ExcelHeader> headers = getHeaderList(clz);
         Map<Integer, ExcelHeader> maps = new HashMap<>();
@@ -263,17 +271,21 @@ public class Utils {
      * @param fieldName        字段名
      * @param writeConvertible 写入转换器
      * @return 对象指定字段内容
-     * @throws InvocationTargetException 异常
-     * @throws IllegalAccessException    异常
-     * @throws IntrospectionException    异常
+     * @throws Excel4JException 异常
      */
     public static String getProperty(Object bean, String fieldName, WriteConvertible writeConvertible)
-            throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+            throws Excel4JException {
 
         if (bean == null || fieldName == null)
             throw new IllegalArgumentException("Operating bean or filed class must not be null");
-        Method method = getterOrSetter(bean.getClass(), fieldName, FieldAccessType.GETTER);
-        Object object = method.invoke(bean);
+        Method method;
+        Object object;
+        try {
+            method = getterOrSetter(bean.getClass(), fieldName, FieldAccessType.GETTER);
+            object = method.invoke(bean);
+        } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
+            throw new Excel4JException(e);
+        }
         if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
             // 写入转换器
             object = writeConvertible.execWrite(object);
@@ -287,25 +299,28 @@ public class Utils {
      * @param bean  对象
      * @param name  字段名
      * @param value 字段类型
-     * @throws InvocationTargetException 异常
-     * @throws IllegalAccessException    异常
-     * @throws IntrospectionException    异常
      */
     public static void copyProperty(Object bean, String name, Object value)
-            throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+            throws Excel4JException {
 
         if (null == name || null == value)
             return;
         Field field = matchClassField(bean.getClass(), name);
         if (null == field)
             return;
-        Method method = getterOrSetter(bean.getClass(), name, FieldAccessType.SETTER);
+        Method method;
+        try {
+            method = getterOrSetter(bean.getClass(), name, FieldAccessType.SETTER);
 
-        if (value.getClass() == field.getType()) {
-            method.invoke(bean, value);
-        } else {
-            method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
+            if (value.getClass() == field.getType()) {
+                method.invoke(bean, value);
+            } else {
+                method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
+            }
+        } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
+            throw new Excel4JException(e);
         }
+
     }
 
     /**
