@@ -13,7 +13,8 @@ import java.util.Map;
 public class SheetTemplateHandler {
 
     // 构建SheetTemplate
-    public static SheetTemplate sheetTemplateBuilder(String templatePath) throws Excel4JException {
+    public static SheetTemplate sheetTemplateBuilder(String templatePath)
+            throws Excel4JException {
         SheetTemplate sheetTemplate = new SheetTemplate();
         try {
             // 读取模板文件
@@ -31,11 +32,16 @@ public class SheetTemplateHandler {
         return sheetTemplate;
     }
 
-    public static SheetTemplate sheetTemplateBuilder(InputStream is) throws Exception {
+    public static SheetTemplate sheetTemplateBuilder(InputStream is)
+            throws Excel4JException {
         SheetTemplate sheetTemplate = new SheetTemplate();
 
         // 读取模板文件
-        sheetTemplate.workbook = WorkbookFactory.create(is);
+        try {
+            sheetTemplate.workbook = WorkbookFactory.create(is);
+        } catch (IOException | InvalidFormatException e) {
+            throw new Excel4JException(e);
+        }
         return sheetTemplate;
     }
 
