@@ -257,7 +257,7 @@ public final class ExcelUtils {
             row = sheet.getRow(i);
             if (null == row)
                 continue;
-            T obj = null;
+            T obj;
             try {
                 obj = clazz.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
