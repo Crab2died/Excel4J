@@ -8,6 +8,9 @@
                                                              (version: 2.1.4-Alpha)
 ```
 ---
+
+![version](https://img.shields.io/badge/version-2.1.4--Alpha-green.svg) [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
+
 ## 一. v2.x新特性
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
 2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
@@ -423,7 +426,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 </dependency>
 ```
 
-## 八. 开源协议:[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+## 八. 开源协议:[![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 
 ## 九. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
