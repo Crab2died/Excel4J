@@ -9,7 +9,9 @@
 ```
 ---
 
-![version](https://img.shields.io/badge/version-2.1.4--Alpha-green.svg) [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
+![version](https://img.shields.io/badge/version-2.1.4--Alpha-green.svg) 
+[![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Alpha%7Cjar)
 
 ## 一. v2.x新特性
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
