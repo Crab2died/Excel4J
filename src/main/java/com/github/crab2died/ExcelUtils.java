@@ -126,7 +126,6 @@ public final class ExcelUtils {
         try (Workbook workbook = WorkbookFactory.create(new File(excelPath))) {
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
         }
-
     }
 
     /**
@@ -151,7 +150,6 @@ public final class ExcelUtils {
         try (Workbook workbook = WorkbookFactory.create(is)) {
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
         }
-
     }
 
     /**
