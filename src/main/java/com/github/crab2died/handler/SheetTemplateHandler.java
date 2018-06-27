@@ -2,12 +2,16 @@ package com.github.crab2died.handler;
 
 import com.github.crab2died.exceptions.Excel4JException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SheetTemplateHandler {
@@ -269,110 +273,4 @@ public class SheetTemplateHandler {
 
     /*-----------------------------------数据填充结束-----------------------------------*/
 
-
-    public static class SheetTemplate {
-
-        /**
-         * 当前工作簿
-         */
-        private Workbook workbook;
-        /**
-         * 当前工作sheet表
-         */
-        private Sheet sheet;
-        /**
-         * 当前表编号
-         */
-        private int sheetIndex;
-        /**
-         * 当前行
-         */
-        private Row currentRow;
-        /**
-         * 当前列数
-         */
-        private int currentColumnIndex;
-        /**
-         * 当前行数
-         */
-        private int currentRowIndex;
-        /**
-         * 默认样式
-         */
-        private CellStyle defaultStyle;
-        /**
-         * 指定行样式
-         */
-        private Map<Integer, CellStyle> appointLineStyle = new HashMap<>();
-        /**
-         * 分类样式模板
-         */
-        private Map<String, CellStyle> classifyStyle = new HashMap<>();
-        /**
-         * 单数行样式
-         */
-        private CellStyle singleLineStyle;
-        /**
-         * 双数行样式
-         */
-        private CellStyle doubleLineStyle;
-        /**
-         * 数据的初始化列数
-         */
-        private int initColumnIndex;
-        /**
-         * 数据的初始化行数
-         */
-        private int initRowIndex;
-
-        /**
-         * 最后一行的数据
-         */
-        private int lastRowIndex;
-        /**
-         * 默认行高
-         */
-        private float rowHeight;
-        /**
-         * 序号坐标点
-         */
-        private int serialNumberColumnIndex = -1;
-        /**
-         * 当前序号
-         */
-        private int serialNumber;
-
-        /*-----------------------------------写出数据开始-----------------------------------*/
-
-        /**
-         * 将文件写到相应的路径下
-         *
-         * @param filePath 输出文件路径
-         */
-        public void write2File(String filePath) throws Excel4JException {
-
-            try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                this.workbook.write(fos);
-            } catch (IOException e) {
-                throw new Excel4JException(e);
-            }
-        }
-
-        /**
-         * 将文件写到某个输出流中
-         *
-         * @param os 输出流
-         */
-        public void write2Stream(OutputStream os) throws Excel4JException {
-
-            try {
-                this.workbook.write(os);
-            } catch (IOException e) {
-                throw new Excel4JException(e);
-            }
-        }
-
-        /*-----------------------------------写出数据结束-----------------------------------*/
-
-    }
 }
