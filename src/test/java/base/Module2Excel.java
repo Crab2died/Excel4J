@@ -10,6 +10,7 @@ import modules.Student1;
 import modules.Student2;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Module2Excel {
@@ -150,6 +151,15 @@ public class Module2Excel {
             header.add(i + "---栏");
         }
         ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D.xlsx");
+    }
+
+    @Test
+    public void uuid() throws IOException {
+        List<String> list = new ArrayList<>();
+        for (int i =0; i < 10000; i ++){
+            list.add(UUID.randomUUID().toString());
+        }
+        ExcelUtils.getInstance().exportObjects2Excel(list, new ArrayList<String>(){{add("uuid");}}, "J.xlsx");
     }
 
     // 验证日期转换函数 Student2DateConverter
