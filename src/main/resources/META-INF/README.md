@@ -5,11 +5,11 @@
                              |        \>    <\  \__\  ___/|  |__/    ^   /\__|    |
                             /_______  /__/\_ \\___  >___  >____/\____   |\________|
                                     \/      \/    \/    \/           |__|          
-                                                             (version: 2.1.4-Alpha)
+                                                             (version: 2.1.4-Final)
 ```
 ---
 
-![version](https://img.shields.io/badge/version-2.1.4--Alpha-green.svg) 
+![version](https://img.shields.io/badge/version-2.1.4--Final-green.svg) 
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Alpha%7Cjar)
 
@@ -424,7 +424,7 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.1.4-Alpha</version>
+    <version>2.1.4-Final</version>
 </dependency>
 ```
 
