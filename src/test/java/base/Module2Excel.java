@@ -10,6 +10,8 @@ import modules.Student1;
 import modules.Student2;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -33,7 +35,9 @@ public class Module2Excel {
         data.put("title", "战争学院花名册");
         data.put("info", "学校统一花名册");
         // 基于模板导出Excel
-        ExcelUtils.getInstance().exportObjects2Excel(tempPath, 0, list, data, Student1.class, false, "A.xlsx");
+        FileOutputStream os = new FileOutputStream(new File("A.xlsx"));
+        ExcelUtils.getInstance().exportObjects2Excel(tempPath, list, data, Student1.class, false, os);
+        os.close();
         // 不基于模板导出Excel
         ExcelUtils.getInstance().exportObjects2Excel(list, Student1.class, true, null, true, "B.xlsx");
     }

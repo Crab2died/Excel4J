@@ -49,7 +49,7 @@ public class SheetTemplateHandler {
         try {
             // 读取模板文件
             sheetTemplate.workbook = WorkbookFactory.create(new File(templatePath));
-        } catch (IOException | InvalidFormatException e) {
+        } catch (Exception e) {
             // 读取模板相对文件
             try {
                 sheetTemplate.workbook = WorkbookFactory.create(
