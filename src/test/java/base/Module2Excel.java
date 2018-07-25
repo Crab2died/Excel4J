@@ -66,9 +66,11 @@ public class Module2Excel {
         }
 
         String tempPath = "/normal_batch_sheet_template.xlsx";
-
+        FileOutputStream os = new FileOutputStream(new File("JK.xlsx"));
         // 基于模板导出Excel
         ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, "AA.xlsx");
+        ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, os);
+        os.close();
 
     }
 
