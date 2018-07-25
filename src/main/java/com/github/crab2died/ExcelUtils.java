@@ -79,7 +79,7 @@ public final class ExcelUtils {
     }
 
     /**
-     * 双检锁保证绝对线程安全
+     * 双检锁保证单例
      */
     public static ExcelUtils getInstance() {
         if (null == excelUtils) {

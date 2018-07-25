@@ -31,7 +31,7 @@ public class Excel2Module {
     @Test
     public void excel2Object2() {
 
-        String path = "D:\\workspace\\Excel4J\\src\\test\\resources\\students_02.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_02.xlsx";
         try {
 
             // 1)
