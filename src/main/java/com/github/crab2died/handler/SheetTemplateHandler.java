@@ -34,6 +34,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -48,7 +49,7 @@ public class SheetTemplateHandler {
         SheetTemplate sheetTemplate = new SheetTemplate();
         try {
             // 读取模板文件
-            sheetTemplate.workbook = WorkbookFactory.create(new File(templatePath));
+            sheetTemplate.workbook = WorkbookFactory.create(new FileInputStream(new File(templatePath)));
         } catch (Exception e) {
             // 读取模板相对文件
             try {
