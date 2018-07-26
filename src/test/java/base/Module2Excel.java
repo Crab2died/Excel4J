@@ -20,7 +20,7 @@ public class Module2Excel {
     @Test
     public void testObject2Excel() throws Exception {
 
-        String tempPath = "D:\\workspace\\Excel4J\\src\\test\\resources\\normal_template.xlsx";
+        String tempPath = "/normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
         list.add(new Student1("1010002", "古尔丹", "一年级三班"));
@@ -65,7 +65,7 @@ public class Module2Excel {
             sheets.add(new NormalSheetWrapper(i, list, data, Student1.class, false));
         }
 
-        String tempPath = "D:\\workspace\\Excel4J\\src\\test\\resources\\normal_batch_sheet_template.xlsx";
+        String tempPath = "D:\\JProject\\Excel4J\\src\\test\\resources\\normal_batch_sheet_template.xlsx";
         FileOutputStream os = new FileOutputStream(new File("JK.xlsx"));
         // 基于模板导出Excel
         ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, "AA.xlsx");

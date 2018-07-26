@@ -14,7 +14,7 @@ public class Excel2Module {
     @Test
     public void excel2Object() throws Exception {
 
-        String path = "D:\\workspace\\Excel4J\\src\\test\\resources\\students_01.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_01.xlsx";
 
         System.out.println("读取全部：");
         List<Student1> students = ExcelUtils.getInstance().readExcel2Objects(path, Student1.class);
@@ -31,7 +31,7 @@ public class Excel2Module {
     @Test
     public void excel2Object2() {
 
-        String path = "D:\\workspace\\Excel4J\\src\\test\\resources\\students_02.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_02.xlsx";
         try {
 
             // 1)
@@ -61,7 +61,7 @@ public class Excel2Module {
     @Test
     public void testReadConverter() throws Exception {
 
-        String path = "D:\\workspace\\Excel4J\\src\\test\\resources\\students_02.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\students_02.xlsx";
         List<Student2> students = ExcelUtils.getInstance().readExcel2Objects(path, Student2.class, 0, 0);
         System.out.println("读取Excel至对象数组(支持类型转换)：");
         for (Student2 st : students) {
@@ -72,7 +72,7 @@ public class Excel2Module {
     //测试读取带有公式的单元格，并返回公式的值
     @Test
     public void testReadExcel_XLS() throws  Exception{
-        String path = "D:\\workspace\\Excel4J\\src\\test\\resources\\StudentScore.xlsx";
+        String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\StudentScore.xlsx";
         System.out.println(Paths.get(path).toUri().getPath());
         List<StudentScore> projectExcelModels = ExcelUtils.getInstance().readExcel2Objects(path, StudentScore.class);
         System.out.println(projectExcelModels);
