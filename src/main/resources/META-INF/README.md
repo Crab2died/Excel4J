@@ -13,7 +13,7 @@
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Final2%7Cjar)
 
-> 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG，以及读取Excel数据会修改原Excel文件，建议全部升级至2.1.4-Final2版本
+> 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG，以及读取Excel数据会修改原Excel文件，建议升级至2.1.4-Final2版本
 
 ## 一. v2.x新特性
 1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
@@ -23,7 +23,7 @@
 5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
 6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
 7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内包装类
-8. 修复以绝对路径指定模板来导出会导致模板被修改的BUG，以及读取Excel数据会修改原Excel文件，建议全部升级至2.1.4-Final2C版本
+8. 修复以绝对路径指定模板来导出会导致模板被修改的BUG，以及读取Excel数据会修改原Excel文件，建议升级至2.1.4-Final2版本
 9. 修复已知bug及代码与注释优化
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
