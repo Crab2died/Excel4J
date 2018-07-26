@@ -123,7 +123,7 @@ public final class ExcelUtils {
                                          int limitLine, int sheetIndex)
             throws Excel4JException, IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(new File(excelPath))) {
+        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
         }
     }
@@ -314,7 +314,7 @@ public final class ExcelUtils {
     public List<List<String>> readExcel2List(String excelPath, int offsetLine, int limitLine, int sheetIndex)
             throws IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(new File(excelPath))) {
+        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
         }
     }
@@ -353,7 +353,7 @@ public final class ExcelUtils {
     public List<List<String>> readExcel2List(String excelPath, int offsetLine)
             throws IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(new File(excelPath))) {
+        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
         }
     }
@@ -388,7 +388,7 @@ public final class ExcelUtils {
     public List<List<String>> readExcel2List(String excelPath)
             throws IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(new File(excelPath))) {
+        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
         }
     }
