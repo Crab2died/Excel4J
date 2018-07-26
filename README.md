@@ -11,7 +11,7 @@
 
 ![version](https://img.shields.io/badge/version-2.1.4--Final2-green.svg) 
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Alpha%7Cjar)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Final2%7Cjar)
 
 > 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG，以及读取Excel数据会修改原Excel文件，建议全部升级至2.1.4-Final2版本
 
