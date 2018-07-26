@@ -4,7 +4,7 @@
 
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.2.0-Beta</version>
+    <version>2.1.4-RC</version>
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
