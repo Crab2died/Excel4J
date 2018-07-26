@@ -57,7 +57,7 @@ public class SheetTemplateHandler {
                         SheetTemplateHandler.class.getResourceAsStream(templatePath)
                 );
             } catch (IOException | InvalidFormatException e1) {
-                throw new Excel4JException(e);
+                throw new Excel4JException(e1);
             }
         }
         return sheetTemplate;
