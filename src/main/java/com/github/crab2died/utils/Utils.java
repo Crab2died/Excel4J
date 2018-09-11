@@ -143,8 +143,7 @@ public class Utils {
                 break;
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(c)) {
-                    SimpleDateFormat sdf =  new SimpleDateFormat("yyyy/MM/dd");
-                    o = sdf.format(c.getDateCellValue());
+                    o = DateUtils.date2Str(c.getDateCellValue());
                 } else {
                     o = String.valueOf(c.getNumericCellValue());
                     o = matchDoneBigDecimal(o);

@@ -29,7 +29,6 @@ import com.github.crab2died.exceptions.TimeMatchFormatException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.util.Date;
 
 /**
@@ -127,7 +126,7 @@ public class DateUtils {
         try {
             date = sdf.parse(strDate);
         } catch (ParseException e) {
-            throw new DateTimeException("[" + strDate + "] parse to [" + format + "] exception", e);
+            throw new IllegalArgumentException("[" + strDate + "] parse to [" + format + "] exception", e);
         }
         return date;
     }
@@ -205,7 +204,7 @@ public class DateUtils {
         try {
             date = str2Date(strDate);
         } catch (Exception e) {
-            throw new DateTimeException("[" + strDate + "] date auto parse exception", e);
+            throw new IllegalArgumentException("[" + strDate + "] date auto parse exception", e);
         }
         return date;
     }
