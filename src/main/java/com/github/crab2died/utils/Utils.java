@@ -33,6 +33,7 @@ import com.github.crab2died.exceptions.Excel4JException;
 import com.github.crab2died.handler.ExcelHeader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.beans.BeanInfo;
@@ -43,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -140,9 +142,14 @@ public class Utils {
                 o = calculationFormula(c);
                 break;
             case NUMERIC:
-                o = String.valueOf(c.getNumericCellValue());
-                o = matchDoneBigDecimal(o);
-                o = RegularUtils.converNumByReg(o);
+                if (DateUtil.isCellDateFormatted(c)) {
+                    SimpleDateFormat sdf =  new SimpleDateFormat("yyyy/MM/dd");
+                    o = sdf.format(c.getDateCellValue());
+                } else {
+                    o = String.valueOf(c.getNumericCellValue());
+                    o = matchDoneBigDecimal(o);
+                    o = RegularUtils.converNumByReg(o);
+                }
                 break;
             case STRING:
                 o = c.getStringCellValue();
