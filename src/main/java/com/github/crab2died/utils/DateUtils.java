@@ -126,7 +126,7 @@ public class DateUtils {
         try {
             date = sdf.parse(strDate);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("[" + strDate + "] parse to [" + format + "] exception", e);
+            throw new TimeMatchFormatException("[" + strDate + "] parse to [" + format + "] exception", e);
         }
         return date;
     }
@@ -204,7 +204,7 @@ public class DateUtils {
         try {
             date = str2Date(strDate);
         } catch (Exception e) {
-            throw new IllegalArgumentException("[" + strDate + "] date auto parse exception", e);
+            throw new TimeMatchFormatException("[" + strDate + "] date auto parse exception", e);
         }
         return date;
     }
