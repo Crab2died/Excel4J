@@ -17,7 +17,7 @@ import java.util.*;
 
 public class Module2Excel {
 
-    private static final String BASE_PATH = "D:\\temp\\";
+    private static final String BASE_PATH = "/Users/jimmy/temp/";
 
     @Test
     public void testObject2Excel() throws Exception {

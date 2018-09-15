@@ -8,5 +8,6 @@ bin
 .gradle
 .idea
 out
+target
 *.iml
 
