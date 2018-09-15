@@ -12,7 +12,7 @@ public @interface I18nField {
     /**
      * 国际化标题栏(例如: ["zh-cn|学生","en-us|student"])
      *
-     * @return
+     * @return 国际化标题配置数组
      */
     String[] titles();
 

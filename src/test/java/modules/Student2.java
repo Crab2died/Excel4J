@@ -34,6 +34,9 @@ public class Student2 {
     @I18nField(titles = {"en-us|is expel?"})
     private boolean expel;
 
+    public Student2() {
+
+    }
 
     public Student2(Long id, String name, Date date, Integer classes, boolean expel) {
         this.id = id;

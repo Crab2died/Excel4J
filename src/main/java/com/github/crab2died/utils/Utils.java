@@ -78,8 +78,8 @@ public class Utils {
      *
      * @param clz      类型
      * @param language 语言,eg: zh-cn
-     * @return
-     * @throws Excel4JException
+     * @return Excel头信息列表
+     * @throws Excel4JException 异常
      */
     public static List<ExcelHeader> getHeaderList(Class<?> clz, String language) throws Excel4JException {
 
@@ -155,17 +155,17 @@ public class Utils {
      */
     public static String getCellValue(Cell c) {
         String o;
-        switch (c.getCellTypeEnum()) {
-            case BLANK:
+        switch (c.getCellType()) {
+            case Cell.CELL_TYPE_BLANK:
                 o = "";
                 break;
-            case BOOLEAN:
+            case Cell.CELL_TYPE_BOOLEAN:
                 o = String.valueOf(c.getBooleanCellValue());
                 break;
-            case FORMULA:
+            case Cell.CELL_TYPE_FORMULA:
                 o = calculationFormula(c);
                 break;
-            case NUMERIC:
+            case Cell.CELL_TYPE_NUMERIC:
                 if (DateUtil.isCellDateFormatted(c)) {
                     o = DateUtils.date2Str(c.getDateCellValue());
                 } else {
@@ -174,7 +174,7 @@ public class Utils {
                     o = RegularUtils.convertNumByReg(o);
                 }
                 break;
-            case STRING:
+            case Cell.CELL_TYPE_STRING:
                 o = c.getStringCellValue();
                 break;
             default:
@@ -338,6 +338,7 @@ public class Utils {
      * @param bean  对象
      * @param name  字段名
      * @param value 字段类型
+     * @throws Excel4JException 异常
      */
     public static void copyProperty(Object bean, String name, Object value)
             throws Excel4JException {

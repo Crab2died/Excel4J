@@ -115,8 +115,8 @@ public class SheetTemplate implements Closeable {
 
     /**
      * 将文件写到相应的路径下
-     *
      * @param filePath 输出文件路径
+     * @throws Excel4JException 特定异常
      */
     public void write2File(String filePath) throws Excel4JException {
 
@@ -129,8 +129,8 @@ public class SheetTemplate implements Closeable {
 
     /**
      * 将文件写到某个输出流中
-     *
      * @param os 输出流
+     * @throws Excel4JException 特定异常
      */
     public void write2Stream(OutputStream os) throws Excel4JException {
 
@@ -145,8 +145,9 @@ public class SheetTemplate implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (null != this.workbook){
-            this.workbook.close();
+        if (null != this.workbook) {
+//            this.workbook.close();
+            this.workbook = null;
         }
     }
 

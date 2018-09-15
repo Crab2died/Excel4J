@@ -81,6 +81,8 @@ public final class ExcelUtils {
 
     /**
      * 双检锁保证单例
+     *
+     * @return ExcelUtils实例
      */
     public static ExcelUtils getInstance() {
         if (null == excelUtils) {
@@ -113,19 +115,26 @@ public final class ExcelUtils {
      * @param offsetLine Excel表头行(默认是0)
      * @param limitLine  最大读取行数(默认表尾)
      * @param sheetIndex Sheet索引(默认0)
+     * @param language   语言
      * @param <T>        绑定的数据类
-     * @return 返回转换为设置绑定的java对象集合
+     * @return 绑定的数据列表
      * @throws Excel4JException       异常
      * @throws IOException            异常
      * @throws InvalidFormatException 异常
-     * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine,
                                          int limitLine, int sheetIndex, String language)
             throws Excel4JException, IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(new File(excelPath));
+            Workbook workbook = WorkbookFactory.create(fileInputStream);
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, language);
+        } finally {
+            if (null != fileInputStream) {
+                fileInputStream.close();
+            }
         }
     }
 
@@ -133,8 +142,15 @@ public final class ExcelUtils {
                                          int limitLine, int sheetIndex)
             throws Excel4JException, IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
-            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(new File(excelPath));
+            Workbook workbook = WorkbookFactory.create(fileInputStream);
+            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, LanguageEnum.CHINESE.getValue());
+        } finally {
+            if (null != fileInputStream) {
+                fileInputStream.close();
+            }
         }
     }
 
@@ -147,18 +163,23 @@ public final class ExcelUtils {
      * @param limitLine  最大读取行数(默认表尾)
      * @param sheetIndex Sheet索引(默认0)
      * @param <T>        绑定的数据类
+     * @param language   语言
      * @return 返回转换为设置绑定的java对象集合
      * @throws Excel4JException       异常
      * @throws IOException            异常
      * @throws InvalidFormatException 异常
-     * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine,
                                          int limitLine, int sheetIndex, String language)
             throws Excel4JException, IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(is)) {
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, language);
+        } finally {
+            if (null != is) {
+                is.close();
+            }
         }
     }
 
@@ -166,8 +187,13 @@ public final class ExcelUtils {
                                          int limitLine, int sheetIndex)
             throws Excel4JException, IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(is)) {
-            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
+            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, LanguageEnum.CHINESE.getValue());
+        } finally {
+            if (null != is) {
+                is.close();
+            }
         }
     }
 
@@ -335,8 +361,8 @@ public final class ExcelUtils {
      */
     public List<List<String>> readExcel2List(String excelPath, int offsetLine, int limitLine, int sheetIndex)
             throws IOException, InvalidFormatException {
-
-        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
+        try (InputStream is = new FileInputStream(new File(excelPath))) {
+            Workbook workbook = WorkbookFactory.create(is);
             return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
         }
     }
@@ -357,8 +383,13 @@ public final class ExcelUtils {
     public List<List<String>> readExcel2List(InputStream is, int offsetLine, int limitLine, int sheetIndex)
             throws Excel4JException, IOException, InvalidFormatException {
 
-        try (Workbook workbook = WorkbookFactory.create(is)) {
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
             return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
+        } finally {
+            if (null != is) {
+                is.close();
+            }
         }
     }
 
@@ -374,8 +405,8 @@ public final class ExcelUtils {
      */
     public List<List<String>> readExcel2List(String excelPath, int offsetLine)
             throws IOException, InvalidFormatException {
-
-        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
+        try (InputStream stream = new FileInputStream(new File(excelPath))) {
+            Workbook workbook = WorkbookFactory.create(stream);
             return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
         }
     }
@@ -392,9 +423,13 @@ public final class ExcelUtils {
      */
     public List<List<String>> readExcel2List(InputStream is, int offsetLine)
             throws IOException, InvalidFormatException {
-
-        try (Workbook workbook = WorkbookFactory.create(is)) {
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
             return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
+        } finally {
+            if (null != is) {
+                is.close();
+            }
         }
     }
 
@@ -409,8 +444,8 @@ public final class ExcelUtils {
      */
     public List<List<String>> readExcel2List(String excelPath)
             throws IOException, InvalidFormatException {
-
-        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
+        try (InputStream stream = new FileInputStream(new File(excelPath))) {
+            Workbook workbook = WorkbookFactory.create(stream);
             return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
         }
     }
@@ -426,9 +461,13 @@ public final class ExcelUtils {
      */
     public List<List<String>> readExcel2List(InputStream is)
             throws IOException, InvalidFormatException {
-
-        try (Workbook workbook = WorkbookFactory.create(is)) {
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
             return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
+        } finally {
+            if (null != is) {
+                is.close();
+            }
         }
     }
 
@@ -1020,8 +1059,8 @@ public final class ExcelUtils {
                                     String sheetName, boolean isXSSF, String targetPath, String language)
             throws Excel4JException, IOException {
 
-        try (FileOutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF, language)) {
+        try (FileOutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF, language);
             workbook.write(fos);
         }
     }
@@ -1043,9 +1082,9 @@ public final class ExcelUtils {
                                     String sheetName, boolean isXSSF, OutputStream os)
             throws Excel4JException, IOException {
 
-        try (Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF);
+        workbook.write(os);
+
     }
 
     /**
@@ -1062,8 +1101,8 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, String targetPath)
             throws Excel4JException, IOException {
 
-        try (FileOutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, null, true)) {
+        try (FileOutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, null, true);
             workbook.write(fos);
         }
     }
@@ -1081,10 +1120,8 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader, OutputStream os)
             throws Excel4JException, IOException {
-
-        try (Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, null, true)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, null, true);
+        workbook.write(os);
     }
 
     /**
@@ -1099,10 +1136,8 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, Class clazz, OutputStream os)
             throws Excel4JException, IOException {
-
-        try (Workbook workbook = exportExcelNoTemplateHandler(data, clazz, true, null, true)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelNoTemplateHandler(data, clazz, true, null, true);
+        workbook.write(os);
     }
 
     /**
@@ -1118,8 +1153,8 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, Class clazz, String targetPath)
             throws Excel4JException, IOException {
 
-        try (FileOutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelNoTemplateHandler(data, clazz, true, null, true)) {
+        try (FileOutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelNoTemplateHandler(data, clazz, true, null, true);
             workbook.write(fos);
         }
     }
@@ -1181,8 +1216,8 @@ public final class ExcelUtils {
     public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, String targetPath)
             throws Excel4JException, IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelNoTemplateHandler(sheets, true)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelNoTemplateHandler(sheets, true);
             workbook.write(fos);
         }
     }
@@ -1199,8 +1234,8 @@ public final class ExcelUtils {
     public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, boolean isXSSF, String targetPath)
             throws Excel4JException, IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelNoTemplateHandler(sheets, isXSSF)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelNoTemplateHandler(sheets, isXSSF);
             workbook.write(fos);
         }
     }
@@ -1215,10 +1250,8 @@ public final class ExcelUtils {
      */
     public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, OutputStream os)
             throws Excel4JException, IOException {
-
-        try (Workbook workbook = exportExcelNoTemplateHandler(sheets, true)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelNoTemplateHandler(sheets, true);
+        workbook.write(os);
     }
 
     /**
@@ -1232,10 +1265,9 @@ public final class ExcelUtils {
      */
     public void noTemplateSheet2Excel(List<NoTemplateSheetWrapper> sheets, boolean isXSSF, OutputStream os)
             throws Excel4JException, IOException {
+        Workbook workbook = exportExcelNoTemplateHandler(sheets, isXSSF);
+        workbook.write(os);
 
-        try (Workbook workbook = exportExcelNoTemplateHandler(sheets, isXSSF)) {
-            workbook.write(os);
-        }
     }
 
     // 多sheet数据导出
@@ -1324,8 +1356,8 @@ public final class ExcelUtils {
                                     boolean isXSSF, String targetPath)
             throws IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelBySimpleHandler(data, header, sheetName, isXSSF)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelBySimpleHandler(data, header, sheetName, isXSSF);
             workbook.write(fos);
         }
     }
@@ -1344,10 +1376,8 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, List<String> header, String sheetName,
                                     boolean isXSSF, OutputStream os)
             throws IOException {
-
-        try (Workbook workbook = exportExcelBySimpleHandler(data, header, sheetName, isXSSF)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelBySimpleHandler(data, header, sheetName, isXSSF);
+        workbook.write(os);
     }
 
     /**
@@ -1362,8 +1392,8 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, List<String> header, String targetPath)
             throws IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelBySimpleHandler(data, header, null, true)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelBySimpleHandler(data, header, null, true);
             workbook.write(fos);
         }
     }
@@ -1379,10 +1409,8 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, List<String> header, OutputStream os)
             throws IOException {
-
-        try (Workbook workbook = exportExcelBySimpleHandler(data, header, null, true)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelBySimpleHandler(data, header, null, true);
+        workbook.write(os);
     }
 
     /**
@@ -1396,8 +1424,8 @@ public final class ExcelUtils {
     public void exportObjects2Excel(List<?> data, String targetPath)
             throws IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelBySimpleHandler(data, null, null, true)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelBySimpleHandler(data, null, null, true);
             workbook.write(fos);
         }
     }
@@ -1412,10 +1440,9 @@ public final class ExcelUtils {
      */
     public void exportObjects2Excel(List<?> data, OutputStream os)
             throws IOException {
+        Workbook workbook = exportExcelBySimpleHandler(data, null, null, true);
+        workbook.write(os);
 
-        try (Workbook workbook = exportExcelBySimpleHandler(data, null, null, true)) {
-            workbook.write(os);
-        }
     }
 
     private Workbook exportExcelBySimpleHandler(List<?> data, List<String> header,
@@ -1443,8 +1470,8 @@ public final class ExcelUtils {
     public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, String targetPath)
             throws IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelBySimpleHandler(sheets, true)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelBySimpleHandler(sheets, true);
             workbook.write(fos);
         }
     }
@@ -1460,8 +1487,8 @@ public final class ExcelUtils {
     public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, String targetPath)
             throws IOException {
 
-        try (OutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelBySimpleHandler(sheets, isXSSF)) {
+        try (OutputStream fos = new FileOutputStream(targetPath)) {
+            Workbook workbook = exportExcelBySimpleHandler(sheets, isXSSF);
             workbook.write(fos);
         }
     }
@@ -1475,10 +1502,8 @@ public final class ExcelUtils {
      */
     public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, OutputStream os)
             throws IOException {
-
-        try (Workbook workbook = exportExcelBySimpleHandler(sheets, true)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelBySimpleHandler(sheets, true);
+        workbook.write(os);
     }
 
     /**
@@ -1491,10 +1516,8 @@ public final class ExcelUtils {
      */
     public void simpleSheet2Excel(List<SimpleSheetWrapper> sheets, boolean isXSSF, OutputStream os)
             throws IOException {
-
-        try (Workbook workbook = exportExcelBySimpleHandler(sheets, isXSSF)) {
-            workbook.write(os);
-        }
+        Workbook workbook = exportExcelBySimpleHandler(sheets, isXSSF);
+        workbook.write(os);
     }
 
     private Workbook exportExcelBySimpleHandler(List<SimpleSheetWrapper> sheets, boolean isXSSF) {
@@ -1528,23 +1551,23 @@ public final class ExcelUtils {
             // 写标题
             Row row = sheet.createRow(rowIndex++);
             for (int i = 0; i < header.size(); i++) {
-                row.createCell(i, CellType.STRING).setCellValue(header.get(i));
+                row.createCell(i, Cell.CELL_TYPE_STRING).setCellValue(header.get(i));
             }
         }
         for (Object object : data) {
             Row row = sheet.createRow(rowIndex++);
             if (object.getClass().isArray()) {
                 for (int j = 0; j < Array.getLength(object); j++) {
-                    row.createCell(j, CellType.STRING).setCellValue(Array.get(object, j).toString());
+                    row.createCell(j, Cell.CELL_TYPE_STRING).setCellValue(Array.get(object, j).toString());
                 }
             } else if (object instanceof Collection) {
                 Collection<?> items = (Collection<?>) object;
                 int j = 0;
                 for (Object item : items) {
-                    row.createCell(j++, CellType.STRING).setCellValue(item.toString());
+                    row.createCell(j++, Cell.CELL_TYPE_STRING).setCellValue(item.toString());
                 }
             } else {
-                row.createCell(0, CellType.STRING).setCellValue(object.toString());
+                row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(object.toString());
             }
         }
     }

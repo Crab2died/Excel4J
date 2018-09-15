@@ -15,14 +15,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-public class Module2Excel {
+public class Module2Excel extends BaseTest {
 
-    private static final String BASE_PATH = "/Users/jimmy/temp/";
 
     @Test
     public void testObject2Excel() throws Exception {
 
-        String tempPath = "/normal_template.xlsx";
+        String tempPath = TEMPLATE_PATH + "normal_template.xlsx";
         List<Student1> list = new ArrayList<>();
         list.add(new Student1("1010001", "盖伦", "六年级三班"));
         list.add(new Student1("1010002", "古尔丹", "一年级三班"));
@@ -37,11 +36,11 @@ public class Module2Excel {
         data.put("title", "战争学院花名册");
         data.put("info", "学校统一花名册");
         // 基于模板导出Excel
-        FileOutputStream os = new FileOutputStream(new File("A.xlsx"));
+        FileOutputStream os = new FileOutputStream(new File(BASE_PATH + "A.xlsx"));
         ExcelUtils.getInstance().exportObjects2Excel(tempPath, list, data, Student1.class, false, os);
         os.close();
         // 不基于模板导出Excel
-        ExcelUtils.getInstance().exportObjects2Excel(list, Student1.class, true, null, true, "B.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student1.class, true, null, true, BASE_PATH + "B.xlsx");
     }
 
 
@@ -67,10 +66,10 @@ public class Module2Excel {
             sheets.add(new NormalSheetWrapper(i, list, data, Student1.class, false));
         }
 
-        String tempPath = "D:\\JProject\\Excel4J\\src\\test\\resources\\normal_batch_sheet_template.xlsx";
-        FileOutputStream os = new FileOutputStream(new File("JK.xlsx"));
+        String tempPath = TEMPLATE_PATH + "normal_batch_sheet_template.xlsx";
+        FileOutputStream os = new FileOutputStream(new File(BASE_PATH + "JK.xlsx"));
         // 基于模板导出Excel
-        ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, "AA.xlsx");
+        ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, BASE_PATH + "AA.xlsx");
         ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, os);
         os.close();
 
@@ -104,8 +103,8 @@ public class Module2Excel {
                 new Student1("1010003", "蒙多", "六年级一班")
         ));
 
-        ExcelUtils.getInstance().exportMap2Excel("/map_template.xlsx",
-                0, classes, data, Student1.class, false, "C.xlsx");
+        ExcelUtils.getInstance().exportMap2Excel(TEMPLATE_PATH + "map_template.xlsx",
+                0, classes, data, Student1.class, false, BASE_PATH + "C.xlsx");
     }
 
     // Map数据的多sheet导出
@@ -142,7 +141,7 @@ public class Module2Excel {
 
             sheets.add(new MapSheetWrapper(i, classes, data, Student1.class, false));
         }
-        ExcelUtils.getInstance().mapSheet2Excel(sheets, "/map_batch_sheet_template.xlsx", "CC.xlsx");
+        ExcelUtils.getInstance().mapSheet2Excel(sheets, TEMPLATE_PATH + "map_batch_sheet_template.xlsx", BASE_PATH + "CC.xlsx");
     }
 
     @Test
@@ -158,7 +157,7 @@ public class Module2Excel {
             list2.add(_list);
             header.add(i + "---栏");
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list2, header, "D.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list2, header, BASE_PATH + "D.xlsx");
     }
 
     @Test
@@ -169,7 +168,7 @@ public class Module2Excel {
         }
         ExcelUtils.getInstance().exportObjects2Excel(list, new ArrayList<String>() {{
             add("uuid");
-        }}, "J.xlsx");
+        }}, BASE_PATH + "J.xlsx");
     }
 
     // 验证日期转换函数 Student2DateConverter
@@ -199,7 +198,7 @@ public class Module2Excel {
             }
             sheets.add(new NoTemplateSheetWrapper(list, Student2.class, true, "sheet_" + s));
         }
-        ExcelUtils.getInstance().noTemplateSheet2Excel(sheets, "EE.xlsx");
+        ExcelUtils.getInstance().noTemplateSheet2Excel(sheets, BASE_PATH + "EE.xlsx");
     }
 
     // 多sheet无模板、无注解导出
@@ -227,7 +226,7 @@ public class Module2Excel {
             }
             list.add(new SimpleSheetWrapper(data, header, "sheet_" + i));
         }
-        ExcelUtils.getInstance().simpleSheet2Excel(list, "K.xlsx");
+        ExcelUtils.getInstance().simpleSheet2Excel(list, BASE_PATH + "K.xlsx");
     }
 
 }

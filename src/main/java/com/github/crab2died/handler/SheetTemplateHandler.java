@@ -29,7 +29,6 @@ package com.github.crab2died.handler;
 import com.github.crab2died.exceptions.Excel4JException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
@@ -98,7 +97,7 @@ public class SheetTemplateHandler {
 
         for (Row row : template.sheet) {
             for (Cell c : row) {
-                if (c.getCellTypeEnum() != CellType.STRING) {
+                if (c.getCellType() != Cell.CELL_TYPE_STRING) {
                     continue;
                 }
                 String str = c.getStringCellValue().trim().toLowerCase();
@@ -156,12 +155,12 @@ public class SheetTemplateHandler {
     }
 
     /*-----------------------------------初始化模板结束-----------------------------------*/
-    
+
     /*-----------------------------------数据填充开始------------------------------------*/
 
     /**
      * 根据map替换相应的常量，通过Map中的值来替换#开头的值
-     *
+     * @param template 模板
      * @param data 替换映射
      */
     public static void extendData(SheetTemplate template, Map<String, String> data) {
@@ -170,7 +169,7 @@ public class SheetTemplateHandler {
         }
         for (Row row : template.sheet) {
             for (Cell c : row) {
-                if (c.getCellTypeEnum() != CellType.STRING) {
+                if (c.getCellType() != Cell.CELL_TYPE_STRING) {
                     continue;
                 }
                 String str = c.getStringCellValue().trim();
@@ -183,6 +182,7 @@ public class SheetTemplateHandler {
 
     /**
      * 创建新行，在使用时只要添加完一行，需要调用该方法创建
+     * @param template 模板
      */
     public static void createNewRow(SheetTemplate template) {
         if (template.lastRowIndex > template.currentRowIndex && template.currentRowIndex != template.initRowIndex) {
@@ -198,6 +198,7 @@ public class SheetTemplateHandler {
     /**
      * 插入序号，会自动找相应的序号标示的位置完成插入
      *
+     * @param template 模板
      * @param styleKey 样式标识
      */
     public static void insertSerial(SheetTemplate template, String styleKey) {
@@ -213,6 +214,7 @@ public class SheetTemplateHandler {
     /**
      * <p>设置Excel元素样式及内容</p>
      *
+     * @param template 模板
      * @param value    内容
      * @param styleKey 样式
      */

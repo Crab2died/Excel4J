@@ -2,7 +2,9 @@ package modules;
 
 
 import com.github.crab2died.annotation.ExcelField;
+import lombok.Data;
 
+@Data
 public class Student1 {
 
     // 学号
@@ -17,30 +19,6 @@ public class Student1 {
     @ExcelField(title = "班级", order = 3)
     private String classes;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getClasses() {
-        return classes;
-    }
-
-    public void setClasses(String classes) {
-        this.classes = classes;
-    }
-
     public Student1() {
 
     }
@@ -51,12 +29,5 @@ public class Student1 {
         this.classes = classes;
     }
 
-    @Override
-    public String toString() {
-        return "Student1{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", classes='" + classes + '\'' +
-                '}';
-    }
+
 }
