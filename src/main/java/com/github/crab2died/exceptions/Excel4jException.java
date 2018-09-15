@@ -27,19 +27,19 @@
 package com.github.crab2died.exceptions;
 
 /**
- * author : Crab2Died
  * date : 2018/5/2  14:29
+ * @author Crab2Died
  */
-public class Excel4JException extends Exception {
+public class Excel4jException extends Exception {
 
-    public Excel4JException() {
+    public Excel4jException() {
     }
 
-    public Excel4JException(String message, Throwable cause) {
+    public Excel4jException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public Excel4JException(Throwable cause) {
+    public Excel4jException(Throwable cause) {
         super(cause);
     }
 }

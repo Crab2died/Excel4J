@@ -30,7 +30,7 @@ import com.github.crab2died.annotation.ExcelField;
 import com.github.crab2died.annotation.I18nField;
 import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.converter.WriteConvertible;
-import com.github.crab2died.exceptions.Excel4JException;
+import com.github.crab2died.exceptions.Excel4jException;
 import com.github.crab2died.handler.ExcelHeader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -50,8 +50,9 @@ import java.util.regex.Pattern;
 
 /**
  * Excel4J工具类
- * author : Crab2Died
  * date : 2017/5/24  9:43
+ *
+ * @author Crab2Died
  */
 public class Utils {
 
@@ -69,7 +70,7 @@ public class Utils {
         SETTER
     }
 
-    public static List<ExcelHeader> getHeaderList(Class<?> clz) throws Excel4JException {
+    public static List<ExcelHeader> getHeaderList(Class<?> clz) throws Excel4jException {
         return getHeaderList(clz, null);
     }
 
@@ -79,9 +80,9 @@ public class Utils {
      * @param clz      类型
      * @param language 语言,eg: zh-cn
      * @return Excel头信息列表
-     * @throws Excel4JException 异常
+     * @throws Excel4jException 异常
      */
-    public static List<ExcelHeader> getHeaderList(Class<?> clz, String language) throws Excel4JException {
+    public static List<ExcelHeader> getHeaderList(Class<?> clz, String language) throws Excel4jException {
 
         List<ExcelHeader> headers = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
@@ -114,7 +115,7 @@ public class Utils {
                     }
                     headers.add(header);
                 } catch (InstantiationException | IllegalAccessException e) {
-                    throw new Excel4JException(e);
+                    throw new Excel4jException(e);
                 }
             }
         }
@@ -128,13 +129,13 @@ public class Utils {
      * @param titleRow excel行
      * @param clz      类型
      * @return ExcelHeader集合
-     * @throws Excel4JException 异常
+     * @throws Excel4jException 异常
      */
     public static Map<Integer, ExcelHeader> getHeaderMap(Row titleRow, Class<?> clz)
-            throws Excel4JException {
+            throws Excel4jException {
 
         List<ExcelHeader> headers = getHeaderList(clz);
-        Map<Integer, ExcelHeader> maps = new HashMap<>();
+        Map<Integer, ExcelHeader> maps = new HashMap<>(1024);
         for (Cell c : titleRow) {
             String title = c.getStringCellValue();
             for (ExcelHeader eh : headers) {
@@ -303,16 +304,16 @@ public class Utils {
      * @param fieldName        字段名
      * @param writeConvertible 写入转换器
      * @return 对象指定字段内容
-     * @throws Excel4JException 异常
+     * @throws Excel4jException 异常
      */
     public static String getProperty(Object bean, String fieldName, WriteConvertible writeConvertible)
-            throws Excel4JException {
+            throws Excel4jException {
         return getProperty(bean, fieldName, writeConvertible, null);
     }
 
 
     public static String getProperty(Object bean, String fieldName, WriteConvertible writeConvertible, String language)
-            throws Excel4JException {
+            throws Excel4jException {
 
         if (bean == null || fieldName == null) {
             throw new IllegalArgumentException("Operating bean or filed class must not be null");
@@ -323,7 +324,7 @@ public class Utils {
             method = getterOrSetter(bean.getClass(), fieldName, FieldAccessType.GETTER);
             object = method.invoke(bean);
         } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
-            throw new Excel4JException(e);
+            throw new Excel4jException(e);
         }
         if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
             // 写入转换器
@@ -338,10 +339,10 @@ public class Utils {
      * @param bean  对象
      * @param name  字段名
      * @param value 字段类型
-     * @throws Excel4JException 异常
+     * @throws Excel4jException 异常
      */
     public static void copyProperty(Object bean, String name, Object value)
-            throws Excel4JException {
+            throws Excel4jException {
 
         if (null == name || null == value) {
             return;
@@ -360,7 +361,7 @@ public class Utils {
                 method.invoke(bean, str2TargetClass(value.toString(), field.getType()));
             }
         } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
-            throw new Excel4JException(e);
+            throw new Excel4jException(e);
         }
 
     }

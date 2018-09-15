@@ -33,8 +33,8 @@ import java.util.Date;
 
 /**
  * <p>时间处理工具类</p>
- * author : Crab2Died
  * date : 2017/5/23  10:35
+ * @author Crab2Died
  */
 public class DateUtils {
 

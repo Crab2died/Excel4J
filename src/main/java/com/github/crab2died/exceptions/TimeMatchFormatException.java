@@ -26,8 +26,8 @@
 package com.github.crab2died.exceptions;
 
 /**
- * author : Crab2Died
  * date : 2017/5/24  10:28
+ * @author Crab2Died
  */
 public class TimeMatchFormatException extends RuntimeException {
 

@@ -42,6 +42,13 @@ public interface WriteConvertible {
      */
     Object execWrite(Object object);
 
+    /**
+     * 写入Excel列内容转换
+     *
+     * @param object   待转换数据
+     * @param language 语言
+     * @return 转换完成的结果
+     */
     Object execWrite(Object object, String language);
 
 }

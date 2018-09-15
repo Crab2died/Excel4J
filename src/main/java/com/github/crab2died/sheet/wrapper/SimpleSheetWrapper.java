@@ -30,8 +30,8 @@ import java.util.List;
 
 /**
  * <p>无模板，无注解的简单sheet包装类</p>
- * author : Crab2Died
  * date : 2015/5/1  10:35
+ * @author Crab2Died
  */
 public class SimpleSheetWrapper {
 

@@ -31,8 +31,8 @@ import java.util.Map;
 
 /**
  * <p>基于模板、注解的Map数据导出的sheet包装类</p>
- * author : Crab2Died
  * date : 2015/5/1  10:35
+ * @author Crab2Died
  */
 public class MapSheetWrapper {
 

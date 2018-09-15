@@ -41,6 +41,16 @@
             <organizationUrl>https://gitee.com/Crab2Died</organizationUrl>
             <url>https://gitee.com/Crab2Died</url>
         </developer>
+        <developer>
+            <id>yjmyzz</id>
+            <name>菩提树下的杨过</name>
+            <email>yjmyzz@126.com</email>
+            <roles>
+                <role>contributor</role>
+            </roles>
+            <organizationUrl>https://github.com/yjmyzz</organizationUrl>
+            <url>https://yjmyzz.cnblogs.com/</url>
+        </developer>
     </developers>
 
     <dependencies>

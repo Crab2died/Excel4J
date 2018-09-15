@@ -35,8 +35,8 @@ import java.util.regex.Pattern;
 
 /**
  * <p>正则匹配相关工具</p>
- * author : Crab2Died
  * date : 2017/5/24  9:43
+ * @author Crab2Died
  */
 public class RegularUtils {
 

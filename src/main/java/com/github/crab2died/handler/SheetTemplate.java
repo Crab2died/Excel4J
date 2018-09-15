@@ -26,7 +26,7 @@
 
 package com.github.crab2died.handler;
 
-import com.github.crab2died.exceptions.Excel4JException;
+import com.github.crab2died.exceptions.Excel4jException;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -39,6 +39,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author jimmy
+ */
 public class SheetTemplate implements Closeable {
 
     /**
@@ -116,37 +119,36 @@ public class SheetTemplate implements Closeable {
     /**
      * 将文件写到相应的路径下
      * @param filePath 输出文件路径
-     * @throws Excel4JException 特定异常
+     * @throws Excel4jException 特定异常
      */
-    public void write2File(String filePath) throws Excel4JException {
+    public void write2File(String filePath) throws Excel4jException {
 
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             this.workbook.write(fos);
         } catch (IOException e) {
-            throw new Excel4JException(e);
+            throw new Excel4jException(e);
         }
     }
 
     /**
      * 将文件写到某个输出流中
      * @param os 输出流
-     * @throws Excel4JException 特定异常
+     * @throws Excel4jException 特定异常
      */
-    public void write2Stream(OutputStream os) throws Excel4JException {
+    public void write2Stream(OutputStream os) throws Excel4jException {
 
         try {
             this.workbook.write(os);
         } catch (IOException e) {
-            throw new Excel4JException(e);
+            throw new Excel4jException(e);
         }
     }
 
     /*-----------------------------------写出数据结束-----------------------------------*/
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (null != this.workbook) {
-//            this.workbook.close();
             this.workbook = null;
         }
     }
