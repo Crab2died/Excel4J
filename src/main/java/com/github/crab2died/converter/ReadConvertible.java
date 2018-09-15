@@ -27,6 +27,7 @@ package com.github.crab2died.converter;
 
 /**
  * 写入excel内容转换器
+ * @author junmingyang
  */
 public interface ReadConvertible {
 
@@ -38,4 +39,9 @@ public interface ReadConvertible {
      * @see com.github.crab2died.annotation.ExcelField#readConverter()
      */
     Object execRead(String object);
+
+    /**
+     * 语言
+     */
+    String language = "zh-cn";
 }

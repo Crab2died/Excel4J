@@ -17,6 +17,8 @@ import java.util.*;
 
 public class Module2Excel {
 
+    private static final String BASE_PATH = "D:\\temp\\";
+
     @Test
     public void testObject2Excel() throws Exception {
 
@@ -162,10 +164,12 @@ public class Module2Excel {
     @Test
     public void uuid() throws IOException {
         List<String> list = new ArrayList<>();
-        for (int i =0; i < 10000; i ++){
+        for (int i = 0; i < 10000; i++) {
             list.add(UUID.randomUUID().toString());
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list, new ArrayList<String>(){{add("uuid");}}, "J.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list, new ArrayList<String>() {{
+            add("uuid");
+        }}, "J.xlsx");
     }
 
     // 验证日期转换函数 Student2DateConverter
@@ -177,7 +181,9 @@ public class Module2Excel {
         for (int i = 0; i < 1000; i++) {
             list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, false));
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "sheet0", true, "E.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "student", true, BASE_PATH + "student2-en.xlsx", "en-us");
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "学生信息", true, BASE_PATH + "student2-cn.xlsx", "zh-cn");
+        ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "学生信息", true, BASE_PATH + "student2-default.xlsx");
     }
 
     // 多sheet无模板、基于注解的导出

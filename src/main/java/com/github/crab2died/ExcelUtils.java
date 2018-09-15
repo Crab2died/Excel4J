@@ -990,8 +990,15 @@ public final class ExcelUtils {
                                     String sheetName, boolean isXSSF, String targetPath)
             throws Excel4JException, IOException {
 
+        exportObjects2Excel(data, clazz, isWriteHeader, sheetName, isXSSF, targetPath, null);
+    }
+
+    public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader,
+                                    String sheetName, boolean isXSSF, String targetPath, String language)
+            throws Excel4JException, IOException {
+
         try (FileOutputStream fos = new FileOutputStream(targetPath);
-             Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF)) {
+             Workbook workbook = exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF, language)) {
             workbook.write(fos);
         }
     }
@@ -1094,9 +1101,38 @@ public final class ExcelUtils {
         }
     }
 
-    // 单sheet数据导出
+    /**
+     * 单shell 数据导出
+     *
+     * @param data
+     * @param clazz
+     * @param isWriteHeader
+     * @param sheetName
+     * @param isXSSF
+     * @return
+     * @throws Excel4JException
+     */
     private Workbook exportExcelNoTemplateHandler(List<?> data, Class clazz, boolean isWriteHeader,
                                                   String sheetName, boolean isXSSF)
+            throws Excel4JException {
+
+        return exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF, null);
+    }
+
+    /**
+     * 单shell 数据导出
+     *
+     * @param data
+     * @param clazz
+     * @param isWriteHeader
+     * @param sheetName
+     * @param isXSSF
+     * @param language      语言
+     * @return
+     * @throws Excel4JException
+     */
+    private Workbook exportExcelNoTemplateHandler(List<?> data, Class clazz, boolean isWriteHeader,
+                                                  String sheetName, boolean isXSSF, String language)
             throws Excel4JException {
 
         Workbook workbook;
@@ -1106,7 +1142,7 @@ public final class ExcelUtils {
             workbook = new HSSFWorkbook();
         }
 
-        generateSheet(workbook, data, clazz, isWriteHeader, sheetName);
+        generateSheet(workbook, data, clazz, isWriteHeader, sheetName, language);
 
         return workbook;
     }
@@ -1201,9 +1237,14 @@ public final class ExcelUtils {
         return workbook;
     }
 
+    private void generateSheet(Workbook workbook, List<?> data, Class clazz,
+                               boolean isWriteHeader, String sheetName) throws Excel4JException {
+        generateSheet(workbook, data, clazz, isWriteHeader, sheetName, null);
+    }
+
     // 生成sheet数据
     private void generateSheet(Workbook workbook, List<?> data, Class clazz,
-                               boolean isWriteHeader, String sheetName)
+                               boolean isWriteHeader, String sheetName, String language)
             throws Excel4JException {
 
         Sheet sheet;
@@ -1213,7 +1254,7 @@ public final class ExcelUtils {
             sheet = workbook.createSheet();
         }
         Row row = sheet.createRow(0);
-        List<ExcelHeader> headers = Utils.getHeaderList(clazz);
+        List<ExcelHeader> headers = Utils.getHeaderList(clazz, language);
         if (isWriteHeader) {
             // 写标题
             for (int i = 0; i < headers.size(); i++) {

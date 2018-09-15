@@ -27,6 +27,7 @@
 package com.github.crab2died.utils;
 
 import com.github.crab2died.annotation.ExcelField;
+import com.github.crab2died.annotation.I18nField;
 import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.converter.WriteConvertible;
 import com.github.crab2died.exceptions.Excel4JException;
@@ -35,6 +36,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.util.StringUtil;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -63,13 +65,19 @@ public class Utils {
         GETTER, SETTER
     }
 
-    /**
-     * <p>根据JAVA对象注解获取Excel表头信息</p>
-     *
-     * @param clz 类型
-     * @return 表头信息
-     */
     public static List<ExcelHeader> getHeaderList(Class<?> clz) throws Excel4JException {
+        return getHeaderList(clz, null);
+    }
+
+    /**
+     * 根据注解获取表头信息
+     *
+     * @param clz      类型
+     * @param language 语言,eg: zh-cn
+     * @return
+     * @throws Excel4JException
+     */
+    public static List<ExcelHeader> getHeaderList(Class<?> clz, String language) throws Excel4JException {
 
         List<ExcelHeader> headers = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
@@ -81,14 +89,26 @@ public class Utils {
             if (field.isAnnotationPresent(ExcelField.class)) {
                 ExcelField er = field.getAnnotation(ExcelField.class);
                 try {
-                    headers.add(new ExcelHeader(
+                    ExcelHeader header = new ExcelHeader(
                             er.title(),
                             er.order(),
                             er.writeConverter().newInstance(),
                             er.readConverter().newInstance(),
                             field.getName(),
                             field.getType()
-                    ));
+                    );
+                    //是否使用国际化
+                    if (language != null && language.length() > 0 && field.isAnnotationPresent(I18nField.class)) {
+                        I18nField i18n = field.getAnnotation(I18nField.class);
+                        String[] titles = i18n.titles();
+                        for (String title : titles) {
+                            String[] arr = title.split("\\|");
+                            if (arr[0].equalsIgnoreCase(language)) {
+                                header.setTitle(arr[1]);
+                            }
+                        }
+                    }
+                    headers.add(header);
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new Excel4JException(e);
                 }

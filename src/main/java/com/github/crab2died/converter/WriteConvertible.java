@@ -28,6 +28,8 @@ package com.github.crab2died.converter;
 
 /**
  * 写入excel内容转换器
+ *
+ * @author junmingyang
  */
 public interface WriteConvertible {
 
@@ -39,4 +41,9 @@ public interface WriteConvertible {
      * @see com.github.crab2died.annotation.ExcelField#writeConverter()
      */
     Object execWrite(Object object);
+
+    /**
+     * 语言
+     */
+    String language = "zh-cn";
 }
