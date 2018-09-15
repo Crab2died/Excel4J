@@ -32,6 +32,7 @@ import lombok.Data;
 
 /**
  * 功能说明: 用来存储Excel标题的对象，通过该对象可以获取标题和方法的对应关系
+ * @author junmingyang
  */
 @Data
 public class ExcelHeader implements Comparable<ExcelHeader> {

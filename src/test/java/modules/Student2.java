@@ -3,7 +3,8 @@ package modules;
 import com.github.crab2died.annotation.ExcelField;
 import com.github.crab2died.annotation.I18nField;
 import converter.Student2DateConverter;
-import converter.Student2ExpelConverter;
+import converter.Student2ExpelRealConverter;
+import converter.Student2ExpelWriteConverter;
 import lombok.Data;
 
 import java.util.Date;
@@ -28,8 +29,8 @@ public class Student2 {
     @I18nField(titles = {"en-us|class"})
     private Integer classes;
 
-    // 读取数据转换器 Student2ExpelConverter
-    @ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelConverter.class)
+    // 读写数据转换器 Student2ExpelRealConverter
+    @ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelRealConverter.class, writeConverter = Student2ExpelWriteConverter.class)
     @I18nField(titles = {"en-us|is expel?"})
     private boolean expel;
 

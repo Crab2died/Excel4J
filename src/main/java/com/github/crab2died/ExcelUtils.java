@@ -26,6 +26,7 @@
 
 package com.github.crab2died;
 
+import com.github.crab2died.constant.LanguageEnum;
 import com.github.crab2died.converter.DefaultConvertible;
 import com.github.crab2died.exceptions.Excel4JException;
 import com.github.crab2died.exceptions.Excel4jReadException;
@@ -120,11 +121,20 @@ public final class ExcelUtils {
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine,
+                                         int limitLine, int sheetIndex, String language)
+            throws Excel4JException, IOException, InvalidFormatException {
+
+        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
+            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, language);
+        }
+    }
+
+    public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine,
                                          int limitLine, int sheetIndex)
             throws Excel4JException, IOException, InvalidFormatException {
 
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
-            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
         }
     }
 
@@ -144,11 +154,20 @@ public final class ExcelUtils {
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine,
+                                         int limitLine, int sheetIndex, String language)
+            throws Excel4JException, IOException, InvalidFormatException {
+
+        try (Workbook workbook = WorkbookFactory.create(is)) {
+            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, language);
+        }
+    }
+
+    public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine,
                                          int limitLine, int sheetIndex)
             throws Excel4JException, IOException, InvalidFormatException {
 
         try (Workbook workbook = WorkbookFactory.create(is)) {
-            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
+            return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex, null);
         }
     }
 
@@ -242,24 +261,26 @@ public final class ExcelUtils {
     }
 
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine,
-                                                 int limitLine, int sheetIndex)
+                                                 int limitLine, int sheetIndex, String language)
             throws Excel4JException {
 
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(offsetLine);
         List<T> list = new ArrayList<>();
         Map<Integer, ExcelHeader> maps = Utils.getHeaderMap(row, clazz);
-        if (maps == null || maps.size() <= 0)
+        if (maps == null || maps.size() <= 0) {
             throw new Excel4jReadException(
                     "The Excel format to read is not correct, and check to see if the appropriate rows are set"
             );
+        }
         long maxLine = sheet.getLastRowNum() > ((long) offsetLine + limitLine) ?
                 ((long) offsetLine + limitLine) : sheet.getLastRowNum();
 
         for (int i = offsetLine + 1; i <= maxLine; i++) {
             row = sheet.getRow(i);
-            if (null == row)
+            if (null == row) {
                 continue;
+            }
             T obj;
             try {
                 obj = clazz.newInstance();
@@ -269,15 +290,16 @@ public final class ExcelUtils {
             for (Cell cell : row) {
                 int ci = cell.getColumnIndex();
                 ExcelHeader header = maps.get(ci);
-                if (null == header)
+                if (null == header) {
                     continue;
+                }
                 String val = Utils.getCellValue(cell);
                 Object value;
                 String filed = header.getFiled();
                 // 读取转换器
                 if (null != header.getReadConverter() &&
                         header.getReadConverter().getClass() != DefaultConvertible.class) {
-                    value = header.getReadConverter().execRead(val);
+                    value = header.getReadConverter().execRead(val, language);
                 } else {
                     // 默认转换
                     value = Utils.str2TargetClass(val, header.getFiledClazz());
@@ -420,8 +442,9 @@ public final class ExcelUtils {
         for (int i = offsetLine; i <= maxLine; i++) {
             List<String> rows = new ArrayList<>();
             Row row = sheet.getRow(i);
-            if (null == row)
+            if (null == row) {
                 continue;
+            }
             for (Cell cell : row) {
                 String val = Utils.getCellValue(cell);
                 rows.add(val);
@@ -990,7 +1013,7 @@ public final class ExcelUtils {
                                     String sheetName, boolean isXSSF, String targetPath)
             throws Excel4JException, IOException {
 
-        exportObjects2Excel(data, clazz, isWriteHeader, sheetName, isXSSF, targetPath, null);
+        exportObjects2Excel(data, clazz, isWriteHeader, sheetName, isXSSF, targetPath, LanguageEnum.CHINESE.getValue());
     }
 
     public void exportObjects2Excel(List<?> data, Class clazz, boolean isWriteHeader,
@@ -1116,7 +1139,7 @@ public final class ExcelUtils {
                                                   String sheetName, boolean isXSSF)
             throws Excel4JException {
 
-        return exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF, null);
+        return exportExcelNoTemplateHandler(data, clazz, isWriteHeader, sheetName, isXSSF, LanguageEnum.CHINESE.getValue());
     }
 
     /**
@@ -1262,14 +1285,13 @@ public final class ExcelUtils {
             }
         }
         // 写数据
-        Object _data;
+        Object obj;
         for (int i = 0; i < data.size(); i++) {
             row = sheet.createRow(i + 1);
-            _data = data.get(i);
+            obj = data.get(i);
             for (int j = 0; j < headers.size(); j++) {
-                row.createCell(j).setCellValue(Utils.getProperty(_data,
-                        headers.get(j).getFiled(),
-                        headers.get(j).getWriteConverter()));
+                row.createCell(j).setCellValue(Utils.getProperty(obj, headers.get(j).getFiled(),
+                        headers.get(j).getWriteConverter(), language));
             }
         }
 

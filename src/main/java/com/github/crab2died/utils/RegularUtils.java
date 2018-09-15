@@ -72,8 +72,9 @@ public class RegularUtils {
         List<String> matchGroups = new ArrayList<>();
         Pattern compile = Pattern.compile(reg);
         Matcher matcher = compile.matcher(pattern);
-        if (group > matcher.groupCount() || group < 0)
+        if (group > matcher.groupCount() || group < 0) {
             throw new IllegalGroupIndexException("Illegal match group :" + group);
+        }
         while (matcher.find()) {
             matchGroups.add(matcher.group(group));
         }
@@ -91,7 +92,7 @@ public class RegularUtils {
      * @param reg     正则表达式
      * @return 提取内容集合
      */
-     public static String match(String pattern, String reg) {
+    public static String match(String pattern, String reg) {
 
         String match = null;
         List<String> matches = match(pattern, reg, 0);
@@ -101,9 +102,10 @@ public class RegularUtils {
         return match;
     }
 
-    public static String converNumByReg(String number) {
-        Pattern compile = Pattern.compile("^(\\d+)(\\.0*)?$");
-        Matcher matcher = compile.matcher(number);
+    private static final Pattern PATTERN_NUMBER = Pattern.compile("^(\\d+)(\\.0*)?$");
+
+    public static String convertNumByReg(String number) {
+        Matcher matcher = PATTERN_NUMBER.matcher(number);
         while (matcher.find()) {
             number = matcher.group(1);
         }

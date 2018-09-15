@@ -8,7 +8,14 @@ import lombok.Setter;
  */
 public enum LanguageEnum {
 
-    CHINESE("简体中文", "zh-cn"),
+    /**
+     * 中文
+     */
+    CHINESE("中文", "zh-cn"),
+
+    /**
+     * 英语
+     */
     ENGLISH("英语", "en-us");
 
     LanguageEnum(String name, String value) {

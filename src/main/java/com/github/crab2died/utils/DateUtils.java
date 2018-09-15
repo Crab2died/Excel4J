@@ -40,6 +40,7 @@ public class DateUtils {
 
     public static final String DATE_FORMAT_DAY = "yyyy-MM-dd";
     public static final String DATE_FORMAT_DAY_2 = "yyyy/MM/dd";
+    public static final String DATE_FORMAT_DAY_EN = "MM/dd/yyyy";
     public static final String TIME_FORMAT_SEC = "HH:mm:ss";
     public static final String DATE_FORMAT_SEC = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_MSEC = "yyyy-MM-dd HH:mm:ss.SSS";

@@ -45,7 +45,7 @@ public class Excel2Module {
             // 2)
             // 基于注解,将Excel内容读至List<Student2>对象内
             // 验证读取转换函数Student2ExpelConverter
-            // 注解 `@ExcelField(title = "是否开除", order = 5, readConverter =  Student2ExpelConverter.class)`
+            // 注解 `@ExcelField(title = "是否开除", order = 5, readConverter =  Student2ExpelRealConverter.class)`
             List<Student2> students = ExcelUtils.getInstance().readExcel2Objects(path, Student2.class, 0, 0);
             System.out.println("读取Excel至对象数组(支持类型转换)：");
             for (Student2 st : students) {
@@ -57,7 +57,7 @@ public class Excel2Module {
     }
 
     // 基于注解,将Excel内容读至List<Student2>对象内
-    // 验证读取转换函数Student2ExpelConverter，注解 `@ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelConverter.class)`
+    // 验证读取转换函数Student2ExpelConverter，注解 `@ExcelField(title = "是否开除", order = 5, readConverter = Student2ExpelRealConverter.class)`
     @Test
     public void testReadConverter() throws Exception {
 

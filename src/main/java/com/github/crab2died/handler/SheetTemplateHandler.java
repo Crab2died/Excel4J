@@ -80,7 +80,9 @@ public class SheetTemplateHandler {
 
     public static void loadTemplate(SheetTemplate template, int sheetIndex) {
 
-        if (sheetIndex < 0) sheetIndex = 0;
+        if (sheetIndex < 0) {
+            sheetIndex = 0;
+        }
         template.sheetIndex = sheetIndex;
         template.sheet = template.workbook.getSheetAt(sheetIndex);
         initModuleConfig(template);
@@ -96,8 +98,9 @@ public class SheetTemplateHandler {
 
         for (Row row : template.sheet) {
             for (Cell c : row) {
-                if (c.getCellTypeEnum() != CellType.STRING)
+                if (c.getCellTypeEnum() != CellType.STRING) {
                     continue;
+                }
                 String str = c.getStringCellValue().trim().toLowerCase();
                 // 寻找序号列
                 if (HandlerConstant.SERIAL_NUMBER.equals(str)) {
@@ -119,10 +122,12 @@ public class SheetTemplateHandler {
      * 初始化样式信息
      */
     private static void initStyles(SheetTemplate template, Cell cell, String moduleContext) {
-        if (null == moduleContext || "".equals(moduleContext))
+        if (null == moduleContext || "".equals(moduleContext)) {
             return;
-        if (!moduleContext.startsWith("&"))
+        }
+        if (!moduleContext.startsWith("&")) {
             moduleContext = moduleContext.toLowerCase();
+        }
         if (HandlerConstant.DEFAULT_STYLE.equals(moduleContext)) {
             template.defaultStyle = cell.getCellStyle();
             clearCell(cell);
@@ -160,12 +165,14 @@ public class SheetTemplateHandler {
      * @param data 替换映射
      */
     public static void extendData(SheetTemplate template, Map<String, String> data) {
-        if (data == null)
+        if (data == null) {
             return;
+        }
         for (Row row : template.sheet) {
             for (Cell c : row) {
-                if (c.getCellTypeEnum() != CellType.STRING)
+                if (c.getCellTypeEnum() != CellType.STRING) {
                     continue;
+                }
                 String str = c.getStringCellValue().trim();
                 if (str.startsWith("#") && data.containsKey(str.substring(1))) {
                     c.setCellValue(data.get(str.substring(1)));
@@ -194,8 +201,9 @@ public class SheetTemplateHandler {
      * @param styleKey 样式标识
      */
     public static void insertSerial(SheetTemplate template, String styleKey) {
-        if (template.serialNumberColumnIndex < 0)
+        if (template.serialNumberColumnIndex < 0) {
             return;
+        }
         template.serialNumber++;
         Cell c = template.currentRow.createCell(template.serialNumberColumnIndex);
         setCellStyle(template, c, styleKey);
@@ -294,8 +302,9 @@ public class SheetTemplateHandler {
             cell.setCellStyle(template.doubleLineStyle);
             return;
         }
-        if (null != template.defaultStyle)
+        if (null != template.defaultStyle) {
             cell.setCellStyle(template.defaultStyle);
+        }
     }
 
     /*-----------------------------------数据填充结束-----------------------------------*/

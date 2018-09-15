@@ -36,7 +36,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.util.StringUtil;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -46,7 +45,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -61,8 +59,14 @@ public class Utils {
      * getter或setter枚举
      */
     public enum FieldAccessType {
-
-        GETTER, SETTER
+        /**
+         * read method
+         */
+        GETTER,
+        /**
+         * write method
+         */
+        SETTER
     }
 
     public static List<ExcelHeader> getHeaderList(Class<?> clz) throws Excel4JException {
@@ -167,7 +171,7 @@ public class Utils {
                 } else {
                     o = String.valueOf(c.getNumericCellValue());
                     o = matchDoneBigDecimal(o);
-                    o = RegularUtils.converNumByReg(o);
+                    o = RegularUtils.convertNumByReg(o);
                 }
                 break;
             case STRING:
@@ -188,16 +192,17 @@ public class Utils {
      * @return 转换后数据
      */
     public static Object str2TargetClass(String strField, Class<?> clazz) {
-        if (null == strField || "".equals(strField))
+        if (null == strField || "".equals(strField)) {
             return null;
+        }
         if ((Long.class == clazz) || (long.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
-            strField = RegularUtils.converNumByReg(strField);
+            strField = RegularUtils.convertNumByReg(strField);
             return Long.parseLong(strField);
         }
         if ((Integer.class == clazz) || (int.class == clazz)) {
             strField = matchDoneBigDecimal(strField);
-            strField = RegularUtils.converNumByReg(strField);
+            strField = RegularUtils.convertNumByReg(strField);
             return Integer.parseInt(strField);
         }
         if ((Float.class == clazz) || (float.class == clazz)) {
@@ -250,8 +255,9 @@ public class Utils {
     public static Method getterOrSetter(Class clazz, String fieldName, FieldAccessType methodType)
             throws IntrospectionException {
 
-        if (null == fieldName || "".equals(fieldName))
+        if (null == fieldName || "".equals(fieldName)) {
             return null;
+        }
 
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         PropertyDescriptor[] props = beanInfo.getPropertyDescriptors();
@@ -301,9 +307,16 @@ public class Utils {
      */
     public static String getProperty(Object bean, String fieldName, WriteConvertible writeConvertible)
             throws Excel4JException {
+        return getProperty(bean, fieldName, writeConvertible, null);
+    }
 
-        if (bean == null || fieldName == null)
+
+    public static String getProperty(Object bean, String fieldName, WriteConvertible writeConvertible, String language)
+            throws Excel4JException {
+
+        if (bean == null || fieldName == null) {
             throw new IllegalArgumentException("Operating bean or filed class must not be null");
+        }
         Method method;
         Object object;
         try {
@@ -314,7 +327,7 @@ public class Utils {
         }
         if (null != writeConvertible && writeConvertible.getClass() != DefaultConvertible.class) {
             // 写入转换器
-            object = writeConvertible.execWrite(object);
+            object = writeConvertible.execWrite(object, language);
         }
         return object == null ? "" : object.toString();
     }
@@ -329,11 +342,13 @@ public class Utils {
     public static void copyProperty(Object bean, String name, Object value)
             throws Excel4JException {
 
-        if (null == name || null == value)
+        if (null == name || null == value) {
             return;
+        }
         Field field = matchClassField(bean.getClass(), name);
-        if (null == field)
+        if (null == field) {
             return;
+        }
         Method method;
         try {
             method = getterOrSetter(bean.getClass(), name, FieldAccessType.SETTER);

@@ -42,8 +42,6 @@ public interface WriteConvertible {
      */
     Object execWrite(Object object);
 
-    /**
-     * 语言
-     */
-    String language = "zh-cn";
+    Object execWrite(Object object, String language);
+
 }

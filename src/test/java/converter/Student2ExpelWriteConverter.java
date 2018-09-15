@@ -2,14 +2,11 @@ package converter;
 
 import com.github.crab2died.constant.LanguageEnum;
 import com.github.crab2died.converter.WriteConvertible;
-import com.github.crab2died.utils.DateUtils;
-
-import java.util.Date;
 
 /**
- * 导出excel日期数据转换器
+ * 导出excel Boolean 数据转换器
  */
-public class Student2DateConverter implements WriteConvertible {
+public class Student2ExpelWriteConverter implements WriteConvertible {
 
     @Override
     public Object execWrite(Object object) {
@@ -18,11 +15,11 @@ public class Student2DateConverter implements WriteConvertible {
 
     @Override
     public Object execWrite(Object object, String language) {
-        Date date = (Date) object;
+        Boolean expel = (Boolean) object;
         if (!LanguageEnum.CHINESE.getValue().equalsIgnoreCase(language)) {
-            return DateUtils.date2Str(date, DateUtils.DATE_FORMAT_DAY_EN);
+            return expel ? "Yes" : "No";
         } else {
-            return DateUtils.date2Str(date, DateUtils.DATE_FORMAT_DAY);
+            return expel ? "是" : "否";
         }
     }
 }

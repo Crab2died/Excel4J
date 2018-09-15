@@ -28,6 +28,8 @@ package com.github.crab2died.converter;
 
 /**
  * 抽象默认转换器, 实现了{@link WriteConvertible} 与 {@link ReadConvertible}接口
+ *
+ * @author junmingyang
  */
 public class DefaultConvertible implements WriteConvertible, ReadConvertible {
 
@@ -37,7 +39,17 @@ public class DefaultConvertible implements WriteConvertible, ReadConvertible {
     }
 
     @Override
+    public Object execRead(String object, String language) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Object execWrite(Object object) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object execWrite(Object object, String language) {
         throw new UnsupportedOperationException();
     }
 }

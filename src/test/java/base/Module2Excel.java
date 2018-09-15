@@ -179,7 +179,7 @@ public class Module2Excel {
 
         List<Student2> list = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, false));
+            list.add(new Student2(10000L + i, "学生" + i, new Date(), 201, i % 2 == 0));
         }
         ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "student", true, BASE_PATH + "student2-en.xlsx", "en-us");
         ExcelUtils.getInstance().exportObjects2Excel(list, Student2.class, true, "学生信息", true, BASE_PATH + "student2-cn.xlsx", "zh-cn");
