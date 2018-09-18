@@ -25,7 +25,7 @@
 7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内包装类
 8. 修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
 9. 修复已知bug及代码与注释优化
-10. 基于注释的导出，增加国际化多语言支持(2.1.5-ctrip-Final)
+10. 基于注释的导出，增加国际化多语言支持(2.1.5-Final)
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
 ```
