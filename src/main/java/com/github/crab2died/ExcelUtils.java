@@ -37,6 +37,9 @@ import com.github.crab2died.sheet.wrapper.NoTemplateSheetWrapper;
 import com.github.crab2died.sheet.wrapper.NormalSheetWrapper;
 import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import com.github.crab2died.utils.Utils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -44,6 +47,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -729,7 +733,8 @@ public final class ExcelUtils {
                                 boolean isWriteHeader, String targetPath)
             throws Excel4JException {
 
-        try (SheetTemplate sheetTemplate = exportExcelByMapHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)) {
+        try (SheetTemplate sheetTemplate = exportExcelByMapHandler(templatePath, sheetIndex, data, extendMap, clazz,
+                isWriteHeader)) {
             sheetTemplate.write2File(targetPath);
         } catch (IOException e) {
             throw new Excel4JException(e);
@@ -754,7 +759,8 @@ public final class ExcelUtils {
                                 Map<String, String> extendMap, Class clazz, boolean isWriteHeader, OutputStream os)
             throws Excel4JException {
 
-        try (SheetTemplate sheetTemplate = exportExcelByMapHandler(templatePath, sheetIndex, data, extendMap, clazz, isWriteHeader)) {
+        try (SheetTemplate sheetTemplate = exportExcelByMapHandler(templatePath, sheetIndex, data, extendMap, clazz,
+                isWriteHeader)) {
             sheetTemplate.write2Stream(os);
         } catch (IOException e) {
             throw new Excel4JException(e);
@@ -1483,6 +1489,115 @@ public final class ExcelUtils {
             } else {
                 row.createCell(0, CellType.STRING).setCellValue(object.toString());
             }
+        }
+    }
+
+    /**
+     * 基于注解导出CSV文件
+     *
+     * @param data  待导出
+     * @param clazz {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param path  导出文件路径
+     * @throws Excel4JException exception
+     */
+    public void exportObjects2CSV(List<?> data, Class clazz, String path)
+            throws Excel4JException {
+
+        try {
+            Writer writer = new FileWriter(path);
+            generateCSV(data, clazz, true, writer);
+        } catch (Excel4JException | IOException e) {
+            throw new Excel4JException(e);
+        }
+    }
+
+    /**
+     * 基于注解导出CSV文件流
+     *
+     * @param data  待导出
+     * @param clazz {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param os    输出流
+     * @throws Excel4JException exception
+     */
+    public void exportObjects2CSV(List<?> data, Class clazz, OutputStream os)
+            throws Excel4JException {
+
+        try {
+            Writer writer = new OutputStreamWriter(os);
+            generateCSV(data, clazz, true, writer);
+        } catch (Excel4JException | IOException e) {
+            throw new Excel4JException(e);
+        }
+    }
+
+    /**
+     * 基于注解导出CSV文件
+     *
+     * @param data          待导出
+     * @param clazz         {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param isWriteHeader 是否写入文件
+     * @param path          导出文件路径
+     * @throws Excel4JException exception
+     */
+    public void exportObjects2CSV(List<?> data, Class clazz, boolean isWriteHeader, String path)
+            throws Excel4JException {
+
+        try {
+            Writer writer = new FileWriter(path);
+            generateCSV(data, clazz, isWriteHeader, writer);
+        } catch (Excel4JException | IOException e) {
+            throw new Excel4JException(e);
+        }
+    }
+
+    /**
+     * 基于注解导出CSV文件流
+     *
+     * @param data          待导出
+     * @param clazz         {@link com.github.crab2died.annotation.ExcelField}映射对象Class
+     * @param isWriteHeader 是否写入文件
+     * @param os            输出流
+     * @throws Excel4JException exception
+     */
+    public void exportObjects2CSV(List<?> data, Class clazz, boolean isWriteHeader, OutputStream os)
+            throws Excel4JException {
+
+        try {
+            Writer writer = new OutputStreamWriter(os);
+            generateCSV(data, clazz, isWriteHeader, writer);
+        } catch (Excel4JException | IOException e) {
+            throw new Excel4JException(e);
+        }
+    }
+
+    private static final byte[] UTF_8_DOM = {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+
+    // 生成CSV
+    private void generateCSV(List<?> data, Class clazz, boolean isWriteHeader, Appendable appendable)
+            throws Excel4JException, IOException {
+
+        List<ExcelHeader> headers = Utils.getHeaderList(clazz);
+        appendable.append(new String(UTF_8_DOM, StandardCharsets.UTF_8));
+
+        try (CSVPrinter printer = new CSVPrinter(appendable, CSVFormat.DEFAULT)) {
+
+            if (isWriteHeader) {
+                for (ExcelHeader header : headers) {
+                    printer.print(header.getFiled());
+                }
+                printer.println();
+            }
+            // 写数据
+            for (Object _data : data) {
+                for (ExcelHeader header : headers) {
+                    printer.print(
+                            Utils.getProperty(_data, header.getFiled(), header.getWriteConverter())
+                    );
+                }
+                printer.println();
+            }
+
+            printer.flush();
         }
     }
 }

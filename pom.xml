@@ -4,7 +4,7 @@
 
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.1.4-Final2</version>
+    <version>3.0.0-Alpha</version>
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
@@ -13,6 +13,7 @@
 
     <properties>
         <poi.version>3.17</poi.version>
+        <csv.version>1.6</csv.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -61,7 +62,11 @@
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${csv.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
