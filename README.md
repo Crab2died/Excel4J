@@ -5,26 +5,31 @@
                              |        \>    <\  \__\  ___/|  |__/    ^   /\__|    |
                             /_______  /__/\_ \\___  >___  >____/\____   |\________|
                                     \/      \/    \/    \/           |__|          
-                                                            (version: 2.1.4-Final2)
+                                                             (version: 3.0.0-Alpha)
 ```
 ---
 
-![version](https://img.shields.io/badge/version-2.1.4--Final2-green.svg) 
+![version](https://img.shields.io/badge/version-3.0.0--Alpha-green.svg) 
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Final2%7Cjar)
 
 > 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
 
-## 一. v2.x新特性
-1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
-2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
-3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
-4. Excel新增了Map数据样式映射功能(模板可为每个key设置一个样式,定义为:&key, 导出Map数据的样式将与key值映射)
-5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
-6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
-7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内包装类
-8. 修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
-9. 修复已知bug及代码与注释优化
+## 一. 更新记录
+### 1. v2.x
+   1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
+   2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
+   3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
+   4. Excel新增了Map数据样式映射功能(模板可为每个key设置一个样式,定义为:&key, 导出Map数据的样式将与key值映射)
+   5. 新增读取Excel数据转换器接口`com.github.converter.ReadConvertible`
+   6. 新增写入Excel数据转换器接口`com.github.converter.WriteConvertible`
+   7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内包装类
+   8. 修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
+   9. 修复已知bug及代码与注释优化
+
+### 1. v3.x
+   1. 新增CSV(包含基于ExcelField注解)的导出支持
+   2. 新增CSV(包含基于ExcelField注解)的导入支持
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
 ```
