@@ -16,7 +16,11 @@
 > 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
 
 ## 一. 更新记录
-### 1. v2.x
+### 1. v3.x
+   1. 新增CSV(包含基于ExcelField注解)的导出支持
+   2. 新增CSV(包含基于ExcelField注解)的导入支持
+
+### 2. v2.x
    1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
    2. Excel支持非注解读取Excel内容了,内容存于`List<List<String>>`对象内
    3. 现在支持`List<List<String>>`导出Excel了(可以不基于模板)
@@ -26,10 +30,6 @@
    7. 支持多sheet一键导出，多sheet导出封装Wrapper详见`com.github.sheet.wrapper`包内包装类
    8. 修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
    9. 修复已知bug及代码与注释优化
-
-### 1. v3.x
-   1. 新增CSV(包含基于ExcelField注解)的导出支持
-   2. 新增CSV(包含基于ExcelField注解)的导入支持
 
 ## 二. 基于注解(/src/test/java/modules/Student2.java)
 ```
