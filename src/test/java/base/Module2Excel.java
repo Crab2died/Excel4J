@@ -2,6 +2,7 @@ package base;
 
 
 import com.github.crab2died.ExcelUtils;
+import com.github.crab2died.exceptions.Excel4JException;
 import com.github.crab2died.sheet.wrapper.MapSheetWrapper;
 import com.github.crab2died.sheet.wrapper.NoTemplateSheetWrapper;
 import com.github.crab2died.sheet.wrapper.NormalSheetWrapper;
@@ -40,6 +41,9 @@ public class Module2Excel {
         os.close();
         // 不基于模板导出Excel
         ExcelUtils.getInstance().exportObjects2Excel(list, Student1.class, true, null, true, "B.xlsx");
+
+        ExcelUtils.getInstance().exportObjects2CSV(list, Student1.class, "JJ.csv");
+
     }
 
 
@@ -162,10 +166,12 @@ public class Module2Excel {
     @Test
     public void uuid() throws IOException {
         List<String> list = new ArrayList<>();
-        for (int i =0; i < 10000; i ++){
+        for (int i = 0; i < 10000; i++) {
             list.add(UUID.randomUUID().toString());
         }
-        ExcelUtils.getInstance().exportObjects2Excel(list, new ArrayList<String>(){{add("uuid");}}, "J.xlsx");
+        ExcelUtils.getInstance().exportObjects2Excel(list, new ArrayList<String>() {{
+            add("uuid");
+        }}, "J.xlsx");
     }
 
     // 验证日期转换函数 Student2DateConverter
@@ -224,4 +230,33 @@ public class Module2Excel {
         ExcelUtils.getInstance().simpleSheet2Excel(list, "K.xlsx");
     }
 
+    // 导出csv
+    @Test
+    public void testExport2CSV() throws Excel4JException {
+
+        List<Student2> list = new ArrayList<>();
+        list.add(new Student2(1000001L, "张三", new Date(), 1, true));
+        list.add(new Student2(1010002L, "古尔丹", new Date(), 2, false));
+        list.add(new Student2(1010003L, "蒙多(被开除了)", new Date(), 6, true));
+        list.add(new Student2(1010004L, "萝卜特", new Date(), 3, false));
+        list.add(new Student2(1010005L, "奥拉基", new Date(), 4, false));
+        list.add(new Student2(1010006L, "得嘞", new Date(), 4, false));
+        list.add(new Student2(1010007L, "瓜娃子", new Date(), 5, true));
+        list.add(new Student2(1010008L, "战三", new Date(), 4, false));
+        list.add(new Student2(1010009L, "李四", new Date(), 2, false));
+
+        ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "J.csv");
+    }
+
+    // 超大数据量导出csv
+    // 9999999数据本地测试小于1min
+    @Test
+    public void testExport2CSV2() throws Excel4JException {
+
+        List<Student2> list = new ArrayList<>();
+        for (int i = 0; i < 9999999; i++) {
+            list.add(new Student2(1000001L + i, "路人 -" + i, new Date(), i % 6, true));
+        }
+        ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "L.csv");
+    }
 }
