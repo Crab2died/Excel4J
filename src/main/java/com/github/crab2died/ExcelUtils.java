@@ -1585,7 +1585,7 @@ public final class ExcelUtils {
     /*      2) 写入数据内容                                                                                       */
     /*  二. 参数说明                                                                                              */
     /*      *) data             =>      导出内容List集合                                                          */
-    /*      *) isWriteHeader    =>     是否写表头                                                                 */
+    /*      *) isWriteHeader    =>      是否写表头                                                                 */
     /*      *) path             =>      导出文件路径                                                              */
     /*      *) os               =>      导出文件流                                                                */
     /*      *) clazz            =>      映射对象                                                                 */

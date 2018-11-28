@@ -84,6 +84,8 @@ public class Excel2Module {
     @Test
     public void testReadCSV() throws Excel4JException {
         List<Student2> list = ExcelUtils.getInstance().readCSV2Objects("J.csv", Student2.class);
-        System.out.println(list);
+        for (Student2 student2 : list) {
+            System.out.println(student2);
+        }
     }
 }

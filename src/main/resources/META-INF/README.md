@@ -11,7 +11,7 @@
 
 ![version](https://img.shields.io/badge/version-3.0.0--Alpha-green.svg) 
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.crab2died%7CExcel4J%7C2.1.4-Final2%7Cjar)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/search?q=a:Excel4J)
 
 > 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2版本
 
@@ -104,13 +104,13 @@
 
 ### 4. 读取结果
 ```
-读取Excel至String数组：
-[10000000000001, 张三, 2016/01/19, 101, 是]
-[10000000000002, 李四, 2017-11-17 10:19:10, 201, 否]
-读取Excel至对象数组(支持类型转换)：
-Student2{id=10000000000001, name='张三', date=Tue Jan 19 00:00:00 CST 2016, classes=101, expel='true'}
-Student2{id=10000000000002, name='李四', date=Fri Nov 17 10:19:10 CST 2017, classes=201, expel='false'}
-Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, classes=301, expel='false'}
+    读取Excel至String数组：
+    [10000000000001, 张三, 2016/01/19, 101, 是]
+    [10000000000002, 李四, 2017-11-17 10:19:10, 201, 否]
+    读取Excel至对象数组(支持类型转换)：
+    Student2{id=10000000000001, name='张三', date=Tue Jan 19 00:00:00 CST 2016, classes=101, expel='true'}
+    Student2{id=10000000000002, name='李四', date=Fri Nov 17 10:19:10 CST 2017, classes=201, expel='false'}
+    Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, classes=301, expel='false'}
 ```
 
 ## 四. 导出Excel
@@ -420,23 +420,95 @@ Student2{id=10000000000004, name='王二', date=Fri Nov 17 00:00:00 CST 2017, cl
    2. sheet2导出结果  
    ![sheet2导出结果截图](https://raw.githubusercontent.com/Crab2died/Excel4J/master/src/test/resources/image/v2.1.4/map_wrapper_sheet2.png)
 
-## 七. 使用(JDK1.7及以上)
-#### 1) github拷贝项目
+## 七. CSV文件的操作(完全支持ExcelField注解的所有配置)
+### 1. 基于注解读取CSV文件
+#### 1) 调用方法
 ```
+    // 测试读取CSV文件
+    @Test
+    public void testReadCSV() throws Excel4JException {
+        List<Student2> list = ExcelUtils.getInstance().readCSV2Objects("J.csv", Student2.class);
+        System.out.println(list);
+    } 
+```
+### 2) 读取结果
+```
+    Student2{id=1000001, name='张三', date=Wed Nov 28 15:11:12 CST 2018, classes=1, expel='false'}
+    Student2{id=1010002, name='古尔丹', date=Wed Nov 28 15:11:12 CST 2018, classes=2, expel='false'}
+    Student2{id=1010003, name='蒙多(被开除了)', date=Wed Nov 28 15:11:12 CST 2018, classes=6, expel='false'}
+    Student2{id=1010004, name='萝卜特', date=Wed Nov 28 15:11:12 CST 2018, classes=3, expel='false'}
+    Student2{id=1010005, name='奥拉基', date=Wed Nov 28 15:11:12 CST 2018, classes=4, expel='false'}
+    Student2{id=1010006, name='得嘞', date=Wed Nov 28 15:11:12 CST 2018, classes=4, expel='false'}
+    Student2{id=1010007, name='瓜娃子', date=Wed Nov 28 15:11:12 CST 2018, classes=5, expel='false'}
+    Student2{id=1010008, name='战三', date=Wed Nov 28 15:11:12 CST 2018, classes=4, expel='false'}
+    Student2{id=1010009, name='李四', date=Wed Nov 28 15:11:12 CST 2018, classes=2, expel='false'}
+```
+
+### 2. 基于注解导出CSV文件
+#### 1) 调用方法
+```
+    // 导出csv
+    @Test
+    public void testExport2CSV() throws Excel4JException {
+
+        List<Student2> list = new ArrayList<>();
+        list.add(new Student2(1000001L, "张三", new Date(), 1, true));
+        list.add(new Student2(1010002L, "古尔丹", new Date(), 2, false));
+        list.add(new Student2(1010003L, "蒙多(被开除了)", new Date(), 6, true));
+        list.add(new Student2(1010004L, "萝卜特", new Date(), 3, false));
+        list.add(new Student2(1010005L, "奥拉基", new Date(), 4, false));
+        list.add(new Student2(1010006L, "得嘞", new Date(), 4, false));
+        list.add(new Student2(1010007L, "瓜娃子", new Date(), 5, true));
+        list.add(new Student2(1010008L, "战三", new Date(), 4, false));
+        list.add(new Student2(1010009L, "李四", new Date(), 2, false));
+
+        ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "J.csv");
+    }
+
+    // 超大数据量导出csv
+    // 9999999数据本地测试小于1min
+    @Test
+    public void testExport2CSV2() throws Excel4JException {
+
+        List<Student2> list = new ArrayList<>();
+        for (int i = 0; i < 9999999; i++) {
+            list.add(new Student2(1000001L + i, "路人 -" + i, new Date(), i % 6, true));
+        }
+        ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "L.csv");
+    }
+```
+#### 2) 导出结果
+```
+    // 以下为导出CSV文件内容
+    
+    学号,姓名,入学日期,班级,是否开除
+    1000001,张三,2018-11-28T15:11:12.815Z,1,true
+    1010002,古尔丹,2018-11-28T15:11:12.815Z,2,false
+    1010003,蒙多(被开除了),2018-11-28T15:11:12.815Z,6,true
+    1010004,萝卜特,2018-11-28T15:11:12.815Z,3,false
+    1010005,奥拉基,2018-11-28T15:11:12.815Z,4,false
+    1010006,得嘞,2018-11-28T15:11:12.815Z,4,false
+    1010007,瓜娃子,2018-11-28T15:11:12.815Z,5,true
+    1010008,战三,2018-11-28T15:11:12.815Z,4,false
+    1010009,李四,2018-11-28T15:11:12.815Z,2,false
+```
+
+
+## 八. 使用(JDK1.7及以上)
+#### 1) github拷贝项目
+```bash
 >> git clone https://github.com/Crab2died/Excel4J.git Excel4J
 >> package.cmd
 ```
 
 #### 2) 最新版本maven引用：
-```
+```xml
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
     <version>2.1.4-Final2</version>
 </dependency>
 ```
-
-## 八. 开源协议:[![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 
 ## 九. 链接
 #### github -> [github地址](https://github.com/Crab2died/Excel4J)
