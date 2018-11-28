@@ -431,7 +431,7 @@
         System.out.println(list);
     } 
 ```
-### 2) 读取结果
+#### 2) 读取结果
 ```
     Student2{id=1000001, name='张三', date=Wed Nov 28 15:11:12 CST 2018, classes=1, expel='false'}
     Student2{id=1010002, name='古尔丹', date=Wed Nov 28 15:11:12 CST 2018, classes=2, expel='false'}
