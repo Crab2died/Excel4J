@@ -38,6 +38,10 @@ public class Excel4jReadException extends RuntimeException {
 	    super();
     }
 
+    public Excel4jReadException(Throwable cause) {
+        super(cause);
+    }
+
     public Excel4jReadException(String message) {
         super(message);
     }

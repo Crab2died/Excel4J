@@ -1507,14 +1507,14 @@ public final class ExcelUtils {
      * @param path  待读取文件路径
      * @param clazz 待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException exception
+     * @throws Excel4jReadException exception
      */
-    public <T> List<T> readCSV2Objects(String path, Class<T> clazz) throws Excel4JException {
+    public <T> List<T> readCSV2Objects(String path, Class<T> clazz) {
 
         try (InputStream is = new FileInputStream(new File(path))) {
             return readCSVByMapHandler(is, clazz);
         } catch (IOException | Excel4JException e) {
-            throw new Excel4JException("read [" + path + "] CSV Error: ", e);
+            throw new Excel4jReadException("read [" + path + "] CSV Error: ", e);
         }
     }
 
@@ -1524,14 +1524,14 @@ public final class ExcelUtils {
      * @param is    待读取文件输入流
      * @param clazz 待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException exception
+     * @throws Excel4jReadException exception
      */
-    public <T> List<T> readCSV2Objects(InputStream is, Class<T> clazz) throws Excel4JException {
+    public <T> List<T> readCSV2Objects(InputStream is, Class<T> clazz) {
 
         try {
             return readCSVByMapHandler(is, clazz);
-        } catch (IOException e) {
-            throw new Excel4JException("read CSV Error: ", e);
+        } catch (Excel4JException | IOException e) {
+            throw new Excel4jReadException("read CSV Error: ", e);
         }
     }
 
@@ -1543,7 +1543,7 @@ public final class ExcelUtils {
 
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
         if (null == headers || headers.size() <= 0) {
-            throw new Excel4JException("[" + clazz + "] must configuration @ExcelFiled");
+            throw new Excel4jReadException("[" + clazz + "] must configuration @ExcelFiled");
         }
         String[] csvHeaders = new String[headers.size()];
         for (int i = 0; i < headers.size(); i++) {
@@ -1557,7 +1557,7 @@ public final class ExcelUtils {
                 try {
                     obj = clazz.newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
-                    throw new Excel4JException(e);
+                    throw new Excel4jReadException(e);
                 }
                 for (ExcelHeader header : headers) {
                     String value = _parser.get(header.getTitle());
