@@ -35,6 +35,10 @@ public class Excel4JException extends Exception {
     public Excel4JException() {
     }
 
+    public Excel4JException(String message) {
+        super(message);
+    }
+
     public Excel4JException(String message, Throwable cause) {
         super(message, cause);
     }

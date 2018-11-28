@@ -1,12 +1,14 @@
 package base;
 
 import com.github.crab2died.ExcelUtils;
+import com.github.crab2died.exceptions.Excel4JException;
 import modules.Student1;
 import modules.Student2;
 import modules.StudentScore;
 import org.junit.Test;
 
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 public class Excel2Module {
@@ -69,12 +71,19 @@ public class Excel2Module {
         }
     }
 
-    //测试读取带有公式的单元格，并返回公式的值
+    // 测试读取带有公式的单元格，并返回公式的值
     @Test
-    public void testReadExcel_XLS() throws  Exception{
+    public void testReadExcel_XLS() throws Exception {
         String path = "D:\\JProject\\Excel4J\\src\\test\\resources\\StudentScore.xlsx";
         System.out.println(Paths.get(path).toUri().getPath());
         List<StudentScore> projectExcelModels = ExcelUtils.getInstance().readExcel2Objects(path, StudentScore.class);
         System.out.println(projectExcelModels);
+    }
+
+    // 测试读取CSV文件
+    @Test
+    public void testReadCSV() throws Excel4JException {
+        List<Student2> list = ExcelUtils.getInstance().readCSV2Objects("J.csv", Student2.class);
+        System.out.println(list);
     }
 }

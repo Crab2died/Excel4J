@@ -38,7 +38,9 @@ import com.github.crab2died.sheet.wrapper.NormalSheetWrapper;
 import com.github.crab2died.sheet.wrapper.SimpleSheetWrapper;
 import com.github.crab2died.utils.Utils;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -47,10 +49,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Excel4J的主要操作工具类
@@ -58,10 +57,12 @@ import java.util.Map;
  * 主要包含6大操作类型,并且每个类型都配有一个私有handler：<br>
  * 1.读取Excel操作基于注解映射,handler为{@link ExcelUtils#readExcel2ObjectsHandler}<br>
  * 2.读取Excel操作无映射,handler为{@link ExcelUtils#readExcel2ObjectsHandler}<br>
- * 3.基于模板、注解导出excel,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
+ * 3.基于模板、注解导出Excel,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
  * 4.基于模板、注解导出Map数据,handler为{@link ExcelUtils#exportExcelByModuleHandler}<br>
  * 5.无模板基于注解导出,handler为{@link ExcelUtils#exportExcelByMapHandler}<br>
  * 6.无模板无注解导出,handler为{@link ExcelUtils#exportExcelBySimpleHandler}<br>
+ * 7.读取CSV操作基于注解,handler为{@link ExcelUtils#readCSVByMapHandler}
+ * 8.基于注解导出CSV, handler为{@link ExcelUtils#exportCSVByMapHandler}
  * <p>
  * 另外列举了部分常用的参数格式的方法(不同参数的排列组合实在是太多,没必要完全列出)
  * 如遇没有自己需要的参数类型的方法,可通过最全的方法来自行变换<br>
@@ -1491,6 +1492,104 @@ public final class ExcelUtils {
         }
     }
 
+    /*---------------------------------------7.基于注解的CSV读取--------------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                           */
+    /*      1) 读取表头信息,与给出的Class类注解匹配                                                                 */
+    /*      2) 读取表头下面的数据内容, 按行读取, 并映射至java对象                                                     */
+    /*  二. 参数说明                                                                                              */
+    /*      *) path             =>      待读取文件路径                                                            */
+    /*      *) is               =>      待读取文件流                                                              */
+    /*      *) clazz            =>      映射对象                                                                  */
+
+    /**
+     * 基于注解读取CSV文件
+     *
+     * @param path  待读取文件路径
+     * @param clazz 待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Excel4JException exception
+     */
+    public <T> List<T> readCSV2Objects(String path, Class<T> clazz) throws Excel4JException {
+
+        try (InputStream is = new FileInputStream(new File(path))) {
+            return readCSVByMapHandler(is, clazz);
+        } catch (IOException | Excel4JException e) {
+            throw new Excel4JException("read [" + path + "] CSV Error: ", e);
+        }
+    }
+
+    /**
+     * 基于注解读取CSV文件
+     *
+     * @param is    待读取文件输入流
+     * @param clazz 待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
+     * @return 返回转换为设置绑定的java对象集合
+     * @throws Excel4JException exception
+     */
+    public <T> List<T> readCSV2Objects(InputStream is, Class<T> clazz) throws Excel4JException {
+
+        try {
+            return readCSVByMapHandler(is, clazz);
+        } catch (IOException e) {
+            throw new Excel4JException("read CSV Error: ", e);
+        }
+    }
+
+    // 读取csv
+    private <T> List<T> readCSVByMapHandler(InputStream is, Class<T> clazz)
+            throws IOException, Excel4JException {
+
+        List<T> records = new ArrayList<>();
+
+        List<ExcelHeader> headers = Utils.getHeaderList(clazz);
+        if (null == headers || headers.size() <= 0) {
+            throw new Excel4JException("[" + clazz + "] must configuration @ExcelFiled");
+        }
+        String[] csvHeaders = new String[headers.size()];
+        for (int i = 0; i < headers.size(); i++) {
+            csvHeaders[i] = headers.get(i).getTitle();
+        }
+        CSVFormat format = CSVFormat.EXCEL.withHeader(csvHeaders).withSkipHeaderRecord(true);
+        try (Reader read = new InputStreamReader(is, StandardCharsets.UTF_8);
+             CSVParser parser = new CSVParser(read, format)) {
+            for (CSVRecord _parser : parser) {
+                T obj;
+                try {
+                    obj = clazz.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new Excel4JException(e);
+                }
+                for (ExcelHeader header : headers) {
+                    String value = _parser.get(header.getTitle());
+                    Object objectVal;
+                    String filed = header.getFiled();
+                    // 读取转换器
+                    if (null != header.getReadConverter() &&
+                            header.getReadConverter().getClass() != DefaultConvertible.class) {
+                        objectVal = header.getReadConverter().execRead(value);
+                    } else {
+                        // 默认转换
+                        objectVal = Utils.str2TargetClass(value, header.getFiledClazz());
+                    }
+                    Utils.copyProperty(obj, filed, objectVal);
+                }
+                records.add(obj);
+            }
+        }
+        return records;
+    }
+
+    /*---------------------------------------8.基于注解的CSV导出--------------------------------------------------*/
+    /*  一. 操作流程 ：                                                                                           */
+    /*      1) 写入表头内容(可选)                                                                                  */
+    /*      2) 写入数据内容                                                                                       */
+    /*  二. 参数说明                                                                                              */
+    /*      *) data             =>      导出内容List集合                                                          */
+    /*      *) isWriteHeader    =>     是否写表头                                                                 */
+    /*      *) path             =>      导出文件路径                                                              */
+    /*      *) os               =>      导出文件流                                                                */
+    /*      *) clazz            =>      映射对象                                                                 */
+
     /**
      * 基于注解导出CSV文件
      *
@@ -1504,7 +1603,7 @@ public final class ExcelUtils {
 
         try {
             Writer writer = new FileWriter(path);
-            generateCSV(data, clazz, true, writer);
+            exportCSVByMapHandler(data, clazz, true, writer);
         } catch (Excel4JException | IOException e) {
             throw new Excel4JException(e);
         }
@@ -1523,7 +1622,7 @@ public final class ExcelUtils {
 
         try {
             Writer writer = new OutputStreamWriter(os);
-            generateCSV(data, clazz, true, writer);
+            exportCSVByMapHandler(data, clazz, true, writer);
         } catch (Excel4JException | IOException e) {
             throw new Excel4JException(e);
         }
@@ -1543,7 +1642,7 @@ public final class ExcelUtils {
 
         try {
             Writer writer = new FileWriter(path);
-            generateCSV(data, clazz, isWriteHeader, writer);
+            exportCSVByMapHandler(data, clazz, isWriteHeader, writer);
         } catch (Excel4JException | IOException e) {
             throw new Excel4JException(e);
         }
@@ -1563,7 +1662,7 @@ public final class ExcelUtils {
 
         try {
             Writer writer = new OutputStreamWriter(os);
-            generateCSV(data, clazz, isWriteHeader, writer);
+            exportCSVByMapHandler(data, clazz, isWriteHeader, writer);
         } catch (Excel4JException | IOException e) {
             throw new Excel4JException(e);
         }
@@ -1572,17 +1671,17 @@ public final class ExcelUtils {
     private static final byte[] UTF_8_DOM = {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
 
     // 生成CSV
-    private void generateCSV(List<?> data, Class clazz, boolean isWriteHeader, Appendable appendable)
+    private void exportCSVByMapHandler(List<?> data, Class clazz, boolean isWriteHeader, Appendable appendable)
             throws Excel4JException, IOException {
 
         List<ExcelHeader> headers = Utils.getHeaderList(clazz);
         appendable.append(new String(UTF_8_DOM, StandardCharsets.UTF_8));
 
-        try (CSVPrinter printer = new CSVPrinter(appendable, CSVFormat.DEFAULT)) {
+        try (CSVPrinter printer = new CSVPrinter(appendable, CSVFormat.EXCEL)) {
 
             if (isWriteHeader) {
                 for (ExcelHeader header : headers) {
-                    printer.print(header.getFiled());
+                    printer.print(header.getTitle());
                 }
                 printer.println();
             }
@@ -1595,8 +1694,8 @@ public final class ExcelUtils {
                 }
                 printer.println();
             }
-
             printer.flush();
         }
     }
+
 }
