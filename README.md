@@ -506,7 +506,7 @@
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>2.1.4-Final2</version>
+    <version>3.0.0-Alpha</version>
 </dependency>
 ```
 
