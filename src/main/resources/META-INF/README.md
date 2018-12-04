@@ -509,7 +509,3 @@
     <version>3.0.0-Alpha</version>
 </dependency>
 ```
-
-## 九. 链接
-#### github -> [github地址](https://github.com/Crab2died/Excel4J)
-#### 码云(gitee) -> [码云地址](https://gitee.com/Crab2Died/Excel4J)
