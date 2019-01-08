@@ -50,6 +50,9 @@ public class SimpleSheetWrapper {
      */
     private String sheetName;
 
+    public SimpleSheetWrapper() {
+    }
+
     public SimpleSheetWrapper(List<?> data, List<String> header, String sheetName) {
         this.data = data;
         this.header = header;

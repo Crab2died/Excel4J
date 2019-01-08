@@ -55,6 +55,9 @@ public class NoTemplateSheetWrapper {
      */
     private String sheetName;
 
+    public NoTemplateSheetWrapper() {
+    }
+
     public NoTemplateSheetWrapper(List<?> data, Class clazz) {
         this.data = data;
         this.clazz = clazz;
