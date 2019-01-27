@@ -4,6 +4,7 @@ import com.github.crab2died.utils.Utils;
 import org.junit.Test;
 
 import java.beans.IntrospectionException;
+import java.math.BigDecimal;
 
 public class UtilsTests {
 
@@ -18,5 +19,11 @@ public class UtilsTests {
         } catch (IntrospectionException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void bigDecimalTest() {
+        BigDecimal bigDecimal = new BigDecimal("12989E19");
+        System.out.println(bigDecimal);
     }
 }

@@ -28,10 +28,7 @@ package com.github.crab2died.handler;
 
 import com.github.crab2died.exceptions.Excel4JException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -257,21 +254,26 @@ public class SheetTemplateHandler {
             template.currentColumnIndex++;
             return;
         }
+
         if (Boolean.class == value.getClass()) {
             cell.setCellValue((Boolean) value);
             template.currentColumnIndex++;
             return;
         }
+
         if (Calendar.class == value.getClass()) {
             cell.setCellValue((Calendar) value);
             template.currentColumnIndex++;
             return;
         }
-		if (BigDecimal.class == value.getClass()) {
-			cell.setCellStyle((BigDecimal) value);
-			template.currentColumnIndex++;
-			return;
-		}
+
+        if (RichTextString.class == value.getClass()) {
+            cell.setCellValue((RichTextString) value);
+            template.currentColumnIndex++;
+            return;
+        }
+        // default value#toString
+        cell.setCellValue(value.toString());
         template.currentColumnIndex++;
     }
 
