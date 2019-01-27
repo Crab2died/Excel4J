@@ -267,6 +267,11 @@ public class SheetTemplateHandler {
             template.currentColumnIndex++;
             return;
         }
+		if (BigDecimal.class == value.getClass()) {
+			cell.setCellStyle((BigDecimal) value);
+			template.currentColumnIndex++;
+			return;
+		}
         template.currentColumnIndex++;
     }
 
