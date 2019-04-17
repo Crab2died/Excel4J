@@ -261,8 +261,8 @@
 |       定义符        |      描述      |优先级(大到小)|
 |:-------------------|:---------------|:----------:|
 |$appoint_line_style |当前行样式       |       3    |
-|$single_line_style  |单行样式         |       2    |
-|$double_line_style  |双行样式         |       2    |
+|$single_line_style  |奇数行样式       |       2    |
+|$double_line_style  |偶数行样式       |       2    |
 |$default_style      |默认样式         |       1    |
 |$data_index         |数据插入的起始位置|       -    |
 |$serial_number      |插入序号标记     |       -    |
