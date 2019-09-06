@@ -1476,7 +1476,9 @@ public final class ExcelUtils {
         }
         for (Object object : data) {
             Row row = sheet.createRow(rowIndex++);
-            if (object.getClass().isArray()) {
+            if (null == object) {
+                row.createCell(0, CellType.STRING).setCellValue("");
+            } else if (object.getClass().isArray()) {
                 for (int j = 0; j < Array.getLength(object); j++) {
                     row.createCell(j, CellType.STRING).setCellValue(Array.get(object, j).toString());
                 }
@@ -1484,7 +1486,13 @@ public final class ExcelUtils {
                 Collection<?> items = (Collection<?>) object;
                 int j = 0;
                 for (Object item : items) {
-                    row.createCell(j++, CellType.STRING).setCellValue(item.toString());
+                    if (null == item) {
+                        row.createCell(j++, CellType.STRING).setCellValue("");
+                    } else if (item instanceof Number) {
+                        row.createCell(j++, CellType.NUMERIC).setCellValue(Double.valueOf(item.toString()));
+                    } else {
+                        row.createCell(j++, CellType.STRING).setCellValue(item.toString());
+                    }
                 }
             } else {
                 row.createCell(0, CellType.STRING).setCellValue(object.toString());
