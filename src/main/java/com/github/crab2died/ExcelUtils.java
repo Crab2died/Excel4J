@@ -42,14 +42,16 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Excel4J的主要操作工具类
@@ -118,14 +120,13 @@ public final class ExcelUtils {
      * @param sheetIndex Sheet索引(默认0)
      * @param <T>        绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine,
                                          int limitLine, int sheetIndex)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
 
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
@@ -142,14 +143,13 @@ public final class ExcelUtils {
      * @param sheetIndex Sheet索引(默认0)
      * @param <T>        绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int offsetLine,
                                          int limitLine, int sheetIndex)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
 
         try (Workbook workbook = WorkbookFactory.create(is)) {
             return readExcel2ObjectsHandler(workbook, clazz, offsetLine, limitLine, sheetIndex);
@@ -165,13 +165,12 @@ public final class ExcelUtils {
      * @param sheetIndex Sheet索引(默认0)
      * @param <T>        绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int offsetLine, int sheetIndex)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
         return readExcel2Objects(excelPath, clazz, offsetLine, Integer.MAX_VALUE, sheetIndex);
     }
 
@@ -183,13 +182,12 @@ public final class ExcelUtils {
      * @param sheetIndex Sheet索引(默认0)
      * @param <T>        绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz, int sheetIndex)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
         return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, sheetIndex);
     }
 
@@ -200,13 +198,12 @@ public final class ExcelUtils {
      * @param clazz     待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
      * @param <T>       绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(String excelPath, Class<T> clazz)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
         return readExcel2Objects(excelPath, clazz, 0, Integer.MAX_VALUE, 0);
     }
 
@@ -218,13 +215,12 @@ public final class ExcelUtils {
      * @param sheetIndex Sheet索引(默认0)
      * @param <T>        绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz, int sheetIndex)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
         return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, sheetIndex);
     }
 
@@ -235,19 +231,17 @@ public final class ExcelUtils {
      * @param clazz 待绑定的类(绑定属性注解{@link com.github.crab2died.annotation.ExcelField})
      * @param <T>   绑定的数据类
      * @return 返回转换为设置绑定的java对象集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws Excel4JException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public <T> List<T> readExcel2Objects(InputStream is, Class<T> clazz)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws Excel4JException, IOException {
         return readExcel2Objects(is, clazz, 0, Integer.MAX_VALUE, 0);
     }
 
     private <T> List<T> readExcel2ObjectsHandler(Workbook workbook, Class<T> clazz, int offsetLine,
-                                                 int limitLine, int sheetIndex)
-            throws Excel4JException {
+                                                 int limitLine, int sheetIndex) throws Excel4JException {
 
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         Row row = sheet.getRow(offsetLine);
@@ -311,12 +305,11 @@ public final class ExcelUtils {
      * @param limitLine  最大读取行数(默认表尾)
      * @param sheetIndex Sheet索引(默认0)
      * @return 返回{@code List<List<String>>}类型的数据集合
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws IOException 异常
      * @author Crab2Died
      */
     public List<List<String>> readExcel2List(String excelPath, int offsetLine, int limitLine, int sheetIndex)
-            throws IOException, InvalidFormatException {
+            throws IOException {
 
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
@@ -331,13 +324,11 @@ public final class ExcelUtils {
      * @param limitLine  最大读取行数(默认表尾)
      * @param sheetIndex Sheet索引(默认0)
      * @return 返回{@code List<List<String>>}类型的数据集合
-     * @throws Excel4JException       异常
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws IOException      异常
      * @author Crab2Died
      */
     public List<List<String>> readExcel2List(InputStream is, int offsetLine, int limitLine, int sheetIndex)
-            throws Excel4JException, IOException, InvalidFormatException {
+            throws IOException {
 
         try (Workbook workbook = WorkbookFactory.create(is)) {
             return readExcel2ObjectsHandler(workbook, offsetLine, limitLine, sheetIndex);
@@ -350,12 +341,11 @@ public final class ExcelUtils {
      * @param excelPath  待读取Excel的路径
      * @param offsetLine Excel表头行(默认是0)
      * @return 返回{@code List<List<String>>}类型的数据集合
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws IOException 异常
      * @author Crab2Died
      */
     public List<List<String>> readExcel2List(String excelPath, int offsetLine)
-            throws IOException, InvalidFormatException {
+            throws IOException {
 
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
@@ -368,12 +358,11 @@ public final class ExcelUtils {
      * @param is         待读取Excel的数据流
      * @param offsetLine Excel表头行(默认是0)
      * @return 返回{@code List<List<String>>}类型的数据集合
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws IOException 异常
      * @author Crab2Died
      */
     public List<List<String>> readExcel2List(InputStream is, int offsetLine)
-            throws IOException, InvalidFormatException {
+            throws IOException {
 
         try (Workbook workbook = WorkbookFactory.create(is)) {
             return readExcel2ObjectsHandler(workbook, offsetLine, Integer.MAX_VALUE, 0);
@@ -385,12 +374,11 @@ public final class ExcelUtils {
      *
      * @param excelPath 待读取Excel的路径
      * @return 返回{@code List<List<String>>}类型的数据集合
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws IOException 异常
      * @author Crab2Died
      */
     public List<List<String>> readExcel2List(String excelPath)
-            throws IOException, InvalidFormatException {
+            throws IOException {
 
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(new File(excelPath)))) {
             return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);
@@ -402,12 +390,11 @@ public final class ExcelUtils {
      *
      * @param is 待读取Excel的数据流
      * @return 返回{@code List<List<String>>}类型的数据集合
-     * @throws IOException            异常
-     * @throws InvalidFormatException 异常
+     * @throws IOException 异常
      * @author Crab2Died
      */
     public List<List<String>> readExcel2List(InputStream is)
-            throws IOException, InvalidFormatException {
+            throws IOException {
 
         try (Workbook workbook = WorkbookFactory.create(is)) {
             return readExcel2ObjectsHandler(workbook, 0, Integer.MAX_VALUE, 0);

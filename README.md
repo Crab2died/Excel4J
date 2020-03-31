@@ -5,20 +5,19 @@
                              |        \>    <\  \__\  ___/|  |__/    ^   /\__|    |
                             /_______  /__/\_ \\___  >___  >____/\____   |\________|
                                     \/      \/    \/    \/           |__|          
-                                                             (version: 3.0.0-Alpha)
+                                                                   (version: 3.0.0)
 ```
 ---
 
-![version](https://img.shields.io/badge/version-3.0.0--Alpha-green.svg) 
+![version](https://img.shields.io/badge/version-3.0.0-green.svg) 
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/search?q=a:Excel4J)
-
-> 紧急修复以绝对路径指定模板来导出会导致模板被修改的BUG,以及读取Excel数据会修改原Excel文件,建议升级至2.1.4-Final2及以上版本
 
 ## 一. 更新记录
 ### 1. v3.x
    1. 新增CSV(包含基于ExcelField注解)的导出支持
    2. 新增CSV(包含基于ExcelField注解)的导入支持
+   3. [POI](https://poi.apache.org)升级至4.1.2版本
 
 ### 2. v2.x
    1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String
@@ -506,6 +505,6 @@
 <dependency>
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>3.0.0-Alpha</version>
+    <version>3.0.0</version>
 </dependency>
 ```

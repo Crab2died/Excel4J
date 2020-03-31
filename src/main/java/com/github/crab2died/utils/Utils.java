@@ -44,7 +44,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -131,7 +130,7 @@ public class Utils {
      */
     public static String getCellValue(Cell c) {
         String o;
-        switch (c.getCellTypeEnum()) {
+        switch (c.getCellType()) {
             case BLANK:
                 o = "";
                 break;

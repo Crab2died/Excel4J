@@ -27,7 +27,6 @@
 package com.github.crab2died.handler;
 
 import com.github.crab2died.exceptions.Excel4JException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
@@ -53,7 +52,7 @@ public class SheetTemplateHandler {
                 sheetTemplate.workbook = WorkbookFactory.create(
                         SheetTemplateHandler.class.getResourceAsStream(templatePath)
                 );
-            } catch (IOException | InvalidFormatException e1) {
+            } catch (IOException e1) {
                 throw new Excel4JException(e1);
             }
         }
@@ -67,7 +66,7 @@ public class SheetTemplateHandler {
         // 读取模板文件
         try {
             sheetTemplate.workbook = WorkbookFactory.create(is);
-        } catch (IOException | InvalidFormatException e) {
+        } catch (IOException e) {
             throw new Excel4JException(e);
         }
         return sheetTemplate;
@@ -93,7 +92,7 @@ public class SheetTemplateHandler {
 
         for (Row row : template.sheet) {
             for (Cell c : row) {
-                if (c.getCellTypeEnum() != CellType.STRING)
+                if (c.getCellType() != CellType.STRING)
                     continue;
                 String str = c.getStringCellValue().trim().toLowerCase();
                 // 寻找序号列
@@ -148,8 +147,8 @@ public class SheetTemplateHandler {
     }
 
     /*-----------------------------------初始化模板结束-----------------------------------*/
-    
-    /*-----------------------------------数据填充开始------------------------------------*/
+
+    /*------------------------------------数据填充开始------------------------------------*/
 
     /**
      * 根据map替换相应的常量，通过Map中的值来替换#开头的值
@@ -161,7 +160,7 @@ public class SheetTemplateHandler {
             return;
         for (Row row : template.sheet) {
             for (Cell c : row) {
-                if (c.getCellTypeEnum() != CellType.STRING)
+                if (c.getCellType() != CellType.STRING)
                     continue;
                 String str = c.getStringCellValue().trim();
                 if (str.startsWith("#") && data.containsKey(str.substring(1))) {

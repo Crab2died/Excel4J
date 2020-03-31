@@ -4,7 +4,7 @@
 
     <groupId>com.github.crab2died</groupId>
     <artifactId>Excel4J</artifactId>
-    <version>3.0.0-Alpha</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
@@ -13,8 +13,8 @@
 
     <properties>
         <jdk.version>1.7</jdk.version>
-        <poi.version>3.17</poi.version>
-        <csv.version>1.6</csv.version>
+        <poi.version>4.1.2</poi.version>
+        <csv.version>1.8</csv.version>
         <junit.version>4.11</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
