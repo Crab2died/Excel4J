@@ -69,7 +69,7 @@ public class Module2Excel {
             sheets.add(new NormalSheetWrapper(i, list, data, Student1.class, false));
         }
 
-        String tempPath = "D:\\JProject\\Excel4J\\src\\test\\resources\\normal_batch_sheet_template.xlsx";
+        String tempPath = "/normal_batch_sheet_template.xlsx";
         FileOutputStream os = new FileOutputStream(new File("JK.xlsx"));
         // 基于模板导出Excel
         ExcelUtils.getInstance().normalSheet2Excel(sheets, tempPath, "AA.xlsx");
@@ -254,7 +254,7 @@ public class Module2Excel {
     public void testExport2CSV2() throws Excel4JException {
 
         List<Student2> list = new ArrayList<>();
-        for (int i = 0; i < 9999999; i++) {
+        for (int i = 0; i < 9999; i++) {
             list.add(new Student2(1000001L + i, "路人 -" + i, new Date(), i % 6, true));
         }
         ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "L.csv");
