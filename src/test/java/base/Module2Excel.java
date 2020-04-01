@@ -245,7 +245,7 @@ public class Module2Excel {
         list.add(new Student2(1010008L, "战三", new Date(), 4, false));
         list.add(new Student2(1010009L, "李四", new Date(), 2, false));
 
-        ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "students_02.csv");
+        ExcelUtils.getInstance().exportObjects2CSV(list, Student2.class, "J.csv");
     }
 
     // 超大数据量导出csv
