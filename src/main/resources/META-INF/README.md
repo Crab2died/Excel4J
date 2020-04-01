@@ -12,12 +12,14 @@
 ![version](https://img.shields.io/badge/version-3.0.0-green.svg) 
 [![GitHub license](https://img.shields.io/github/license/Crab2died/Excel4J.svg)](https://github.com/Crab2died/Excel4J/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/search?q=a:Excel4J)
+[![javadoc](https://javadoc.io/badge2/com.github.crab2died/Excel4J/3.0.0/javadoc.svg)](https://javadoc.io/doc/com.github.crab2died/Excel4J/3.0.0)
 
 ## 一. 更新记录
 ### 1. v3.x
    1. 新增CSV(包含基于ExcelField注解)的导出支持
    2. 新增CSV(包含基于ExcelField注解)的导入支持
-   3. [POI](https://poi.apache.org)升级至4.1.2版本
+   3. [POI](https://poi.apache.org)升级至v4.1.2版本
+   4. [Commons CSV](https://commons.apache.org/proper/commons-csv)升级至v1.8
 
 ### 2. v2.x
    1. Excel读取支持部分类型转换了(如转为Integer,Long,Date(部分)等) v2.0.0之前只能全部内容转为String

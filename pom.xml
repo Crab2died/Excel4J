@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>Excel4J</name>
-    <description>Excel operation component based on poi</description>
+    <description>Excel and CSV operation component based on POI and Commons CSV</description>
     <url>https://github.com/Crab2died/Excel4J</url>
 
     <properties>
