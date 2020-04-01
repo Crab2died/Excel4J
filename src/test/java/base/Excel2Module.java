@@ -1,7 +1,6 @@
 package base;
 
 import com.github.crab2died.ExcelUtils;
-import com.github.crab2died.exceptions.Excel4JException;
 import modules.Student1;
 import modules.Student2;
 import modules.StudentScore;
@@ -81,7 +80,7 @@ public class Excel2Module {
 
     // 测试读取CSV文件
     @Test
-    public void testReadCSV() throws Excel4JException {
+    public void testReadCSV() {
         List<Student2> list = ExcelUtils.getInstance().readCSV2Objects("./src/test/resources/students_02.csv", Student2.class);
         for (Student2 student2 : list) {
             System.out.println(student2);
