@@ -15,7 +15,7 @@
         <jdk.version>1.7</jdk.version>
         <poi.version>4.1.2</poi.version>
         <csv.version>1.8</csv.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
