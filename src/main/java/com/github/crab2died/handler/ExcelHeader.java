@@ -29,6 +29,8 @@ package com.github.crab2died.handler;
 import com.github.crab2died.converter.ReadConvertible;
 import com.github.crab2died.converter.WriteConvertible;
 
+import java.util.Objects;
+
 /**
  * 功能说明: 用来存储Excel标题的对象，通过该对象可以获取标题和方法的对应关系
  */
@@ -119,6 +121,19 @@ public class ExcelHeader implements Comparable<ExcelHeader> {
 
     public ExcelHeader() {
         super();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExcelHeader)) return false;
+        ExcelHeader that = (ExcelHeader) o;
+        return getOrder() == that.getOrder();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOrder());
     }
 
     public ExcelHeader(String title, int order, WriteConvertible writeConverter,

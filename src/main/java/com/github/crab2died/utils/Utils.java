@@ -70,7 +70,7 @@ public class Utils {
      */
     public static List<ExcelHeader> getHeaderList(Class<?> clz) throws Excel4JException {
 
-        List<ExcelHeader> headers = new ArrayList<>();
+        Set<ExcelHeader> headers = new HashSet<>();
         List<Field> fields = new ArrayList<>();
         for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
@@ -93,8 +93,9 @@ public class Utils {
                 }
             }
         }
-        Collections.sort(headers);
-        return headers;
+        List<ExcelHeader> result = new ArrayList<>(headers);
+        Collections.sort(result);
+        return result;
     }
 
     /**
